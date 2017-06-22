@@ -35,13 +35,6 @@ var skipHtmlCoverageReport		= HasArgument("SkipHtmlCoverageReport") ? Argument<b
 // DEFINE FILES & DIRECTORIES
 //////////////////////////////////////////////////////////////////////
 var packDirs                    = new [] {
-											Directory("./src/App.Metrics"),
-											Directory("./src/App.Metrics.Abstractions"),
-											Directory("./src/App.Metrics.Core"),
-											Directory("./src/App.Metrics.Formatters.Json"),
-											Directory("./src/App.Metrics.Formatters.Ascii"),
-											Directory("./src/App.Metrics.Reporting"),
-											Directory("./src/App.Metrics.HealthMetrics"),
 											Directory("./src/App.Metrics.AspNetCore"),
 											Directory("./src/App.Metrics.AspNetCore.Abstractions"),
 											Directory("./src/App.Metrics.AspNetCore.Formatters.Ascii"),
@@ -58,10 +51,10 @@ var htmlCoverageReport			= coverageResultsDir.FullPath + "/coverage.html";
 var mergedCoverageSnapshots		= coverageResultsDir.FullPath + "/coverage.dcvr";
 var xmlCoverageReport			= coverageResultsDir.FullPath + "/coverage.xml";
 var packagesDir                 = artifactsDir.Combine("packages");
-var resharperSettings			= "./AppMetrics.sln.DotSettings";
+var resharperSettings			= "./AspNetCore.sln.DotSettings";
 var inspectCodeXml				= string.Format("{0}/inspectCode.xml", reSharperReportsDir);
 var inspectCodeHtml				= string.Format("{0}/inspectCode.html", reSharperReportsDir);
-var solutionFile				= "./AppMetrics.sln";
+var solutionFile				= "./AspNetCore.sln";
 var solution					= ParseSolution(new FilePath(solutionFile));
 
 //////////////////////////////////////////////////////////////////////
@@ -198,8 +191,10 @@ Task("Pack")
         Configuration = configuration,
         OutputDirectory = packagesDir,
         VersionSuffix = versionSuffix,
-		NoBuild = true
-    };
+		NoBuild = true,
+		// Workaround to fixing pre-release version package references - https://github.com/NuGet/Home/issues/4337
+		ArgumentCustomization = args=>args.Append("/p:RestoreSources=https://api.nuget.org/v3/index.json;https://www.myget.org/F/appmetrics/api/v3/index.json;")
+    };	
     
     foreach(var packDir in packDirs)
     {
@@ -232,9 +227,10 @@ Task("RunTests")
         var settings = new DotNetCoreTestSettings
 		{
 			Configuration = configuration,
-			 ArgumentCustomization = args => args.Append("--logger:trx")
+			// Workaround to fixing pre-release version package references - https://github.com/NuGet/Home/issues/4337
+			 ArgumentCustomization = args=>args.Append("--logger:trx /t:Restore /p:RestoreSources=https://api.nuget.org/v3/index.json;https://www.myget.org/F/appmetrics/api/v3/index.json;")
 		};
-
+		
 		if (!IsRunningOnWindows())
         {
 			settings.Framework = "netcoreapp2.0";
@@ -278,7 +274,8 @@ Task("RunTestsWithOpenCover")
 	var settings = new DotNetCoreTestSettings
     {
         Configuration = configuration,
-		 ArgumentCustomization = args => args.Append("--logger:trx")
+		// Workaround to fixing pre-release version package references - https://github.com/NuGet/Home/issues/4337
+		ArgumentCustomization = args=>args.Append("--logger:trx /t:Restore /p:RestoreSources=https://api.nuget.org/v3/index.json;https://www.myget.org/F/appmetrics/api/v3/index.json;")
     };
 
     foreach (var project in projects)
@@ -356,7 +353,8 @@ Task("RunTestsWithDotCover")
 	var settings = new DotNetCoreTestSettings
     {
         Configuration = configuration,
-		 ArgumentCustomization = args => args.Append("--logger:trx")
+		// Workaround to fixing pre-release version package references - https://github.com/NuGet/Home/issues/4337
+		ArgumentCustomization = args=>args.Append("--logger:trx /t:Restore /p:RestoreSources=https://api.nuget.org/v3/index.json;https://www.myget.org/F/appmetrics/api/v3/index.json;")
     };
 
     foreach (var project in projects)

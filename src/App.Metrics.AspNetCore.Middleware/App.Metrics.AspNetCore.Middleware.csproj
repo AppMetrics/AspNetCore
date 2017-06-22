@@ -10,17 +10,17 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Compile Include="..\shared\HttpContextExtensions.cs" Link="Extensions\HttpContextExtensions.cs" />
+    <PackageReference Include="App.Metrics.Core" Version="$(AppMetricsCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\App.Metrics.Core\App.Metrics.Core.csproj" />
     <ProjectReference Include="..\App.Metrics.AspNetCore.Abstractions\App.Metrics.AspNetCore.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="$(AspNetCoreVersion)" />
+    <Compile Include="..\shared\HttpContextExtensions.cs" Link="Extensions\HttpContextExtensions.cs" />
   </ItemGroup>
 
 </Project>

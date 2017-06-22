@@ -11,10 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\App.Metrics.Abstractions\App.Metrics.Abstractions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="App.Metrics.Abstractions" Version="$(AppMetricsCoreVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="$(AspNetCoreVersion)" />
   </ItemGroup>

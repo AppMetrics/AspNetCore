@@ -10,9 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\App.Metrics.Formatters.Ascii\App.Metrics.Formatters.Ascii.csproj" />
-    <ProjectReference Include="..\App.Metrics.AspNetCore.Abstractions\App.Metrics.AspNetCore.Abstractions.csproj" />
-    <ProjectReference Include="..\App.Metrics.Abstractions\App.Metrics.Abstractions.csproj" />
+    <PackageReference Include="App.Metrics.Abstractions" Version="$(AppMetricsCoreVersion)" />
+    <PackageReference Include="App.Metrics.Formatters.Ascii" Version="$(AppMetricsCoreVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup>    
+    <ProjectReference Include="..\App.Metrics.AspNetCore.Abstractions\App.Metrics.AspNetCore.Abstractions.csproj" />    
   </ItemGroup>
 
 </Project>
