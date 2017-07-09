@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\build\common.props" />
+
+  <PropertyGroup>
+	<Description>App Metrics ASP.NET Core metrics and environment information formatters allowing for example HTTP response serialization to plain text.</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageTags>appmetrics;aspnetcore;metrics;ascii</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="App.Metrics.Abstractions" Version="$(AppMetricsCoreVersion)" />
+    <PackageReference Include="App.Metrics.Formatters.Ascii" Version="$(AppMetricsCoreVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup>    
+    <ProjectReference Include="..\App.Metrics.AspNetCore.Abstractions\App.Metrics.AspNetCore.Abstractions.csproj" />    
+  </ItemGroup>
+
+</Project>

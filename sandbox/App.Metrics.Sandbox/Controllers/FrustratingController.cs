@@ -1,5 +1,10 @@
+// <copyright file="FrustratingController.cs" company="Allan Hardy">
+// Copyright (c) Allan Hardy. All rights reserved.
+// </copyright>
+
 using System;
 using System.Threading.Tasks;
+using App.Metrics.Core;
 using App.Metrics.Sandbox.JustForTesting;
 using Microsoft.AspNetCore.Mvc;
 

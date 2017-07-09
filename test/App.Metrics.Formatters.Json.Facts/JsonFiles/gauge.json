@@ -1,9 +1,0 @@
-﻿{
-  "value": 0.5,
-  "name": "test_gauge",
-  "tags": {
-    "host": "server1",
-    "env": "staging"
-  },
-  "unit": "calls"
-}
