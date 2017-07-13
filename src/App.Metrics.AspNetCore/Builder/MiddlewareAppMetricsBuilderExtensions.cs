@@ -3,9 +3,9 @@
 // </copyright>
 
 using System;
+using App.Metrics.AspNetCore.DependencyInjection.Internal;
 using App.Metrics.AspNetCore.Middleware.Internal;
 using App.Metrics.AspNetCore.Middleware.Options;
-using App.Metrics.Core.DependencyInjection.Internal;
 using App.Metrics.Middleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

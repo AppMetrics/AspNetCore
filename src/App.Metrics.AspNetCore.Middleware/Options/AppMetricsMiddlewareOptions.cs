@@ -24,7 +24,7 @@ namespace App.Metrics.AspNetCore.Middleware.Options
             EnvironmentInfoEndpointEnabled = true;
             OAuth2TrackingEnabled = true;
             ApdexTrackingEnabled = true;
-            ApdexTSeconds = ReservoirSamplingConstants.DefaultApdexTSeconds;
+            ApdexTSeconds = AppMetricsReservoirSamplingConstants.DefaultApdexTSeconds;
             DefaultTrackingEnabled = true;
         }
 

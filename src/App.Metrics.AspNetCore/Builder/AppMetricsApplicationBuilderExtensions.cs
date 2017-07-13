@@ -6,6 +6,7 @@ using System;
 using App.Metrics.AspNetCore.Middleware;
 using App.Metrics.AspNetCore.Middleware.Options;
 using App.Metrics.Core.Configuration;
+using App.Metrics.Core.DependencyInjection.Internal;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +34,7 @@ namespace App.Metrics.Builder
 
             // Verify if AddMetrics was done before calling UseMetrics
             // We use the MetricsMarkerService to make sure if all the services were added.
-            Core.DependencyInjection.Internal.AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(app.ApplicationServices);
+            AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(app.ApplicationServices);
 
             var appMetricsOptions = app.ApplicationServices.GetRequiredService<AppMetricsOptions>();
             var appMetricsMiddlewareOptions = app.ApplicationServices.GetRequiredService<AppMetricsMiddlewareOptions>();

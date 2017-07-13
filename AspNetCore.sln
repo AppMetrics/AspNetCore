@@ -61,12 +61,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Metrics.AspNetCore.Inte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Metrics.AspNetCore.Formatters.Json.Facts", "test\App.Metrics.AspNetCore.Formatters.Json.Facts\App.Metrics.AspNetCore.Formatters.Json.Facts.csproj", "{137401A6-7B61-4EAE-B71A-709E072DA0BD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{936C69BF-F19F-433F-A63E-CE028DF7F656}"
-	ProjectSection(SolutionItems) = preProject
-		src\shared\HttpContextExtensions.cs = src\shared\HttpContextExtensions.cs
-		src\shared\StringExtensions.cs = src\shared\StringExtensions.cs
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Metrics.AspNetCore.Abstractions", "src\App.Metrics.AspNetCore.Abstractions\App.Metrics.AspNetCore.Abstractions.csproj", "{BE1B0701-E2F3-41CF-8683-F74A1B924347}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Metrics.AspNetCore.Formatters.Ascii.Facts", "test\App.Metrics.AspNetCore.Formatters.Ascii.Facts\App.Metrics.AspNetCore.Formatters.Ascii.Facts.csproj", "{D0E02475-6F41-450B-BF9C-090E7C647155}"
@@ -135,7 +129,6 @@ Global
 		{4D8A4CB5-76A5-45F1-AB3D-5C71AD81E42F} = {C0BC96C5-46E1-4323-9C5D-58D9A96549CD}
 		{92522DDA-8C3D-4084-9719-E01F601F49B4} = {DD2E4647-7125-4CE3-9BA5-B45A26113A31}
 		{137401A6-7B61-4EAE-B71A-709E072DA0BD} = {DD2E4647-7125-4CE3-9BA5-B45A26113A31}
-		{936C69BF-F19F-433F-A63E-CE028DF7F656} = {2D805782-756E-4C98-B22E-F502BEE95318}
 		{BE1B0701-E2F3-41CF-8683-F74A1B924347} = {2D805782-756E-4C98-B22E-F502BEE95318}
 		{D0E02475-6F41-450B-BF9C-090E7C647155} = {DD2E4647-7125-4CE3-9BA5-B45A26113A31}
 		{01FAB40B-1C30-48CC-9489-9403DE3EA957} = {2D805782-756E-4C98-B22E-F502BEE95318}

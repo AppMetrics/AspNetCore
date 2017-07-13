@@ -4,7 +4,6 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using App.Metrics.Core.Formatting;
 using App.Metrics.Formatters.Ascii;
 using App.Metrics.Middleware;
 using Microsoft.AspNetCore.Http;
