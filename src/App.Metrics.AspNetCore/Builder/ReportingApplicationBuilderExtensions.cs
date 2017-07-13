@@ -4,6 +4,7 @@
 
 using System;
 using System.Threading.Tasks;
+using App.Metrics.Reporting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,10 +39,10 @@ namespace App.Metrics.Builder
                 throw new ArgumentNullException(nameof(lifetime));
             }
 
-            // var reportFactory = app.ApplicationServices.GetRequiredService<IReportFactory>();
-            // var metrics = app.ApplicationServices.GetRequiredService<IMetrics>();
-            // var reporter = reportFactory.CreateReporter();
-            // lifetime.ApplicationStarted.Register(() => { Task.Run(() => reporter.RunReports(metrics, lifetime.ApplicationStopping), lifetime.ApplicationStopping); });
+            var reportFactory = app.ApplicationServices.GetRequiredService<IReportFactory>();
+            var metrics = app.ApplicationServices.GetRequiredService<IMetrics>();
+            var reporter = reportFactory.CreateReporter();
+            lifetime.ApplicationStarted.Register(() => { Task.Run(() => reporter.RunReports(metrics, lifetime.ApplicationStopping), lifetime.ApplicationStopping); });
 
             return app;
         }
