@@ -2,8 +2,10 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using App.Metrics.Builder;
+
 // ReSharper disable CheckNamespace
-namespace App.Metrics.Builder
+namespace Microsoft.AspNetCore.Hosting
     // ReSharper restore CheckNamespace
 {
     /// <summary>

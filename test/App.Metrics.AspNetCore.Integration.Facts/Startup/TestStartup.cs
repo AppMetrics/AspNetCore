@@ -8,7 +8,6 @@ using System.Security.Claims;
 using App.Metrics.AspNetCore.Middleware.Options;
 using App.Metrics.Builder;
 using App.Metrics.Core.Configuration;
-using App.Metrics.Core.Infrastructure;
 using App.Metrics.Core.ReservoirSampling.Uniform;
 using App.Metrics.Filters;
 using Microsoft.AspNetCore.Builder;
@@ -25,8 +24,6 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
         protected void SetupAppBuilder(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseMetrics();
-
             app.Use(
                 (context, func) =>
                 {

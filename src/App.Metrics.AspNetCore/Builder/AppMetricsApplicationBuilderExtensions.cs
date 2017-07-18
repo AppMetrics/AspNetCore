@@ -3,78 +3,40 @@
 // </copyright>
 
 using System;
-using App.Metrics.AspNetCore.Middleware;
-using App.Metrics.AspNetCore.Middleware.Options;
-using App.Metrics.Core.Configuration;
-using App.Metrics.Core.DependencyInjection.Internal;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable CheckNamespace
-namespace App.Metrics.Builder
+namespace Microsoft.AspNetCore.Hosting
     // ReSharper restore CheckNamespace
 {
     public static class AppMetricsApplicationBuilderExtensions
     {
         /// <summary>
-        ///     Adds App Metrics Middleware to the <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> request
+        ///     Adds App Metrics Middleware to the <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" /> request
         ///     execution pipeline.
         /// </summary>
-        /// <param name="app">The <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />.</param>
+        /// <param name="hostBuilder">The <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" />.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
         /// <exception cref="ArgumentNullException">
-        ///     <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> cannot be null
+        ///     <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" /> cannot be null
         /// </exception>
-        public static IApplicationBuilder UseMetrics(this IApplicationBuilder app)
+        public static IWebHostBuilder UseMetricsDefaults(this IWebHostBuilder hostBuilder)
         {
-            if (app == null)
+            hostBuilder.ConfigureServices((context, services) =>
             {
-                throw new ArgumentNullException(nameof(app));
-            }
+                services.
+                    AddMetrics(context.Configuration.GetSection("AppMetrics")).
+                    AddMetricsMiddleware(
+                        context.Configuration.GetSection("AppMetricsAspNetCore"),
+                        optionsBuilder =>
+                        {
+                            optionsBuilder.AddMetricsJsonFormatters().
+                                           AddMetricsTextAsciiFormatters().
+                                           AddEnvironmentAsciiFormatters();
+                        });
+            });
 
-            // Verify if AddMetrics was done before calling UseMetrics
-            // We use the MetricsMarkerService to make sure if all the services were added.
-            AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(app.ApplicationServices);
-
-            var appMetricsOptions = app.ApplicationServices.GetRequiredService<AppMetricsOptions>();
-            var appMetricsMiddlewareOptions = app.ApplicationServices.GetRequiredService<AppMetricsMiddlewareOptions>();
-
-            if (appMetricsMiddlewareOptions.PingEndpointEnabled)
-            {
-                app.UseMiddleware<PingEndpointMiddleware>();
-            }
-
-            if (appMetricsMiddlewareOptions.MetricsTextEndpointEnabled && appMetricsOptions.MetricsEnabled)
-            {
-                app.UseMiddleware<MetricsEndpointTextEndpointMiddleware>();
-            }
-
-            if (appMetricsMiddlewareOptions.MetricsEndpointEnabled && appMetricsOptions.MetricsEnabled)
-            {
-                app.UseMiddleware<MetricsEndpointMiddleware>();
-            }
-
-            if (appMetricsMiddlewareOptions.EnvironmentInfoEndpointEnabled)
-            {
-                app.UseMiddleware<EnvironmentInfoMiddleware>();
-            }
-
-            if (appMetricsOptions.MetricsEnabled && appMetricsMiddlewareOptions.DefaultTrackingEnabled)
-            {
-                app.UseMiddleware<ActiveRequestCounterEndpointMiddleware>();
-                app.UseMiddleware<ErrorRequestMeterMiddleware>();
-                app.UseMiddleware<PerRequestTimerMiddleware>();
-                app.UseMiddleware<OAuthTrackingMiddleware>();
-                app.UseMiddleware<PostAndPutRequestSizeHistogramMiddleware>();
-                app.UseMiddleware<RequestTimerMiddleware>();
-            }
-
-            if (appMetricsOptions.MetricsEnabled && appMetricsMiddlewareOptions.ApdexTrackingEnabled)
-            {
-                app.UseMiddleware<ApdexMiddleware>();
-            }
-
-            return app;
+            return hostBuilder;
         }
     }
 }

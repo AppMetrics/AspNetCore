@@ -4,8 +4,8 @@
 
 using System;
 using App.Metrics.AspNetCore.Middleware.Options;
-using App.Metrics.Builder;
 using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -66,8 +66,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
             if (setupAction == null)
             {
                 metricsBuilder.AddMetricsMiddleware(
-                    configuration.GetSection("AspNetMetrics"),
-                    optionsBuilder =>
+                    configuration: configuration.GetSection("AspNetMetrics"),
+                    setupMiddlewareOptionsAction: optionsBuilder =>
                     {
                         optionsBuilder.AddEnvironmentAsciiFormatters().
                                       AddMetricsJsonFormatters().
@@ -77,9 +77,9 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
             else
             {
                 metricsBuilder.AddMetricsMiddleware(
-                    configuration.GetSection("AspNetMetrics"),
-                    setupAction,
-                    optionsBuilder =>
+                    configuration: configuration.GetSection("AspNetMetrics"),
+                    setupOptionsAction: setupAction,
+                    setupMiddlewareOptionsAction: optionsBuilder =>
                     {
                         optionsBuilder.AddEnvironmentAsciiFormatters().
                                        AddMetricsJsonFormatters().

@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using Microsoft.AspNetCore.Hosting;
 
 // ReSharper disable CheckNamespace
 namespace App.Metrics.Builder

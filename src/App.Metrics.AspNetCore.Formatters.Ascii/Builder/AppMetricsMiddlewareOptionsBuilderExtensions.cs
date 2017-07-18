@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable CheckNamespace
-namespace App.Metrics.Builder
+namespace Microsoft.AspNetCore.Hosting
     // ReSharper restore CheckNamespace
 {
     public static class AppMetricsMiddlewareOptionsBuilderExtensions

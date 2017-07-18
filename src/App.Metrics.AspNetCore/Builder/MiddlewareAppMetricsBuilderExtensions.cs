@@ -3,9 +3,11 @@
 // </copyright>
 
 using System;
+using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.DependencyInjection.Internal;
 using App.Metrics.AspNetCore.Middleware.Internal;
 using App.Metrics.AspNetCore.Middleware.Options;
+using App.Metrics.Builder;
 using App.Metrics.Middleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,11 +15,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 // ReSharper disable CheckNamespace
-namespace App.Metrics.Builder
+namespace Microsoft.AspNetCore.Hosting
     // ReSharper restore CheckNamespace
 {
     public static class MiddlewareAppMetricsBuilderExtensions
-        // ReSharper restore UnusedMember.Global
     {
         public static IAppMetricsBuilder AddMetricsMiddleware(
             this IAppMetricsBuilder builder,
@@ -31,12 +32,12 @@ namespace App.Metrics.Builder
         public static IAppMetricsBuilder AddMetricsMiddleware(
             this IAppMetricsBuilder builder,
             IConfiguration configuration,
-            Action<AppMetricsMiddlewareOptions> setupAction,
-            Action<IAppMetricsMiddlewareOptionsBuilder> setupMiddleware)
+            Action<AppMetricsMiddlewareOptions> setupOptionsAction,
+            Action<IAppMetricsMiddlewareOptionsBuilder> setupMiddlewareOptionsAction)
         {
             builder.Services.Configure<AppMetricsMiddlewareOptions>(configuration);
-            builder.Services.Configure(setupAction);
-            return builder.AddMetricsMiddlewareCore(setupMiddleware);
+            builder.Services.Configure(setupOptionsAction);
+            return builder.AddMetricsMiddlewareCore(setupMiddlewareOptionsAction);
         }
 
         public static IAppMetricsBuilder AddMetricsMiddleware(
@@ -50,21 +51,21 @@ namespace App.Metrics.Builder
 
         public static IAppMetricsBuilder AddMetricsMiddleware(
             this IAppMetricsBuilder builder,
-            Action<IAppMetricsMiddlewareOptionsBuilder> setupMiddleware)
+            Action<IAppMetricsMiddlewareOptionsBuilder> setupMiddlewareOptionsAction)
         {
-            return builder.AddMetricsMiddlewareCore(setupMiddleware);
+            return builder.AddMetricsMiddlewareCore(setupMiddlewareOptionsAction);
         }
 
-        internal static IAppMetricsMiddlewareOptionsBuilder AddAppMetricsMiddlewareBuilder(this IAppMetricsBuilder appMetricsBuilder)
+        private static IAppMetricsMiddlewareOptionsBuilder AddAppMetricsMiddlewareBuilder(this IAppMetricsBuilder appMetricsBuilder)
         {
             return new AppMetricsMiddlewareOptionsBuilder(appMetricsBuilder);
         }
 
         private static IAppMetricsBuilder AddMetricsMiddlewareCore(
             this IAppMetricsBuilder builder,
-            Action<IAppMetricsMiddlewareOptionsBuilder> setupMiddleware)
+            Action<IAppMetricsMiddlewareOptionsBuilder> setupMiddlewareOptionsAction)
         {
-            setupMiddleware(builder.AddAppMetricsMiddlewareBuilder());
+            setupMiddlewareOptionsAction(builder.AddAppMetricsMiddlewareBuilder());
 
             builder.Services.TryAddSingleton<IEnvironmentInfoResponseWriter, NoOpEnvironmentInfoResponseWriter>();
             builder.Services.TryAddSingleton<IMetricsResponseWriter, NoOpMetricsResponseWriter>();
@@ -73,6 +74,8 @@ namespace App.Metrics.Builder
             builder.Services.TryAddSingleton<AppMetricsMiddlewareMarkerService, AppMetricsMiddlewareMarkerService>();
             builder.Services.AddRouting();
             builder.Services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<AppMetricsMiddlewareOptions>>().Value);
+
+            builder.Services.AddSingleton<IStartupFilter>(new MetricsStartupFilter());
 
             return builder;
         }

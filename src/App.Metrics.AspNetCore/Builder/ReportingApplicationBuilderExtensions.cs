@@ -3,14 +3,12 @@
 // </copyright>
 
 using System;
-using System.Threading.Tasks;
+using App.Metrics.AspNetCore;
 using App.Metrics.Reporting;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable CheckNamespace
-namespace App.Metrics.Builder
+namespace Microsoft.AspNetCore.Hosting
     // ReSharper restore CheckNamespace
 {
     public static class ReportingApplicationBuilderExtensions
@@ -18,33 +16,31 @@ namespace App.Metrics.Builder
         /// <summary>
         ///     Runs the configured App Metrics Reporting options once the application has started.
         /// </summary>
-        /// <param name="app">The <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" />.</param>
-        /// <param name="lifetime">The <see cref="T:Microsoft.AspNetCore.Hosting.IApplicationLifetime" />.</param>
+        /// <param name="hostBuilder">The <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" />.</param>
+        /// <param name="reportSetupAction">Allows configuration of reporters via the <see cref="IReporter"/></param>
         /// <returns>
         ///     A reference to this instance after the operation has completed.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> &amp;
-        ///     <see cref="T:Microsoft.AspNetCore.Hosting.IApplicationLifetime" /> cannot be null
+        ///     <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" />
         /// </exception>
-        public static IApplicationBuilder UseMetricsReporting(this IApplicationBuilder app, IApplicationLifetime lifetime)
+        public static IWebHostBuilder UseMetricsReporting(
+            this IWebHostBuilder hostBuilder,
+            Action<IReportFactory> reportSetupAction)
         {
-            if (app == null)
+            if (hostBuilder == null)
             {
-                throw new ArgumentNullException(nameof(app));
+                throw new ArgumentNullException(nameof(hostBuilder));
             }
 
-            if (lifetime == null)
+            hostBuilder.ConfigureServices((context, services) =>
             {
-                throw new ArgumentNullException(nameof(lifetime));
-            }
+                services.AddMetricsReporting(reportSetupAction);
 
-            var reportFactory = app.ApplicationServices.GetRequiredService<IReportFactory>();
-            var metrics = app.ApplicationServices.GetRequiredService<IMetrics>();
-            var reporter = reportFactory.CreateReporter();
-            lifetime.ApplicationStarted.Register(() => { Task.Run(() => reporter.RunReports(metrics, lifetime.ApplicationStopping), lifetime.ApplicationStopping); });
+                services.AddSingleton<IStartupFilter>(new MetricsReportingStartupFilter());
+            });
 
-            return app;
+            return hostBuilder;
         }
     }
 }
