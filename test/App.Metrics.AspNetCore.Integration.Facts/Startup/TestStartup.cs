@@ -77,7 +77,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                 .AddDefaultReservoir(() => new DefaultAlgorithmRReservoir(1028))
                 .AddClockType<TestClock>();
 
-            builder.AddJsonFormatter();
+            builder.AddJsonFormatters();
 
             services.AddAspNetCoreMetricsCore(
                     options =>

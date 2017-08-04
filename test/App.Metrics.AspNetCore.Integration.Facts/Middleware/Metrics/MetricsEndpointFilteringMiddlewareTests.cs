@@ -19,12 +19,12 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Middleware.Metrics
         public MetricsEndpointFilteringMiddlewareTests(MetricsHostTestFixture<FitleredMetricsEndpointStartup> fixture)
         {
             Client = fixture.Client;
-            JsonMetricsSerializer = fixture.JsonMetricsSerializer;
+            JsonMetricsOutputFormatter = fixture.JsonMetricsOutputFormatter;
         }
 
         private HttpClient Client { get; }
 
-        private JsonOutputFormatter JsonMetricsSerializer { get; }
+        private JsonMetricsOutputFormatter JsonMetricsOutputFormatter { get; }
 
         [Fact]
         public async Task Can_filter_metrics()

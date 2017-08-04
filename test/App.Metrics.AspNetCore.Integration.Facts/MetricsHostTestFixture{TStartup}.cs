@@ -23,14 +23,14 @@ namespace App.Metrics.AspNetCore.Integration.Facts
 
             Client = _server.CreateClient();
             Context = _server.Host.Services.GetRequiredService<IMetrics>();
-            JsonMetricsSerializer = new JsonOutputFormatter();
+            JsonMetricsOutputFormatter = new JsonMetricsOutputFormatter();
         }
 
         public HttpClient Client { get; }
 
         public IMetrics Context { get; }
 
-        public JsonOutputFormatter JsonMetricsSerializer { get; }
+        public JsonMetricsOutputFormatter JsonMetricsOutputFormatter { get; }
 
         public void Dispose()
         {

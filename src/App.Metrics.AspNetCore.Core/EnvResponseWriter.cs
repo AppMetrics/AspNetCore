@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using App.Metrics.Formatters;
 using App.Metrics.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 
@@ -38,68 +39,25 @@ namespace App.Metrics.AspNetCore
 
         public Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default(CancellationToken))
         {
-            var acceptHeaderMediaType = context.Request.GetTypedHeaders();
-            var formatter = default(IEnvOutputFormatter);
-            var encoding = Encoding.Default;
+#pragma warning disable SA1008 // Opening parenthesis must be spaced correctly
+            var formatterAndEncoding = (formatter: default(IEnvOutputFormatter), encoding: Encoding.Default);
+#pragma warning restore SA1008 // Opening parenthesis must be spaced correctly
+
+            formatterAndEncoding = context.Request.GetTypedHeaders().ResolveFormatter(
+                _metricsOptions.DefaultOutputEnvFormatter,
+                metricsMediaTypeValue => _metricsOptions.OutputEnvFormatters.GetType(metricsMediaTypeValue));
+
+            if (formatterAndEncoding.formatter == default(IEnvOutputFormatter))
+            {
+                context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
+                return Task.CompletedTask;
+            }
 
             context.SetNoCacheHeaders();
             context.Response.StatusCode = (int)HttpStatusCode.OK;
+            context.Response.Headers[HeaderNames.ContentType] = new[] { formatterAndEncoding.formatter.MediaType.ContentType };
 
-            if (acceptHeaderMediaType.Accept != null)
-            {
-                foreach (var accept in acceptHeaderMediaType.Accept)
-                {
-                    formatter = ResolveFormatter(_metricsOptions.OutputEnvFormatters, accept);
-
-                    if (formatter != default(IEnvOutputFormatter))
-                    {
-                        encoding = accept.Encoding ?? encoding;
-                        break;
-                    }
-                }
-            }
-
-            if (formatter == default(IEnvOutputFormatter))
-            {
-                if (_metricsOptions.DefaultEnvOutputFormatter == default(IEnvOutputFormatter))
-                {
-                    context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
-                    return Task.CompletedTask;
-                }
-
-                formatter = _metricsOptions.DefaultEnvOutputFormatter;
-            }
-
-            context.Response.Headers[HeaderNames.ContentType] = new[] { formatter.MediaType.ContentType };
-
-            return formatter.WriteAsync(context.Response.Body, environmentInfo, encoding, token);
-        }
-
-        private static IEnvOutputFormatter ResolveFormatter(EnvFormatterCollection formatters, MediaTypeHeaderValue acceptHeader)
-        {
-            var versionAndFormatTokens = acceptHeader.SubType.Value.Split('-');
-
-            if (acceptHeader.Type.Value.IsMissing()
-                || acceptHeader.SubType.Value.IsMissing()
-                || versionAndFormatTokens.Length != 2)
-            {
-                return default(IEnvOutputFormatter);
-            }
-
-            var versionAndFormat = versionAndFormatTokens[1].Split('+');
-
-            if (versionAndFormat.Length != 2)
-            {
-                return default(IEnvOutputFormatter);
-            }
-
-            var mediaTypeValue = new MetricsMediaTypeValue(
-                acceptHeader.Type.Value,
-                versionAndFormatTokens[0],
-                versionAndFormat[0],
-                versionAndFormat[1]);
-
-            return formatters.GetType(mediaTypeValue);
+            return formatterAndEncoding.formatter.WriteAsync(context.Response.Body, environmentInfo, formatterAndEncoding.encoding, token);
         }
     }
 }
