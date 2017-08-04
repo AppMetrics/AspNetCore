@@ -2,10 +2,8 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using App.Metrics.AspNetCore.Middleware.Options;
-using App.Metrics.Core.Configuration;
-using App.Metrics.Core.Filtering;
 using App.Metrics.Counter;
+using App.Metrics.Filtering;
 using App.Metrics.Gauge;
 using App.Metrics.Histogram;
 using App.Metrics.Meter;
@@ -28,12 +26,12 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var appMetricsOptions = new AppMetricsOptions
+            var appMetricsOptions = new MetricsOptions
                                     {
                                         MetricsEnabled = true,
                                     };
 
-            var appMetricsMiddlewareOptions = new AppMetricsMiddlewareOptions();
+            var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions();
 
             SetupServices(
                 services,

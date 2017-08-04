@@ -5,6 +5,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using App.Metrics.AspNetCore;
 using Microsoft.AspNetCore.Routing;
 
 // ReSharper disable CheckNamespace
@@ -16,7 +17,7 @@ namespace Microsoft.AspNetCore.Mvc.Internal
         private readonly IRouteNameResolver _routeNameResolver;
 
         public MvcRouteTemplateResolver()
-            : this(new AppMetricsDefaultRouteNameResolver()) { }
+            : this(new DefaultMetricsRouteNameResolver()) { }
 
         private MvcRouteTemplateResolver(IRouteNameResolver routeNameResolver)
         {

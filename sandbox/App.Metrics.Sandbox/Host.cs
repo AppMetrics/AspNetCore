@@ -12,13 +12,13 @@ namespace App.Metrics.Sandbox
     {
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                   .UseMetricsDefaults()
-                   .UseMetricsReporting(factory =>
-                    {
-                        factory.AddInfluxReporting();
-                        factory.AddElasticSearchReporting();
-                        factory.AddGraphiteReporting();
-                    })
+                   .UseMetrics()
+                   // .UseMetricsReporting(factory =>
+                   //  {
+                   //      factory.AddInfluxReporting();
+                   //      factory.AddElasticSearchReporting();
+                   //      factory.AddGraphiteReporting();
+                   //  })
                    .UseStartup<Startup>()
                    .Build();
 

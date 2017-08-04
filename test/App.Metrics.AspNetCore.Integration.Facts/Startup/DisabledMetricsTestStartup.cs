@@ -2,8 +2,6 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using App.Metrics.AspNetCore.Middleware.Options;
-using App.Metrics.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,13 +18,13 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var appMetricsOptions = new AppMetricsOptions
+            var appMetricsOptions = new MetricsOptions
                                     {
                                         DefaultContextLabel = "testing",
                                         MetricsEnabled = false
                                     };
 
-            var appMetricsMiddlewareOptions = new AppMetricsMiddlewareOptions
+            var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions
                                        {
                                            MetricsTextEndpointEnabled = true,
                                            MetricsEndpointEnabled = true,

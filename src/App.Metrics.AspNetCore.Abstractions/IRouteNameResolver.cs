@@ -3,10 +3,9 @@
 // </copyright>
 
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Routing;
 
-// ReSharper disable CheckNamespace
-namespace Microsoft.AspNetCore.Routing
-    // ReSharper restore CheckNamespace
+namespace App.Metrics.AspNetCore
 {
     public interface IRouteNameResolver
     {

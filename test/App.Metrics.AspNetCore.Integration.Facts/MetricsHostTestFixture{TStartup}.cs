@@ -4,7 +4,7 @@
 
 using System;
 using System.Net.Http;
-using App.Metrics.Formatters.Json.Serialization;
+using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,14 +23,14 @@ namespace App.Metrics.AspNetCore.Integration.Facts
 
             Client = _server.CreateClient();
             Context = _server.Host.Services.GetRequiredService<IMetrics>();
-            JsonMetricsSerializer = new MetricDataSerializer();
+            JsonMetricsSerializer = new JsonOutputFormatter();
         }
 
         public HttpClient Client { get; }
 
         public IMetrics Context { get; }
 
-        public MetricDataSerializer JsonMetricsSerializer { get; }
+        public JsonOutputFormatter JsonMetricsSerializer { get; }
 
         public void Dispose()
         {

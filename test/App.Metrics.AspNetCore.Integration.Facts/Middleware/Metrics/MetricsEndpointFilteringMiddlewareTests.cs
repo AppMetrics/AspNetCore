@@ -7,8 +7,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using App.Metrics.AspNetCore.Integration.Facts.Startup;
-using App.Metrics.Formatters.Json.Serialization;
+using App.Metrics.Formatters.Json;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace App.Metrics.AspNetCore.Integration.Facts.Middleware.Metrics
@@ -23,7 +24,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Middleware.Metrics
 
         private HttpClient Client { get; }
 
-        private MetricDataSerializer JsonMetricsSerializer { get; }
+        private JsonOutputFormatter JsonMetricsSerializer { get; }
 
         [Fact]
         public async Task Can_filter_metrics()
@@ -32,7 +33,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Middleware.Metrics
 
             var result = await response.Content.ReadAsStringAsync();
 
-            var metrics = JsonMetricsSerializer.Deserialize<MetricsDataValueSource>(result);
+            var metrics = JsonConvert.DeserializeObject<MetricsDataValueSource>(result, DefaultJsonSerializerSettings.CreateSerializerSettings());
 
             metrics.Contexts.Any(c => c.Counters.Any()).Should().BeTrue();
             metrics.Contexts.All(c => !c.Gauges.Any()).Should().BeTrue();

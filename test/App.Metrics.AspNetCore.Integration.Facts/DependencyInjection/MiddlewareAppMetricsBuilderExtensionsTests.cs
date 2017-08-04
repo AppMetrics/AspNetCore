@@ -3,11 +3,10 @@
 // </copyright>
 
 using System;
-using App.Metrics.AspNetCore.Middleware.Options;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
@@ -17,9 +16,10 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
         [Fact]
         public void Can_load_settings_from_configuration()
         {
-            var options = new AppMetricsMiddlewareOptions();
+            var options = new MetricsAspNetCoreOptions();
+
             var provider = SetupServicesAndConfiguration();
-            Action resolveOptions = () => { options = provider.GetRequiredService<AppMetricsMiddlewareOptions>(); };
+            Action resolveOptions = () => { options = provider.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>().Value; };
 
             resolveOptions.ShouldNotThrow();
             options.ApdexTrackingEnabled.Should().Be(false);
@@ -35,7 +35,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
         [Fact]
         public void Can_override_settings_from_configuration()
         {
-            var options = new AppMetricsMiddlewareOptions();
+            var options = new MetricsAspNetCoreOptions();
             var provider = SetupServicesAndConfiguration(
                 (o) =>
                 {
@@ -43,7 +43,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
                     o.ApdexTrackingEnabled = true;
                 });
 
-            Action resolveOptions = () => { options = provider.GetRequiredService<AppMetricsMiddlewareOptions>(); };
+            Action resolveOptions = () => { options = provider.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>().Value; };
 
             resolveOptions.ShouldNotThrow();
             options.ApdexTrackingEnabled.Should().Be(true);
@@ -51,9 +51,10 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
         }
 
         private IServiceProvider SetupServicesAndConfiguration(
-            Action<AppMetricsMiddlewareOptions> setupAction = null)
+            Action<MetricsAspNetCoreOptions> setupAction = null)
         {
             var services = new ServiceCollection();
+            services.AddOptions();
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
@@ -65,26 +66,13 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
 
             if (setupAction == null)
             {
-                metricsBuilder.AddMetricsMiddleware(
-                    configuration: configuration.GetSection("AspNetMetrics"),
-                    setupMiddlewareOptionsAction: optionsBuilder =>
-                    {
-                        optionsBuilder.AddEnvironmentAsciiFormatters().
-                                      AddMetricsJsonFormatters().
-                                      AddMetricsTextJsonFormatters();
-                    });
+                metricsBuilder.AddAspNetCoreMetrics(configuration.GetSection("MetricsAspNetCoreOptions"));
             }
             else
             {
-                metricsBuilder.AddMetricsMiddleware(
-                    configuration: configuration.GetSection("AspNetMetrics"),
-                    setupOptionsAction: setupAction,
-                    setupMiddlewareOptionsAction: optionsBuilder =>
-                    {
-                        optionsBuilder.AddEnvironmentAsciiFormatters().
-                                       AddMetricsJsonFormatters().
-                                       AddMetricsTextJsonFormatters();
-                    });
+                metricsBuilder.AddAspNetCoreMetrics(
+                    configuration.GetSection("MetricsAspNetCoreOptions"),
+                    setupAction);
             }
 
             return services.BuildServiceProvider();

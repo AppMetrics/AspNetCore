@@ -5,8 +5,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using App.Metrics.Core;
-using App.Metrics.Core.Tagging;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Metrics.Sandbox.Controllers

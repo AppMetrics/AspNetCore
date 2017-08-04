@@ -5,11 +5,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using App.Metrics.AspNetCore.Middleware.Options;
-using App.Metrics.Builder;
-using App.Metrics.Core.Configuration;
-using App.Metrics.Core.ReservoirSampling.Uniform;
 using App.Metrics.Filters;
+using App.Metrics.ReservoirSampling.Uniform;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -53,13 +50,15 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
             Metrics = app.ApplicationServices.GetRequiredService<IMetrics>();
 
+            app.UseMetrics();
+
             app.UseMvc();
         }
 
         protected void SetupServices(
             IServiceCollection services,
-            AppMetricsOptions appMetricsOptions,
-            AppMetricsMiddlewareOptions appMetricsMiddlewareOptions,
+            MetricsOptions appMetricsOptions,
+            MetricsAspNetCoreOptions metricsAspNetCoreOptions,
             IFilterMetrics filter = null)
         {
             services
@@ -69,34 +68,33 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
             services.AddMvc(options => options.AddMetricsResourceFilter());
 
             var builder = services
-                .AddMetrics(
+                .AddMetricsCore(
                     options =>
                     {
                         options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
                         options.MetricsEnabled = appMetricsOptions.MetricsEnabled;
                     })
                 .AddDefaultReservoir(() => new DefaultAlgorithmRReservoir(1028))
-                .AddClockType<TestClock>()
-                .AddMetricsMiddleware(
+                .AddClockType<TestClock>();
+
+            builder.AddJsonFormatter();
+
+            services.AddAspNetCoreMetricsCore(
                     options =>
                     {
-                        options.MetricsTextEndpointEnabled = appMetricsMiddlewareOptions.MetricsTextEndpointEnabled;
-                        options.MetricsEndpointEnabled = appMetricsMiddlewareOptions.MetricsEndpointEnabled;
-                        options.PingEndpointEnabled = appMetricsMiddlewareOptions.PingEndpointEnabled;
-                        options.OAuth2TrackingEnabled = appMetricsMiddlewareOptions.OAuth2TrackingEnabled;
+                        options.MetricsTextEndpointEnabled = metricsAspNetCoreOptions.MetricsTextEndpointEnabled;
+                        options.MetricsEndpointEnabled = metricsAspNetCoreOptions.MetricsEndpointEnabled;
+                        options.PingEndpointEnabled = metricsAspNetCoreOptions.PingEndpointEnabled;
+                        options.OAuth2TrackingEnabled = metricsAspNetCoreOptions.OAuth2TrackingEnabled;
 
-                        options.MetricsEndpoint = appMetricsMiddlewareOptions.MetricsEndpoint;
-                        options.MetricsTextEndpoint = appMetricsMiddlewareOptions.MetricsTextEndpoint;
-                        options.PingEndpoint = appMetricsMiddlewareOptions.PingEndpoint;
+                        options.MetricsEndpoint = metricsAspNetCoreOptions.MetricsEndpoint;
+                        options.MetricsTextEndpoint = metricsAspNetCoreOptions.MetricsTextEndpoint;
+                        options.PingEndpoint = metricsAspNetCoreOptions.PingEndpoint;
 
-                        options.IgnoredRoutesRegexPatterns = appMetricsMiddlewareOptions.IgnoredRoutesRegexPatterns;
-                        options.IgnoredHttpStatusCodes = appMetricsMiddlewareOptions.IgnoredHttpStatusCodes;
+                        options.IgnoredRoutesRegexPatterns = metricsAspNetCoreOptions.IgnoredRoutesRegexPatterns;
+                        options.IgnoredHttpStatusCodes = metricsAspNetCoreOptions.IgnoredHttpStatusCodes;
 
-                        options.DefaultTrackingEnabled = appMetricsMiddlewareOptions.DefaultTrackingEnabled;
-                    },
-                    optionsBuilder =>
-                    {
-                        optionsBuilder.AddMetricsJsonFormatters().AddMetricsTextAsciiFormatters();
+                        options.DefaultTrackingEnabled = metricsAspNetCoreOptions.DefaultTrackingEnabled;
                     });
 
             if (filter != null)

@@ -6,14 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-// ReSharper disable CheckNamespace
-namespace App.Metrics.Middleware
-    // ReSharper restore CheckNamespace
+namespace App.Metrics.AspNetCore
 {
     public interface IMetricsResponseWriter
     {
-        string ContentType { get; }
-
         Task WriteAsync(HttpContext context, MetricsDataValueSource metricsData, CancellationToken token = default(CancellationToken));
     }
 }

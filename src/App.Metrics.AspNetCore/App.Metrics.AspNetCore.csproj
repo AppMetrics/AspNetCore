@@ -15,10 +15,8 @@
     <PackageReference Include="App.Metrics.Reporting" Version="$(AppMetricsReportingVersion)" />    
   </ItemGroup>
 
-  <ItemGroup>    
-    <ProjectReference Include="..\App.Metrics.AspNetCore.Formatters.Ascii\App.Metrics.AspNetCore.Formatters.Ascii.csproj" />    
-    <ProjectReference Include="..\App.Metrics.AspNetCore.Formatters.Json\App.Metrics.AspNetCore.Formatters.Json.csproj" />    
-    <ProjectReference Include="..\App.Metrics.AspNetCore.Middleware\App.Metrics.AspNetCore.Middleware.csproj" />    
+  <ItemGroup>
+    <ProjectReference Include="..\App.Metrics.AspNetCore.Core\App.Metrics.AspNetCore.Core.csproj" />
   </ItemGroup>
 
 </Project>

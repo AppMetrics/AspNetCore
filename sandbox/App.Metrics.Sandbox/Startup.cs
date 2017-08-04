@@ -24,8 +24,6 @@ namespace App.Metrics.Sandbox
         {
             app.UseTestStuff(lifetime, HaveAppRunSampleRequests);
 
-            app.UseHealthChecks();
-
             app.UseMvc();
         }
 
@@ -34,16 +32,6 @@ namespace App.Metrics.Sandbox
             services.AddTestStuff();
 
             services.AddMvc(options => options.AddMetricsResourceFilter());
-
-            services.
-                AddHealthChecks().
-                AddHealthCheckMiddleware(optionsBuilder => optionsBuilder.AddAsciiFormatters()).
-                AddChecks(
-                    registry =>
-                    {
-                        registry.AddPingCheck("google ping", "google.com", TimeSpan.FromSeconds(10));
-                        registry.AddHttpGetCheck("github", new Uri("https://github.com/"), TimeSpan.FromSeconds(10));
-                    });
         }
     }
 }

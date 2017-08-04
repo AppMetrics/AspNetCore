@@ -3,8 +3,9 @@
 // </copyright>
 
 using System;
-using App.Metrics.AspNetCore.Middleware.Options;
+using App.Metrics.AspNetCore;
 using App.Metrics.Sandbox.JustForTesting;
+using Microsoft.Extensions.Options;
 
 // ReSharper disable CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -22,8 +23,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient(
                 provider =>
                 {
-                    var options = provider.GetRequiredService<AppMetricsMiddlewareOptions>();
-                    return new RequestDurationForApdexTesting(options.ApdexTSeconds);
+                    var optionsAccessor = provider.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+                    return new RequestDurationForApdexTesting(optionsAccessor.Value.ApdexTSeconds);
                 });
 
             return services;
