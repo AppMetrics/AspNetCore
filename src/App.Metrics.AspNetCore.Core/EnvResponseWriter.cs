@@ -47,13 +47,15 @@ namespace App.Metrics.AspNetCore
                 _metricsOptions.DefaultOutputEnvFormatter,
                 metricsMediaTypeValue => _metricsOptions.OutputEnvFormatters.GetType(metricsMediaTypeValue));
 
+            context.SetNoCacheHeaders();
+
             if (formatterAndEncoding.formatter == default(IEnvOutputFormatter))
             {
                 context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
+                context.Response.Headers[HeaderNames.ContentType] = new[] { context.Request.ContentType };
                 return Task.CompletedTask;
             }
 
-            context.SetNoCacheHeaders();
             context.Response.StatusCode = (int)HttpStatusCode.OK;
             context.Response.Headers[HeaderNames.ContentType] = new[] { formatterAndEncoding.formatter.MediaType.ContentType };
 

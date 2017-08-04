@@ -2,6 +2,8 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using App.Metrics.Formatters.Ascii;
+using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +23,9 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
             var appMetricsOptions = new MetricsOptions
                                     {
                                         DefaultContextLabel = "testing",
-                                        MetricsEnabled = true
+                                        MetricsEnabled = true,
+                                        DefaultOutputMetricsFormatter = new JsonMetricsOutputFormatter(),
+                                        DefaultOutputMetricsTextFormatter = new AsciiMetricsOutputFormatter(new MetricsAsciiOptions())
                                     };
 
             var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions

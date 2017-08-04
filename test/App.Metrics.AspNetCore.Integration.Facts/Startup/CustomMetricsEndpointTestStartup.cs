@@ -2,6 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,10 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var appMetricsOptions = new MetricsOptions();
+            var appMetricsOptions = new MetricsOptions
+                                    {
+                                        DefaultOutputMetricsFormatter = new JsonMetricsOutputFormatter()
+                                    };
 
             var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions
             {

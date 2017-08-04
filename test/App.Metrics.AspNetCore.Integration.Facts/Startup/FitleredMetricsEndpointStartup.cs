@@ -4,6 +4,8 @@
 
 using App.Metrics.Counter;
 using App.Metrics.Filtering;
+using App.Metrics.Formatters.Ascii;
+using App.Metrics.Formatters.Json;
 using App.Metrics.Gauge;
 using App.Metrics.Histogram;
 using App.Metrics.Meter;
@@ -29,6 +31,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
             var appMetricsOptions = new MetricsOptions
                                     {
                                         MetricsEnabled = true,
+                                        DefaultOutputMetricsFormatter = new JsonMetricsOutputFormatter(),
+                                        DefaultOutputMetricsTextFormatter = new AsciiMetricsOutputFormatter(new MetricsAsciiOptions())
                                     };
 
             var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions();

@@ -39,7 +39,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Middleware.MetricsText
 
             result.StatusCode.Should().Be(HttpStatusCode.OK);
             var value = result.Content.Headers.GetValues("Content-Type");
-            value.First().Should().Be("text/plain; app.metrics=vnd.app.metrics.v1.metrics;");
+            value.First().Should().Be("text/plain");
         }
     }
 }

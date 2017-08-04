@@ -26,7 +26,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Middleware.Metrics
             var result = await Client.GetAsync("/metrics");
 
             result.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Content.Headers.ContentType.ToString().Should().Match<string>(s => s == "application/vnd.app.metrics.v1.metrics+json");
+            result.Content.Headers.ContentType.ToString().Should().Match<string>(s => s == "application/json");
         }
     }
 }
