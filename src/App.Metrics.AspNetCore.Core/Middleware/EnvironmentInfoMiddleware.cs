@@ -37,16 +37,11 @@ namespace App.Metrics.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
             // ReSharper restore UnusedMember.Global
         {
-            if (Options.EnvironmentInfoEndpointEnabled && Options.EnvironmentInfoEndpoint.IsPresent() && Options.EnvironmentInfoEndpoint == context.Request.Path)
-            {
-                Logger.MiddlewareExecuting(GetType());
+            Logger.MiddlewareExecuting(GetType());
 
-                await _envResponseWriter.WriteAsync(context, _environmentInfoProvider.Build(), context.RequestAborted).ConfigureAwait(false);
+            await _envResponseWriter.WriteAsync(context, _environmentInfoProvider.Build(), context.RequestAborted).ConfigureAwait(false);
 
-                Logger.MiddlewareExecuted(GetType());
-
-                return;
-            }
+            Logger.MiddlewareExecuted(GetType());
 
             await _next(context);
         }

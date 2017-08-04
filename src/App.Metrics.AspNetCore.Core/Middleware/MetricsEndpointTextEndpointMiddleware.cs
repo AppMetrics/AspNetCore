@@ -31,18 +31,11 @@ namespace App.Metrics.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
             // ReSharper restore UnusedMember.Global
         {
-            if (Options.MetricsTextEndpointEnabled && Options.MetricsTextEndpoint.IsPresent() && Options.MetricsTextEndpoint == context.Request.Path)
-            {
-                Logger.MiddlewareExecuting(GetType());
+            Logger.MiddlewareExecuting(GetType());
 
-                await _metricsTextResponseWriter.WriteAsync(context, Metrics.Snapshot.Get(), context.RequestAborted).ConfigureAwait(false);
+            await _metricsTextResponseWriter.WriteAsync(context, Metrics.Snapshot.Get(), context.RequestAborted).ConfigureAwait(false);
 
-                Logger.MiddlewareExecuted(GetType());
-
-                return;
-            }
-
-            await Next(context);
+            Logger.MiddlewareExecuted(GetType());
         }
     }
 }

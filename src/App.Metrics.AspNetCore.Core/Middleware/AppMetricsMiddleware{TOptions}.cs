@@ -81,9 +81,7 @@ namespace App.Metrics.AspNetCore.Middleware
             string warning = null)
         {
             context.Response.Headers["Content-Type"] = new[] { contentType };
-            context.Response.Headers["Cache-Control"] = new[] { "no-cache, no-store, must-revalidate" };
-            context.Response.Headers["Pragma"] = new[] { "no-cache" };
-            context.Response.Headers["Expires"] = new[] { "0" };
+            context.SetNoCacheHeaders();
 
             if (warning.IsPresent())
             {

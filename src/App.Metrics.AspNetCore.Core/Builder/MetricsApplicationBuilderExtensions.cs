@@ -38,24 +38,44 @@ namespace Microsoft.AspNetCore.Builder
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
             var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
 
-            if (metricsAspNetCoreOptionsAccessor.Value.PingEndpointEnabled)
+            if (metricsAspNetCoreOptionsAccessor.Value.PingEndpointEnabled && metricsAspNetCoreOptionsAccessor.Value.PingEndpoint.IsPresent())
             {
-                app.UseMiddleware<PingEndpointMiddleware>();
+                app.UseWhen(
+                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.PingEndpoint,
+                    appBuilder =>
+                    {
+                        appBuilder.UseMiddleware<PingEndpointMiddleware>();
+                    });
             }
 
-            if (metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpointEnabled && metricsOptionsAccessor.Value.MetricsEnabled)
+            if (metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpointEnabled && metricsOptionsAccessor.Value.MetricsEnabled && metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint.IsPresent())
             {
-                app.UseMiddleware<MetricsEndpointTextEndpointMiddleware>();
+                app.UseWhen(
+                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint,
+                    appBuilder =>
+                    {
+                        appBuilder.UseMiddleware<MetricsEndpointTextEndpointMiddleware>();
+                    });
             }
 
-            if (metricsAspNetCoreOptionsAccessor.Value.MetricsEndpointEnabled && metricsOptionsAccessor.Value.MetricsEnabled)
+            if (metricsAspNetCoreOptionsAccessor.Value.MetricsEndpointEnabled && metricsOptionsAccessor.Value.MetricsEnabled && metricsAspNetCoreOptionsAccessor.Value.MetricsEndpoint.IsPresent())
             {
-                app.UseMiddleware<MetricsEndpointMiddleware>();
+                app.UseWhen(
+                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsEndpoint,
+                    appBuilder =>
+                    {
+                        appBuilder.UseMiddleware<MetricsEndpointMiddleware>();
+                    });
             }
 
-            if (metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpointEnabled)
+            if (metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpointEnabled && metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent())
             {
-                app.UseMiddleware<EnvironmentInfoMiddleware>();
+                app.UseWhen(
+                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint,
+                    appBuilder =>
+                    {
+                        appBuilder.UseMiddleware<EnvironmentInfoMiddleware>();
+                    });
             }
 
             if (metricsOptionsAccessor.Value.MetricsEnabled && metricsAspNetCoreOptionsAccessor.Value.DefaultTrackingEnabled)

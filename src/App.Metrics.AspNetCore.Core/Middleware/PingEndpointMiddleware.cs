@@ -30,18 +30,11 @@ namespace App.Metrics.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
             // ReSharper restore UnusedMember.Global
         {
-            if (Options.PingEndpointEnabled && Options.PingEndpoint.IsPresent() && Options.PingEndpoint == context.Request.Path)
-            {
-                Logger.MiddlewareExecuting(GetType());
+            Logger.MiddlewareExecuting(GetType());
 
-                await WriteResponseAsync(context, "pong", "text/plain");
+            await WriteResponseAsync(context, "pong", "text/plain");
 
-                Logger.MiddlewareExecuted(GetType());
-
-                return;
-            }
-
-            await _next(context);
+            Logger.MiddlewareExecuted(GetType());
         }
     }
 }
