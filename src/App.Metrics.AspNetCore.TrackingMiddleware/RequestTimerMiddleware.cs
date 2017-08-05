@@ -9,7 +9,7 @@ using App.Metrics.Timer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace App.Metrics.AspNetCore.MetricsMiddleware
+namespace App.Metrics.AspNetCore.TrackingMiddleware
 {
     // ReSharper disable ClassNeverInstantiated.Global
     public class RequestTimerMiddleware

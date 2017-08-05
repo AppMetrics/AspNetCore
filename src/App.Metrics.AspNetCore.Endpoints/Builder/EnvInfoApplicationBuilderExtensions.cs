@@ -4,7 +4,7 @@
 
 using System;
 using App.Metrics.AspNetCore;
-using App.Metrics.AspNetCore.Middleware;
+using App.Metrics.AspNetCore.Endpoints;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

@@ -4,7 +4,7 @@
 
 using System;
 using App.Metrics.AspNetCore;
-using App.Metrics.AspNetCore.Middleware;
+using App.Metrics.AspNetCore.Endpoints;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -39,12 +39,10 @@ namespace Microsoft.AspNetCore.Builder
 
         private static void UsePingMiddleware(IApplicationBuilder app, IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
         {
-            if (metricsAspNetCoreOptionsAccessor.Value.PingEndpointEnabled && metricsAspNetCoreOptionsAccessor.Value.PingEndpoint.IsPresent())
-            {
-                app.UseWhen(
-                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.PingEndpoint,
-                    appBuilder => { appBuilder.UseMiddleware<PingEndpointMiddleware>(); });
-            }
+            app.UseWhen(
+                context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.PingEndpoint &&
+                           metricsAspNetCoreOptionsAccessor.Value.PingEndpointEnabled && metricsAspNetCoreOptionsAccessor.Value.PingEndpoint.IsPresent(),
+                appBuilder => { appBuilder.UseMiddleware<PingEndpointMiddleware>(); });
         }
     }
 }

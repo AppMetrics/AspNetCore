@@ -8,7 +8,7 @@ using App.Metrics.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace App.Metrics.AspNetCore.Middleware
+namespace App.Metrics.AspNetCore.Endpoints
 {
     // ReSharper disable ClassNeverInstantiated.Global
     public class EnvInfoMiddleware

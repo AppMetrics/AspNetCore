@@ -4,7 +4,5 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("App.Metrics.AspNetCore.Endpoints")]
-[assembly: InternalsVisibleTo("App.Metrics.AspNetCore.TrackingMiddleware")]
-[assembly: InternalsVisibleTo("App.Metrics.AspNetCore.Mvc")]
 [assembly: InternalsVisibleTo("App.Metrics.AspNetCore.Integration.Facts")]
+[assembly: InternalsVisibleTo("App.Metrics.AspNetCore.Mvc")]

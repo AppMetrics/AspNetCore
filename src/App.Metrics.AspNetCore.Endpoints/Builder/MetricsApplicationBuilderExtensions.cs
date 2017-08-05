@@ -5,7 +5,7 @@
 using System;
 using App.Metrics;
 using App.Metrics.AspNetCore;
-using App.Metrics.AspNetCore.Middleware;
+using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.DependencyInjection.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -49,13 +49,12 @@ namespace Microsoft.AspNetCore.Builder
             IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
             IOptions<MetricsOptions> metricsOptionsAccessor)
         {
-            if (metricsAspNetCoreOptionsAccessor.Value.MetricsEndpointEnabled && metricsOptionsAccessor.Value.MetricsEnabled &&
-                metricsAspNetCoreOptionsAccessor.Value.MetricsEndpoint.IsPresent())
-            {
-                app.UseWhen(
-                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsEndpoint,
-                    appBuilder => { appBuilder.UseMiddleware<MetricsEndpointMiddleware>(); });
-            }
+            app.UseWhen(
+                context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsEndpoint &&
+                           metricsAspNetCoreOptionsAccessor.Value.MetricsEndpointEnabled &&
+                           metricsOptionsAccessor.Value.MetricsEnabled &&
+                           metricsAspNetCoreOptionsAccessor.Value.MetricsEndpoint.IsPresent(),
+                appBuilder => { appBuilder.UseMiddleware<MetricsEndpointMiddleware>(); });
         }
 
         private static void UseMetricsTextMiddleware(
@@ -63,13 +62,12 @@ namespace Microsoft.AspNetCore.Builder
             IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
             IOptions<MetricsOptions> metricsOptionsAccessor)
         {
-            if (metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpointEnabled && metricsOptionsAccessor.Value.MetricsEnabled &&
-                metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint.IsPresent())
-            {
-                app.UseWhen(
-                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint,
-                    appBuilder => { appBuilder.UseMiddleware<MetricsEndpointTextEndpointMiddleware>(); });
-            }
+            app.UseWhen(
+                context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint &&
+                           metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpointEnabled &&
+                           metricsOptionsAccessor.Value.MetricsEnabled &&
+                           metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint.IsPresent(),
+                appBuilder => { appBuilder.UseMiddleware<MetricsEndpointTextEndpointMiddleware>(); });
         }
     }
 }

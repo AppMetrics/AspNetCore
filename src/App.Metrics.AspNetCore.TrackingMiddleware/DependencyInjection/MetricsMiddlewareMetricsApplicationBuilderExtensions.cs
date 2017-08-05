@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using App.Metrics;
 using App.Metrics.AspNetCore;
-using App.Metrics.AspNetCore.MetricsMiddleware;
+using App.Metrics.AspNetCore.TrackingMiddleware;
 using App.Metrics.DependencyInjection.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -178,7 +178,8 @@ namespace Microsoft.AspNetCore.Builder
             IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
         {
             app.UseWhen(
-                context => !IsNotAnIgnoredRoute(metricsAspNetCoreOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) && metricsOptionsAccessor.Value.MetricsEnabled,
+                context => !IsNotAnIgnoredRoute(metricsAspNetCoreOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
+                           metricsOptionsAccessor.Value.MetricsEnabled,
                 appBuilder => { appBuilder.UseMiddleware<TMiddleware>(); });
         }
     }

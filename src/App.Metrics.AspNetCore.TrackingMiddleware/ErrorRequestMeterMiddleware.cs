@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace App.Metrics.AspNetCore.MetricsMiddleware
+namespace App.Metrics.AspNetCore.TrackingMiddleware
 {
     /// <summary>
     ///     Measures the overall error request rate as well as the rate per endpoint.
