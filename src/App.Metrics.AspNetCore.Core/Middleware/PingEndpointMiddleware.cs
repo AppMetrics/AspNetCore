@@ -2,39 +2,39 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace App.Metrics.AspNetCore.Middleware
 {
     // ReSharper disable ClassNeverInstantiated.Global
-    public class PingEndpointMiddleware : AppMetricsMiddleware<MetricsAspNetCoreOptions>
+    public class PingEndpointMiddleware
         // ReSharper restore ClassNeverInstantiated.Global
     {
-        private readonly RequestDelegate _next;
+        private readonly ILogger<PingEndpointMiddleware> _logger;
 
         public PingEndpointMiddleware(
             RequestDelegate next,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
-            ILoggerFactory loggerFactory,
-            IMetrics metrics)
-            : base(next, metricsAspNetCoreOptionsAccessor, loggerFactory, metrics)
+            ILogger<PingEndpointMiddleware> logger)
         {
-            _next = next ?? throw new ArgumentNullException(nameof(next));
+            _logger = logger;
         }
 
         // ReSharper disable UnusedMember.Global
         public async Task Invoke(HttpContext context)
             // ReSharper restore UnusedMember.Global
         {
-            Logger.MiddlewareExecuting(GetType());
+            _logger.MiddlewareExecuting(GetType());
 
-            await WriteResponseAsync(context, "pong", "text/plain");
+            context.Response.Headers["Content-Type"] = new[] { "text/plain" };
+            context.SetNoCacheHeaders();
 
-            Logger.MiddlewareExecuted(GetType());
+            context.Response.StatusCode = StatusCodes.Status200OK;
+
+            await context.Response.WriteAsync("pong");
+
+            _logger.MiddlewareExecuted(GetType());
         }
     }
 }

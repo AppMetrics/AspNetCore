@@ -1,4 +1,4 @@
-﻿// <copyright file="ReportingApplicationBuilderExtensions.cs" company="Allan Hardy">
+﻿// <copyright file="MetricsAspNetReportingWebHostBuilderExtensions.cs" company="Allan Hardy">
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Microsoft.AspNetCore.Hosting
     // ReSharper restore CheckNamespace
 {
-    public static class ReportingApplicationBuilderExtensions
+    public static class MetricsAspNetReportingWebHostBuilderExtensions
     {
         /// <summary>
         ///     Runs the configured App Metrics Reporting options once the application has started.

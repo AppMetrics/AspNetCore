@@ -4,6 +4,9 @@
 
 using System;
 using System.Linq;
+using App.Metrics.AspNetCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 // ReSharper disable CheckNamespace
 namespace Microsoft.AspNetCore.Http
@@ -28,6 +31,12 @@ namespace Microsoft.AspNetCore.Http
             }
 
             return context.Request.Method;
+        }
+
+        public static string GetOAuthClientIdIfRequired(this HttpContext context)
+        {
+            var optionsAccessor = context.RequestServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            return optionsAccessor.Value.OAuth2TrackingEnabled ? context.OAuthClientId() : null;
         }
 
         public static bool HasMetricsCurrentRouteName(this HttpContext context) { return context.Items.ContainsKey(MetricsCurrentRouteName); }

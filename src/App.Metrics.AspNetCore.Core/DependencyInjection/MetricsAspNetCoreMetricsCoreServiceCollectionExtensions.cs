@@ -6,7 +6,6 @@ using System;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.DependencyInjection.Internal;
 using App.Metrics.AspNetCore.Internal;
-using App.Metrics.AspNetCore.Internal.NoOp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;

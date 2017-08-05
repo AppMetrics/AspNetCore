@@ -10,23 +10,26 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace App.Metrics.AspNetCore.Middleware
+namespace App.Metrics.AspNetCore.MetricsMiddleware
 {
     // ReSharper disable ClassNeverInstantiated.Global
-    public class ApdexMiddleware : AppMetricsMiddleware<MetricsAspNetCoreOptions>
+    public class ApdexMiddleware
         // ReSharper restore ClassNeverInstantiated.Global
     {
         private const string ApdexItemsKey = "__App.Metrics.Apdex__";
+        private readonly RequestDelegate _next;
+        private readonly ILogger<ApdexMiddleware> _logger;
         private readonly IApdex _apdexTracking;
 
         public ApdexMiddleware(
             RequestDelegate next,
             IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
-            ILoggerFactory loggerFactory,
+            ILogger<ApdexMiddleware> logger,
             IMetrics metrics)
-            : base(next, metricsAspNetCoreOptionsAccessor, loggerFactory, metrics)
         {
-            _apdexTracking = Metrics.Provider
+            _next = next;
+            _logger = logger;
+            _apdexTracking = metrics.Provider
                                     .Apdex
                                     .Instance(HttpRequestMetricsRegistry.ApdexScores.Apdex(metricsAspNetCoreOptionsAccessor.Value.ApdexTSeconds));
         }
@@ -35,28 +38,21 @@ namespace App.Metrics.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
             // ReSharper restore UnusedMember.Global
         {
-            if (PerformMetric(context) && Options.ApdexTrackingEnabled)
+            _logger.MiddlewareExecuting(GetType());
+
+            context.Items[ApdexItemsKey] = _apdexTracking.NewContext();
+
+            await _next(context);
+
+            var apdex = context.Items[ApdexItemsKey];
+
+            using (apdex as IDisposable)
             {
-                Logger.MiddlewareExecuting(GetType());
-
-                context.Items[ApdexItemsKey] = _apdexTracking.NewContext();
-
-                await Next(context);
-
-                var apdex = context.Items[ApdexItemsKey];
-
-                using (apdex as IDisposable)
-                {
-                }
-
-                context.Items.Remove(ApdexItemsKey);
-
-                Logger.MiddlewareExecuted(GetType());
             }
-            else
-            {
-                await Next(context);
-            }
+
+            context.Items.Remove(ApdexItemsKey);
+
+            _logger.MiddlewareExecuted(GetType());
         }
     }
 }

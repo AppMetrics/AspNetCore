@@ -8,25 +8,26 @@ using App.Metrics.AspNetCore.Internal;
 using App.Metrics.Timer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
-namespace App.Metrics.AspNetCore.Middleware
+namespace App.Metrics.AspNetCore.MetricsMiddleware
 {
     // ReSharper disable ClassNeverInstantiated.Global
-    public class RequestTimerMiddleware : AppMetricsMiddleware<MetricsAspNetCoreOptions>
+    public class RequestTimerMiddleware
         // ReSharper restore ClassNeverInstantiated.Global
     {
         private const string TimerItemsKey = "__App.Metrics.RequestTimer__";
+        private readonly ILogger<RequestTimerMiddleware> _logger;
+        private readonly RequestDelegate _next;
         private readonly ITimer _requestTimer;
 
         public RequestTimerMiddleware(
             RequestDelegate next,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
-            ILoggerFactory loggerFactory,
+            ILogger<RequestTimerMiddleware> logger,
             IMetrics metrics)
-            : base(next, metricsAspNetCoreOptionsAccessor, loggerFactory, metrics)
         {
-            _requestTimer = Metrics.Provider
+            _logger = logger;
+            _next = next ?? throw new ArgumentNullException(nameof(next));
+            _requestTimer = metrics.Provider
                                    .Timer
                                    .Instance(HttpRequestMetricsRegistry.Timers.RequestTransactionDuration);
         }
@@ -35,28 +36,21 @@ namespace App.Metrics.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
             // ReSharper restore UnusedMember.Global
         {
-            if (PerformMetric(context))
+            _logger.MiddlewareExecuting(GetType());
+
+            context.Items[TimerItemsKey] = _requestTimer.NewContext();
+
+            await _next(context);
+
+            var timer = context.Items[TimerItemsKey];
+
+            using (timer as IDisposable)
             {
-                Logger.MiddlewareExecuting(GetType());
-
-                context.Items[TimerItemsKey] = _requestTimer.NewContext();
-
-                await Next(context);
-
-                var timer = context.Items[TimerItemsKey];
-
-                using (timer as IDisposable)
-                {
-                }
-
-                context.Items.Remove(TimerItemsKey);
-
-                Logger.MiddlewareExecuted(GetType());
             }
-            else
-            {
-                await Next(context);
-            }
+
+            context.Items.Remove(TimerItemsKey);
+
+            _logger.MiddlewareExecuted(GetType());
         }
     }
 }

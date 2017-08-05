@@ -6,24 +6,25 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace App.Metrics.AspNetCore.Middleware
 {
     // ReSharper disable ClassNeverInstantiated.Global
-    public class MetricsEndpointTextEndpointMiddleware : AppMetricsMiddleware<MetricsAspNetCoreOptions>
+    public class MetricsEndpointTextEndpointMiddleware
         // ReSharper restore ClassNeverInstantiated.Global
     {
+        private readonly ILogger<MetricsEndpointTextEndpointMiddleware> _logger;
+        private readonly IMetrics _metrics;
         private readonly IMetricsTextResponseWriter _metricsTextResponseWriter;
 
         public MetricsEndpointTextEndpointMiddleware(
             RequestDelegate next,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
-            ILoggerFactory loggerFactory,
+            ILogger<MetricsEndpointTextEndpointMiddleware> logger,
             IMetrics metrics,
             IMetricsTextResponseWriter metricsTextResponseWriter)
-            : base(next, metricsAspNetCoreOptionsAccessor, loggerFactory, metrics)
         {
+            _logger = logger;
+            _metrics = metrics;
             _metricsTextResponseWriter = metricsTextResponseWriter ?? throw new ArgumentNullException(nameof(metricsTextResponseWriter));
         }
 
@@ -31,11 +32,11 @@ namespace App.Metrics.AspNetCore.Middleware
         public async Task Invoke(HttpContext context)
             // ReSharper restore UnusedMember.Global
         {
-            Logger.MiddlewareExecuting(GetType());
+            _logger.MiddlewareExecuting(GetType());
 
-            await _metricsTextResponseWriter.WriteAsync(context, Metrics.Snapshot.Get(), context.RequestAborted).ConfigureAwait(false);
+            await _metricsTextResponseWriter.WriteAsync(context, _metrics.Snapshot.Get(), context.RequestAborted);
 
-            Logger.MiddlewareExecuted(GetType());
+            _logger.MiddlewareExecuted(GetType());
         }
     }
 }

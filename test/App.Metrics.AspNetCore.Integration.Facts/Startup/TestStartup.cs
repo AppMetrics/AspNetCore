@@ -2,9 +2,6 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using App.Metrics.Filters;
 using App.Metrics.ReservoirSampling.Uniform;
 using Microsoft.AspNetCore.Builder;
@@ -21,36 +18,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
         protected void SetupAppBuilder(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.Use(
-                (context, func) =>
-                {
-                    var clientId = string.Empty;
-
-                    if (context.Request.Path.Value.Contains("oauth"))
-                    {
-                        clientId = context.Request.Path.Value.Split('/').Last();
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(clientId))
-                    {
-                        context.User =
-                            new ClaimsPrincipal(
-                                new List<ClaimsIdentity>
-                                {
-                                    new ClaimsIdentity(
-                                        new[]
-                                        {
-                                            new Claim("client_id", clientId)
-                                        })
-                                });
-                    }
-
-                    return func();
-                });
-
             Metrics = app.ApplicationServices.GetRequiredService<IMetrics>();
-
-            app.UseMetrics();
 
             app.UseMvc();
         }
@@ -96,8 +64,6 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
                         options.IgnoredRoutesRegexPatterns = metricsAspNetCoreOptions.IgnoredRoutesRegexPatterns;
                         options.IgnoredHttpStatusCodes = metricsAspNetCoreOptions.IgnoredHttpStatusCodes;
-
-                        options.DefaultTrackingEnabled = metricsAspNetCoreOptions.DefaultTrackingEnabled;
                     });
 
             if (filter != null)

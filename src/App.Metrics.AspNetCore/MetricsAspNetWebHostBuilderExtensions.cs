@@ -4,8 +4,6 @@
 
 using System;
 using App.Metrics.AspNetCore;
-using App.Metrics.Formatters.Ascii;
-using App.Metrics.Formatters.Json;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable CheckNamespace

@@ -6,38 +6,37 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace App.Metrics.AspNetCore.Middleware
 {
     // ReSharper disable ClassNeverInstantiated.Global
-    public class MetricsEndpointMiddleware : AppMetricsMiddleware<MetricsAspNetCoreOptions>
+    public class MetricsEndpointMiddleware
         // ReSharper restore ClassNeverInstantiated.Global
     {
+        private readonly ILogger<MetricsEndpointMiddleware> _logger;
+        private readonly IMetrics _metrics;
         private readonly IMetricsResponseWriter _metricsResponseWriter;
-        private readonly RequestDelegate _next;
 
         public MetricsEndpointMiddleware(
             RequestDelegate next,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
-            ILoggerFactory loggerFactory,
+            ILogger<MetricsEndpointMiddleware> logger,
             IMetrics metrics,
             IMetricsResponseWriter metricsResponseWriter)
-            : base(next, metricsAspNetCoreOptionsAccessor, loggerFactory, metrics)
         {
+            _logger = logger;
+            _metrics = metrics;
             _metricsResponseWriter = metricsResponseWriter ?? throw new ArgumentNullException(nameof(metricsResponseWriter));
-            _next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
         // ReSharper disable UnusedMember.Global
         public async Task Invoke(HttpContext context)
             // ReSharper restore UnusedMember.Global
         {
-            Logger.MiddlewareExecuting(GetType());
+            _logger.MiddlewareExecuting(GetType());
 
-            await _metricsResponseWriter.WriteAsync(context, Metrics.Snapshot.Get(), context.RequestAborted);
+            await _metricsResponseWriter.WriteAsync(context, _metrics.Snapshot.Get(), context.RequestAborted);
 
-            Logger.MiddlewareExecuted(GetType());
+            _logger.MiddlewareExecuted(GetType());
         }
     }
 }

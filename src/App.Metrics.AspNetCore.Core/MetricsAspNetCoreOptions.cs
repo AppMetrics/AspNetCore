@@ -4,7 +4,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using App.Metrics.AspNetCore.Internal;
+using Microsoft.AspNetCore.Builder;
 
 namespace App.Metrics.AspNetCore
 {
@@ -19,20 +22,12 @@ namespace App.Metrics.AspNetCore
             OAuth2TrackingEnabled = true;
             ApdexTrackingEnabled = true;
             ApdexTSeconds = AppMetricsReservoirSamplingConstants.DefaultApdexTSeconds;
-            DefaultTrackingEnabled = true;
         }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether the [default http metric tracking enabled].
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if [all available tracking middleware should be registered]; otherwise, <c>false</c>.
-        /// </value>
-        public bool DefaultTrackingEnabled { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the [overall web application's apdex should be measured].
         /// </summary>
+        /// <remarks>Only valid if UseMetricsApdexTrackingMiddleware configured on the <see cref="IApplicationBuilder"/>.</remarks>
         /// <value>
         ///     <c>true</c> if [apdex should be measured]; otherwise, <c>false</c>.
         /// </value>
@@ -42,6 +37,7 @@ namespace App.Metrics.AspNetCore
         ///     Gets or sets the
         ///     <see href="https://alhardy.github.io/app-metrics-docs/getting-started/metric-types/apdex.html">apdex t seconds</see>
         /// </summary>
+        /// <remarks>Only valid if UseMetricsApdexTrackingMiddleware configured on the <see cref="IApplicationBuilder"/>.</remarks>
         /// <value>
         ///     The apdex t seconds.
         /// </value>
@@ -75,6 +71,7 @@ namespace App.Metrics.AspNetCore
         ///     Gets or sets a value indicating whether [metrics endpoint should be enabled], if disabled endpoint responds with
         ///     404.
         /// </summary>
+        /// <remarks>Only valid if UseMetricsEndpoints configured on the <see cref="IApplicationBuilder"/>.</remarks>
         /// <value>
         ///     <c>true</c> if [metrics endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
@@ -92,6 +89,7 @@ namespace App.Metrics.AspNetCore
         ///     Gets or sets a value indicating whether [metrics text endpoint should be enabled], if disabled endpoint responds
         ///     with 404.
         /// </summary>
+        /// <remarks>Only valid if UseMetricsEndpoints configured on the <see cref="IApplicationBuilder"/>.</remarks>
         /// <value>
         ///     <c>true</c> if [metrics text endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
@@ -125,6 +123,7 @@ namespace App.Metrics.AspNetCore
         /// <summary>
         ///     Gets or sets a value indicating whether [ping endpoint should be enabled], if disabled endpoint responds with 404.
         /// </summary>
+        /// <remarks>Only valid if UsePingEndpoint configured on the <see cref="IApplicationBuilder"/>.</remarks>
         /// <value>
         ///     <c>true</c> if [ping endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
@@ -134,9 +133,18 @@ namespace App.Metrics.AspNetCore
         ///     Gets or sets a value indicating whether [environment info endpoint should be enabled], if disabled endpoint
         ///     responds with 404.
         /// </summary>
+        /// <remarks>Only valid if UseEnvInfoEndpoint configured on the <see cref="IApplicationBuilder"/>.</remarks>
         /// <value>
         ///     <c>true</c> if [environment info endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
         public bool EnvironmentInfoEndpointEnabled { get; set; }
+
+        /// <summary>
+        ///     Gets the ignored request routes where metrics should not be measured.
+        /// </summary>
+        /// <value>
+        ///     The ignored routes regex patterns.
+        /// </value>
+        public IReadOnlyList<Regex> IgnoredRoutesRegex => IgnoredRoutesRegexPatterns.Select(p => new Regex(p, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToList();
     }
 }

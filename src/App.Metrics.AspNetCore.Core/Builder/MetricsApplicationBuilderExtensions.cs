@@ -15,58 +15,36 @@ namespace Microsoft.AspNetCore.Builder
     // ReSharper restore CheckNamespace
 {
     /// <summary>
-    ///     Extension methods for <see cref="IApplicationBuilder" /> to add App Metrics health to the request execution
-    ///     pipeline.
+    ///     Extension methods for <see cref="IApplicationBuilder" /> to add App Metrics to the request execution pipeline.
     /// </summary>
     public static class MetricsApplicationBuilderExtensions
     {
         /// <summary>
-        ///     Adds App Metrics Health to the <see cref="IApplicationBuilder" /> request execution pipeline.
+        ///     Adds App Metrics to the <see cref="IApplicationBuilder" /> request execution pipeline.
         /// </summary>
         /// <param name="app">The <see cref="IApplicationBuilder" />.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
-        public static IApplicationBuilder UseMetrics(this IApplicationBuilder app)
+        public static IApplicationBuilder UseMetricsEndpoints(this IApplicationBuilder app)
         {
             if (app == null)
             {
                 throw new ArgumentNullException(nameof(app));
             }
 
-            // Verify if AddMetrics was done before calling UseMetrics
+            // Verify if AddMetrics was done before calling UseMetricsEndpoints
             // We use the MetricsMarkerService to make sure if all the services were added.
             AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(app.ApplicationServices);
 
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
             var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
 
-            //
-            // Configure Endpoints
-            //
-            ConfigurePingMiddleware(app, metricsAspNetCoreOptionsAccessor);
-            ConfigureMetricsTextMiddleware(app, metricsAspNetCoreOptionsAccessor, metricsOptionsAccessor);
-            ConfigureMetricsMiddleware(app, metricsAspNetCoreOptionsAccessor, metricsOptionsAccessor);
-            ConfigureEnvInfoMiddleware(app, metricsAspNetCoreOptionsAccessor);
-
-            //
-            // Configure Tracking
-            //
-            ConfigureMetricsTrackingMiddleware(app, metricsOptionsAccessor, metricsAspNetCoreOptionsAccessor);
+            UseMetricsTextMiddleware(app, metricsAspNetCoreOptionsAccessor, metricsOptionsAccessor);
+            UseMetricsMiddleware(app, metricsAspNetCoreOptionsAccessor, metricsOptionsAccessor);
 
             return app;
         }
 
-        private static void ConfigureEnvInfoMiddleware(IApplicationBuilder app, IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
-        {
-            if (metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
-                metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent())
-            {
-                app.UseWhen(
-                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint,
-                    appBuilder => { appBuilder.UseMiddleware<EnvironmentInfoMiddleware>(); });
-            }
-        }
-
-        private static void ConfigureMetricsMiddleware(
+        private static void UseMetricsMiddleware(
             IApplicationBuilder app,
             IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
             IOptions<MetricsOptions> metricsOptionsAccessor)
@@ -80,7 +58,7 @@ namespace Microsoft.AspNetCore.Builder
             }
         }
 
-        private static void ConfigureMetricsTextMiddleware(
+        private static void UseMetricsTextMiddleware(
             IApplicationBuilder app,
             IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
             IOptions<MetricsOptions> metricsOptionsAccessor)
@@ -91,37 +69,6 @@ namespace Microsoft.AspNetCore.Builder
                 app.UseWhen(
                     context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint,
                     appBuilder => { appBuilder.UseMiddleware<MetricsEndpointTextEndpointMiddleware>(); });
-            }
-        }
-
-        private static void ConfigureMetricsTrackingMiddleware(
-            IApplicationBuilder app,
-            IOptions<MetricsOptions> metricsOptionsAccessor,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
-        {
-            if (metricsOptionsAccessor.Value.MetricsEnabled && metricsAspNetCoreOptionsAccessor.Value.DefaultTrackingEnabled)
-            {
-                app.UseMiddleware<ActiveRequestCounterEndpointMiddleware>();
-                app.UseMiddleware<ErrorRequestMeterMiddleware>();
-                app.UseMiddleware<PerRequestTimerMiddleware>();
-                app.UseMiddleware<OAuthTrackingMiddleware>();
-                app.UseMiddleware<PostAndPutRequestSizeHistogramMiddleware>();
-                app.UseMiddleware<RequestTimerMiddleware>();
-            }
-
-            if (metricsOptionsAccessor.Value.MetricsEnabled && metricsAspNetCoreOptionsAccessor.Value.ApdexTrackingEnabled)
-            {
-                app.UseMiddleware<ApdexMiddleware>();
-            }
-        }
-
-        private static void ConfigurePingMiddleware(IApplicationBuilder app, IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
-        {
-            if (metricsAspNetCoreOptionsAccessor.Value.PingEndpointEnabled && metricsAspNetCoreOptionsAccessor.Value.PingEndpoint.IsPresent())
-            {
-                app.UseWhen(
-                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.PingEndpoint,
-                    appBuilder => { appBuilder.UseMiddleware<PingEndpointMiddleware>(); });
             }
         }
     }

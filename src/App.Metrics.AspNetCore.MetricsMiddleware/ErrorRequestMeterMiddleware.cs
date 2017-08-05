@@ -3,33 +3,39 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace App.Metrics.AspNetCore.Middleware
+namespace App.Metrics.AspNetCore.MetricsMiddleware
 {
     /// <summary>
     ///     Measures the overall error request rate as well as the rate per endpoint.
     ///     Also measures these error rates per OAuth2 Client as a separate metric
     /// </summary>
     // ReSharper disable ClassNeverInstantiated.Global
-    public class ErrorRequestMeterMiddleware : AppMetricsMiddleware<MetricsAspNetCoreOptions>
+    public class ErrorRequestMeterMiddleware
         // ReSharper restore ClassNeverInstantiated.Global
     {
+        private readonly RequestDelegate _next;
+        private readonly ILogger<ErrorRequestMeterMiddleware> _logger;
+        private readonly IMetrics _metrics;
+        private readonly IList<int> _ignoredHttpStatusCodes;
+
         public ErrorRequestMeterMiddleware(
             RequestDelegate next,
             IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
-            ILoggerFactory loggerFactory,
+            ILogger<ErrorRequestMeterMiddleware> logger,
             IMetrics metrics)
-            : base(next, metricsAspNetCoreOptionsAccessor, loggerFactory, metrics)
         {
-            if (next == null)
-            {
-                throw new ArgumentNullException(nameof(next));
-            }
+            _next = next ?? throw new ArgumentNullException(nameof(next));
+            _logger = logger;
+            _metrics = metrics;
+            _ignoredHttpStatusCodes = metricsAspNetCoreOptionsAccessor.Value.IgnoredHttpStatusCodes;
         }
 
         // ReSharper disable UnusedMember.Global
@@ -38,37 +44,29 @@ namespace App.Metrics.AspNetCore.Middleware
         {
             try
             {
-                Logger.MiddlewareExecuting(GetType());
+                _logger.MiddlewareExecuting(GetType());
 
-                await Next(context);
+                await _next(context);
 
-                if (PerformMetric(context))
+                var routeTemplate = context.GetMetricsCurrentRouteName();
+
+                if (!context.Response.IsSuccessfulResponse() && _ignoredHttpStatusCodes.All(i => i != context.Response.StatusCode))
                 {
-                    var routeTemplate = context.GetMetricsCurrentRouteName();
-
-                    if (!context.Response.IsSuccessfulResponse() && ShouldTrackHttpStatusCode(context.Response.StatusCode))
-                    {
-                        Metrics.RecordHttpRequestError(routeTemplate, context.Response.StatusCode);
-                    }
+                    _metrics.RecordHttpRequestError(routeTemplate, context.Response.StatusCode);
                 }
             }
             catch (Exception exception)
             {
-                if (!PerformMetric(context))
-                {
-                    throw;
-                }
-
                 var routeTemplate = context.GetMetricsCurrentRouteName();
 
-                Metrics.RecordHttpRequestError(routeTemplate, (int)HttpStatusCode.InternalServerError);
-                Metrics.RecordException(routeTemplate, exception.GetType().FullName);
+                _metrics.RecordHttpRequestError(routeTemplate, (int)HttpStatusCode.InternalServerError);
+                _metrics.RecordException(routeTemplate, exception.GetType().FullName);
 
                 throw;
             }
             finally
             {
-                Logger.MiddlewareExecuted(GetType());
+                _logger.MiddlewareExecuted(GetType());
             }
         }
     }

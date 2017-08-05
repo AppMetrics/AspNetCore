@@ -27,7 +27,7 @@ namespace Microsoft.AspNetCore.Mvc.Filters
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
-            // Verify if AddMetrics and AddAspNetMetrics was done before calling UseMetrics
+            // Verify if AddMetrics and AddAspNetMetrics was done before calling UseMetricsEndpoints
             // We use the MetricsMarkerService and MetricsAspNetCoreMarkerService to make sure if all the services were added.
             AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(context.HttpContext.RequestServices);
             AppMetricsMiddlewareServicesHelper.ThrowIfMetricsNotRegistered(context.HttpContext.RequestServices);

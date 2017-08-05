@@ -14,6 +14,9 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
     {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseMetricsEndpoints();
+            app.UseMetricsAllMiddleware();
+
             SetupAppBuilder(app, env, loggerFactory);
         }
 

@@ -19,7 +19,7 @@ namespace App.Metrics.AspNetCore
         {
             return app =>
             {
-                // Verify if AddMetrics was done before calling UseMetrics
+                // Verify if AddMetrics was done before calling UseMetricsEndpoints
                 // We use the MetricsMarkerService to make sure if all the services were added.
                 AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(app.ApplicationServices);
 

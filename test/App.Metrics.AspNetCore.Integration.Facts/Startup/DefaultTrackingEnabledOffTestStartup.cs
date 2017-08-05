@@ -14,6 +14,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
     {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseMetricsEndpoints();
+
             SetupAppBuilder(app, env, loggerFactory);
         }
 
@@ -30,8 +32,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                        {
                                            MetricsTextEndpointEnabled = true,
                                            MetricsEndpointEnabled = true,
-                                           PingEndpointEnabled = true,
-                                           DefaultTrackingEnabled = false
+                                           PingEndpointEnabled = true
                                        };
 
             SetupServices(services, appMetricsOptions, appMetricsMiddlewareOptions);
