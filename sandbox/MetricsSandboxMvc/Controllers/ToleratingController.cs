@@ -1,22 +1,23 @@
-// <copyright file="FrustratingController.cs" company="Allan Hardy">
+// <copyright file="ToleratingController.cs" company="Allan Hardy">
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
 using System;
 using System.Threading.Tasks;
-using App.Metrics.Sandbox.JustForTesting;
+using App.Metrics;
+using MetricsSandboxMvc.JustForTesting;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Metrics.Sandbox.Controllers
+namespace MetricsSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class FrustratingController : Controller
+    public class ToleratingController : Controller
     {
         private readonly RequestDurationForApdexTesting _durationForApdexTesting;
 
         private readonly IMetrics _metrics;
 
-        public FrustratingController(IMetrics metrics, RequestDurationForApdexTesting durationForApdexTesting)
+        public ToleratingController(IMetrics metrics, RequestDurationForApdexTesting durationForApdexTesting)
         {
             _metrics = metrics ?? throw new ArgumentNullException(nameof(metrics));
             _durationForApdexTesting = durationForApdexTesting;
@@ -25,7 +26,7 @@ namespace App.Metrics.Sandbox.Controllers
         [HttpGet]
         public async Task<int> Get()
         {
-            var duration = _durationForApdexTesting.NextFrustratingDuration;
+            var duration = _durationForApdexTesting.NextToleratingDuration;
 
             await Task.Delay(duration, HttpContext.RequestAborted);
 

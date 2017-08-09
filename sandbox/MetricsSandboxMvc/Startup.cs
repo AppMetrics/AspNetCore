@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace App.Metrics.Sandbox
+namespace MetricsSandboxMvc
 {
     public class Startup
     {

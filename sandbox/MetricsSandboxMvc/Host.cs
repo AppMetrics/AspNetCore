@@ -5,7 +5,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace App.Metrics.Sandbox
+namespace MetricsSandboxMvc
 {
     public static class Host
     {

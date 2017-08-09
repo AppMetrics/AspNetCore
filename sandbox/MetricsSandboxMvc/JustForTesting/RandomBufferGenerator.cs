@@ -4,7 +4,7 @@
 
 using System;
 
-namespace App.Metrics.Sandbox.JustForTesting
+namespace MetricsSandboxMvc.JustForTesting
 {
     public class RandomBufferGenerator
     {

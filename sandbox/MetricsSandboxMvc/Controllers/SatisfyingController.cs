@@ -5,10 +5,11 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using App.Metrics.Sandbox.JustForTesting;
+using App.Metrics;
+using MetricsSandboxMvc.JustForTesting;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Metrics.Sandbox.Controllers
+namespace MetricsSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
     public class SatisfyingController : Controller

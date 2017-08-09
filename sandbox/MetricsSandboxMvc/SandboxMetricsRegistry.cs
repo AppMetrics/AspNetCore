@@ -4,7 +4,7 @@
 
 using App.Metrics.Timer;
 
-namespace App.Metrics.Sandbox
+namespace MetricsSandboxMvc
 {
     public static class SandboxMetricsRegistry
     {

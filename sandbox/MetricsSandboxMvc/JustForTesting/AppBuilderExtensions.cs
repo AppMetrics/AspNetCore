@@ -2,7 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using App.Metrics.Sandbox.JustForTesting;
+using MetricsSandboxMvc.JustForTesting;
 using Microsoft.AspNetCore.Hosting;
 
 // ReSharper disable CheckNamespace

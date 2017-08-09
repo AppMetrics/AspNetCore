@@ -4,11 +4,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace App.Metrics.Sandbox.JustForTesting
+namespace MetricsSandboxMvc.JustForTesting
 {
     public static class RandomClientIdForTesting
     {

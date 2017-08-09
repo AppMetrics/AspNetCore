@@ -3,10 +3,11 @@
 // </copyright>
 
 using System;
-using App.Metrics.Sandbox.JustForTesting;
+using App.Metrics;
+using MetricsSandboxMvc.JustForTesting;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Metrics.Sandbox.Controllers
+namespace MetricsSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
     public class RandomStatusCodeController : Controller

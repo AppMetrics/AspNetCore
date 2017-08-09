@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace App.Metrics.Sandbox.JustForTesting
+namespace MetricsSandboxMvc.JustForTesting
 {
     public class RandomValuesForTesting
     {

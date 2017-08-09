@@ -4,7 +4,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Metrics.Sandbox.Controllers
+namespace MetricsSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
     public class TestController : Controller

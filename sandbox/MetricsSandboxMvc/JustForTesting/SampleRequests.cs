@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using App.Metrics.Scheduling;
 
-namespace App.Metrics.Sandbox.JustForTesting
+namespace MetricsSandboxMvc.JustForTesting
 {
     public static class SampleRequests
     {

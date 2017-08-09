@@ -6,7 +6,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Metrics.Sandbox.Controllers
+namespace MetricsSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
     public class FileController : Controller

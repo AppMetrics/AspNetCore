@@ -2,9 +2,10 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using App.Metrics;
 using App.Metrics.Histogram;
 
-namespace App.Metrics.Sandbox
+namespace MetricsSandboxMvc
 {
     public static class Registry
     {
