@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 // ReSharper disable CheckNamespace
 namespace Microsoft.AspNetCore.Mvc.Filters
-// ReSharper restore CheckNamespace
+    // ReSharper restore CheckNamespace
 {
     public class MetricsResourceFilter : IAsyncResourceFilter
     {
@@ -28,9 +28,9 @@ namespace Microsoft.AspNetCore.Mvc.Filters
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
             // Verify if AddMetrics and AddAspNetMetrics was done before calling UseMetricsEndpoints
-            // We use the MetricsMarkerService and MetricsAspNetCoreMarkerService to make sure if all the services were added.
+            // We use the MetricsMarkerService and MetricsAspNetCoreServicesHelper to make sure if all the services were added.
             AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(context.HttpContext.RequestServices);
-            AppMetricsMiddlewareServicesHelper.ThrowIfMetricsNotRegistered(context.HttpContext.RequestServices);
+            MetricsAspNetCoreServicesHelper.ThrowIfMetricsNotRegistered(context.HttpContext.RequestServices);
 
             EnsureServices(context.HttpContext);
 

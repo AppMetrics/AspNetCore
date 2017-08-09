@@ -4,7 +4,6 @@
 
 using System;
 using App.Metrics.AspNetCore;
-using App.Metrics.Reporting;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable CheckNamespace
@@ -17,7 +16,7 @@ namespace Microsoft.AspNetCore.Hosting
         ///     Runs the configured App Metrics Reporting options once the application has started.
         /// </summary>
         /// <param name="hostBuilder">The <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" />.</param>
-        /// <param name="reportSetupAction">Allows configuration of reporters via the <see cref="IReporter"/></param>
+        /// <param name="setupAction">Allows configuration of reporters via the <see cref="IMetricsReportingBuilder"/></param>
         /// <returns>
         ///     A reference to this instance after the operation has completed.
         /// </returns>
@@ -26,7 +25,7 @@ namespace Microsoft.AspNetCore.Hosting
         /// </exception>
         public static IWebHostBuilder UseMetricsReporting(
             this IWebHostBuilder hostBuilder,
-            Action<IReportFactory> reportSetupAction)
+            Action<IMetricsReportingCoreBuilder> setupAction)
         {
             if (hostBuilder == null)
             {
@@ -35,7 +34,9 @@ namespace Microsoft.AspNetCore.Hosting
 
             hostBuilder.ConfigureServices((context, services) =>
             {
-                services.AddMetricsReporting(reportSetupAction);
+                var builder = services.AddMetricsReportingCore();
+
+                setupAction?.Invoke(builder);
 
                 services.AddSingleton<IStartupFilter>(new MetricsReportingStartupFilter());
             });

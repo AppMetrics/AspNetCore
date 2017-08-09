@@ -3,7 +3,6 @@
 // </copyright>
 
 using System;
-using System.Text;
 using App.Metrics.Formatters;
 using Microsoft.Net.Http.Headers;
 
@@ -13,18 +12,17 @@ namespace Microsoft.AspNetCore.Http.Headers
 {
     public static class RequestHeaderExtensions
     {
-        public static(TFormatter Formatter, Encoding Encoding) ResolveFormatter<TFormatter>(
+        public static TFormatter ResolveFormatter<TFormatter>(
             this RequestHeaders headers,
             TFormatter defaultFormatter,
             Func<MetricsMediaTypeValue, TFormatter> resolveOutputFormatter)
         {
             if (headers.Accept == null)
             {
-                return (defaultFormatter, Encoding.Default);
+                return defaultFormatter;
             }
 
             var formatter = defaultFormatter;
-            var encoding = Encoding.Default;
 
             foreach (var accept in headers.Accept)
             {
@@ -37,13 +35,11 @@ namespace Microsoft.AspNetCore.Http.Headers
 
                 if (formatter != null)
                 {
-                    encoding = accept.Encoding ?? encoding;
-
-                    return (formatter, encoding);
+                    return formatter;
                 }
             }
 
-            return (defaultFormatter, Encoding.Default);
+            return defaultFormatter;
         }
     }
 }

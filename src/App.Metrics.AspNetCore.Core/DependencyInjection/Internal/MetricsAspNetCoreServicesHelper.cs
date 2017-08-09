@@ -1,4 +1,4 @@
-﻿// <copyright file="AppMetricsMiddlewareServicesHelper.cs" company="Allan Hardy">
+﻿// <copyright file="MetricsAspNetCoreServicesHelper.cs" company="Allan Hardy">
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
@@ -6,7 +6,7 @@ using System;
 
 namespace App.Metrics.AspNetCore.DependencyInjection.Internal
 {
-    public static class AppMetricsMiddlewareServicesHelper
+    public static class MetricsAspNetCoreServicesHelper
     {
         /// <summary>
         ///     Throws InvalidOperationException when MetricsMarkerService is not present
@@ -18,7 +18,7 @@ namespace App.Metrics.AspNetCore.DependencyInjection.Internal
             if (services.GetService(typeof(MetricsAspNetCoreMarkerService)) == null)
             {
                 throw new InvalidOperationException(
-                    "IServiceCollection.AddMetricsMiddleware()\n");
+                    "IServiceCollection.AddAspNetCoreMetricsCore()\nIServiceCollection.AddAspNetCoreMetrics()\n");
             }
         }
     }

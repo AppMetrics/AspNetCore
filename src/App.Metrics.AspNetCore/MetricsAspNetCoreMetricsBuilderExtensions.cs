@@ -12,15 +12,15 @@ namespace Microsoft.Extensions.DependencyInjection
 // ReSharper restore CheckNamespace
 {
     /// <summary>
-    ///     Extension methods for setting up App Metrics AspNet Core health services in an <see cref="IServiceCollection" />.
+    ///     Extension methods for setting up App Metrics AspNet Core services in an <see cref="IServiceCollection" />.
     /// </summary>
     public static class MetricsAspNetCoreMetricsBuilderExtensions
     {
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core health services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
         /// </summary>
         /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
-        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core health services.</returns>
+        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(this IMetricsBuilder builder)
         {
             builder.Services.AddAspNetCoreMetricsCore();
@@ -29,11 +29,11 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core health services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
         /// </summary>
         /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
         /// <param name="configuration">The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreOptions" />.</param>
-        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core health services.</returns>
+        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(
             this IMetricsBuilder builder,
             IConfiguration configuration)
@@ -46,14 +46,14 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core health services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
         /// </summary>
         /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
         /// <param name="configuration">The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreOptions" />.</param>
         /// <param name="setupAction">
-        ///     An <see cref="Action{HealthAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
+        ///     An <see cref="Action{MetricsAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
         /// </param>
-        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core health services.</returns>
+        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(
             this IMetricsBuilder builder,
             IConfiguration configuration,
@@ -68,14 +68,14 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core health services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
         /// </summary>
         /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
         /// <param name="setupAction">
-        ///     An <see cref="Action{HealthAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
+        ///     An <see cref="Action{MetricsAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
         /// </param>
         /// <param name="configuration">The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreOptions" />.</param>
-        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core health services.</returns>
+        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(
             this IMetricsBuilder builder,
             Action<MetricsAspNetCoreOptions> setupAction,
@@ -90,13 +90,13 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core health services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
         /// </summary>
         /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
         /// <param name="setupAction">
-        ///     An <see cref="Action{HealthAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
+        ///     An <see cref="Action{MetricsAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
         /// </param>
-        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core health services.</returns>
+        /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(
             this IMetricsBuilder builder,
             Action<MetricsAspNetCoreOptions> setupAction)

@@ -24,7 +24,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Middleware.Metrics
 
         private HttpClient Client { get; }
 
-        private JsonMetricsOutputFormatter JsonMetricsOutputFormatter { get; }
+        private MetricsJsonOutputFormatter JsonMetricsOutputFormatter { get; }
 
         [Fact]
         public async Task Can_filter_metrics()

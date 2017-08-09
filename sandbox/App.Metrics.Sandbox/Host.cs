@@ -9,11 +9,14 @@ namespace App.Metrics.Sandbox
 {
     public static class Host
     {
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                   .UseMetrics()
-                   .UseStartup<Startup>()
-                   .Build();
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            return WebHost.CreateDefaultBuilder(args)
+                .UseMetrics()
+                .UseMetricsReporting(builder => { }) // TODO: Expose report provider extensions
+                .UseStartup<Startup>()
+                .Build();
+        }
 
         public static void Main(string[] args) { BuildWebHost(args).Run(); }
     }

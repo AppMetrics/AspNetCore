@@ -4,7 +4,6 @@
 
 using System;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using App.Metrics.Formatters;
@@ -39,17 +38,13 @@ namespace App.Metrics.AspNetCore
 
         public Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default(CancellationToken))
         {
-#pragma warning disable SA1008 // Opening parenthesis must be spaced correctly
-            var formatterAndEncoding = (formatter: default(IEnvOutputFormatter), encoding: Encoding.Default);
-#pragma warning restore SA1008 // Opening parenthesis must be spaced correctly
-
-            formatterAndEncoding = context.Request.GetTypedHeaders().ResolveFormatter(
+            var formatter = context.Request.GetTypedHeaders().ResolveFormatter(
                 _metricsOptions.DefaultOutputEnvFormatter,
                 metricsMediaTypeValue => _metricsOptions.OutputEnvFormatters.GetType(metricsMediaTypeValue));
 
             context.SetNoCacheHeaders();
 
-            if (formatterAndEncoding.formatter == default(IEnvOutputFormatter))
+            if (formatter == default(IEnvOutputFormatter))
             {
                 context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
                 context.Response.Headers[HeaderNames.ContentType] = new[] { context.Request.ContentType };
@@ -57,9 +52,9 @@ namespace App.Metrics.AspNetCore
             }
 
             context.Response.StatusCode = (int)HttpStatusCode.OK;
-            context.Response.Headers[HeaderNames.ContentType] = new[] { formatterAndEncoding.formatter.MediaType.ContentType };
+            context.Response.Headers[HeaderNames.ContentType] = new[] { formatter.MediaType.ContentType };
 
-            return formatterAndEncoding.formatter.WriteAsync(context.Response.Body, environmentInfo, formatterAndEncoding.encoding, token);
+            return formatter.WriteAsync(context.Response.Body, environmentInfo, token);
         }
     }
 }
