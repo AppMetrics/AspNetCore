@@ -13,7 +13,6 @@ namespace MetricsSandboxMvc
         {
             return WebHost.CreateDefaultBuilder(args)
                 .UseMetrics()
-                .UseMetricsReporting(builder => { }) // TODO: Expose report provider extensions
                 .UseStartup<Startup>()
                 .Build();
         }

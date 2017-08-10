@@ -11,8 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="App.Metrics" Version="$(AppMetricsCoreVersion)" />
-    <PackageReference Include="App.Metrics.Reporting" Version="$(AppMetricsReportingVersion)" />    
+    <PackageReference Include="App.Metrics" Version="$(AppMetricsCoreVersion)" />    
   </ItemGroup>
 
   <ItemGroup>
