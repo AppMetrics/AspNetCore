@@ -25,17 +25,16 @@ namespace App.Metrics.AspNetCore
 
                 var options = app.ApplicationServices.GetRequiredService<IOptions<MetricsReportingOptions>>();
 
-                if (!options.Value.ReportingEnabled)
+                if (!options.Value.Enabled)
                 {
                     next(app);
                     return;
                 }
 
                 var lifetime = app.ApplicationServices.GetRequiredService<IApplicationLifetime>();
-                var reporter = app.ApplicationServices.GetRequiredService<IReporter>();
-                var metrics = app.ApplicationServices.GetRequiredService<IMetrics>();
+                var reporter = app.ApplicationServices.GetRequiredService<IMetricsReporter>();
 
-                lifetime.ApplicationStarted.Register(() => { Task.Run(() => reporter.RunReports(metrics, lifetime.ApplicationStopping), lifetime.ApplicationStopping); });
+                lifetime.ApplicationStarted.Register(() => { Task.Run(() => reporter.ScheduleReports(lifetime.ApplicationStopping), lifetime.ApplicationStopping); });
 
                 next(app);
             };
