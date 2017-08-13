@@ -23,7 +23,7 @@ namespace App.Metrics.AspNetCore.TrackingMiddleware
 
         public ApdexMiddleware(
             RequestDelegate next,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
+            IOptions<MetricsTrackingMiddlewareOptions> trackingMiddlwareOptionsAccessor,
             ILogger<ApdexMiddleware> logger,
             IMetrics metrics)
         {
@@ -31,7 +31,7 @@ namespace App.Metrics.AspNetCore.TrackingMiddleware
             _logger = logger;
             _apdexTracking = metrics.Provider
                                     .Apdex
-                                    .Instance(HttpRequestMetricsRegistry.ApdexScores.Apdex(metricsAspNetCoreOptionsAccessor.Value.ApdexTSeconds));
+                                    .Instance(HttpRequestMetricsRegistry.ApdexScores.Apdex(trackingMiddlwareOptionsAccessor.Value.ApdexTSeconds));
         }
 
         // ReSharper disable UnusedMember.Global

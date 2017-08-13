@@ -33,20 +33,6 @@ namespace Microsoft.AspNetCore.Http
             return context.Request.Method;
         }
 
-        public static string GetOAuthClientIdIfRequired(this HttpContext context)
-        {
-            var optionsAccessor = context.RequestServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
-            return optionsAccessor.Value.OAuth2TrackingEnabled ? context.OAuthClientId() : null;
-        }
-
         public static bool HasMetricsCurrentRouteName(this HttpContext context) { return context.Items.ContainsKey(MetricsCurrentRouteName); }
-
-        public static string OAuthClientId(this HttpContext httpContext)
-        {
-            var claimsPrincipal = httpContext.User;
-            var clientId = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == "client_id");
-
-            return clientId?.Value;
-        }
     }
 }

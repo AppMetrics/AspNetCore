@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using App.Metrics.AspNetCore.Endpoints;
+using App.Metrics.AspNetCore.TrackingMiddleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,14 +39,14 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                        PingEndpointEnabled = true
                                    };
 
-            var aspNetCoreOptions = new MetricsAspNetCoreOptions
+            var trackingoptions = new MetricsTrackingMiddlewareOptions
                                     {
                                         OAuth2TrackingEnabled = true
                                     };
 
-            aspNetCoreOptions.IgnoredRoutesRegexPatterns.Add("(?i)^api/test/ignore");
+            trackingoptions.IgnoredRoutesRegexPatterns.Add("(?i)^api/test/ignore");
 
-            SetupServices(services, appMetricsOptions, aspNetCoreOptions, endpointsOptions);
+            SetupServices(services, appMetricsOptions, trackingoptions, endpointsOptions);
         }
 
         private static void SetFakeClaimsPrincipal(IApplicationBuilder app)

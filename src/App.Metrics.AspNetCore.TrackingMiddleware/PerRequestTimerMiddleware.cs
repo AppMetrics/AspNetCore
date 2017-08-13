@@ -24,14 +24,14 @@ namespace App.Metrics.AspNetCore.TrackingMiddleware
 
         public PerRequestTimerMiddleware(
             RequestDelegate next,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
+            IOptions<MetricsTrackingMiddlewareOptions> trackingMiddlwareOptionsAccessor,
             ILogger<PerRequestTimerMiddleware> logger,
             IMetrics metrics)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _logger = logger;
             _metrics = metrics;
-            _ignoredHttpStatusCodes = metricsAspNetCoreOptionsAccessor.Value.IgnoredHttpStatusCodes;
+            _ignoredHttpStatusCodes = trackingMiddlwareOptionsAccessor.Value.IgnoredHttpStatusCodes;
         }
 
         // ReSharper disable UnusedMember.Global

@@ -3,6 +3,7 @@
 // </copyright>
 
 using App.Metrics.AspNetCore.Endpoints;
+using App.Metrics.AspNetCore.TrackingMiddleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,9 +33,9 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                        MetricsEndpointEnabled = false
                                    };
 
-            var aspNetCoreOptions = new MetricsAspNetCoreOptions();
+            var trackingOptions = new MetricsTrackingMiddlewareOptions();
 
-            SetupServices(services, appMetricsOptions, aspNetCoreOptions, endpointsOptions);
+            SetupServices(services, appMetricsOptions, trackingOptions, endpointsOptions);
         }
     }
 }

@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using App.Metrics;
-using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.TrackingMiddleware;
 using App.Metrics.DependencyInjection.Internal;
 using Microsoft.AspNetCore.Http;
@@ -34,9 +33,9 @@ namespace Microsoft.AspNetCore.Builder
             EnsureRequiredServices(app);
 
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
-            var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
-            UseMetricsgMiddleware<ActiveRequestCounterEndpointMiddleware>(app, metricsOptionsAccessor, metricsAspNetCoreOptionsAccessor);
+            UseMetricsgMiddleware<ActiveRequestCounterEndpointMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
 
             return app;
         }
@@ -70,13 +69,13 @@ namespace Microsoft.AspNetCore.Builder
             EnsureRequiredServices(app);
 
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
-            var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
             app.UseWhen(
-                context => !IsNotAnIgnoredRoute(metricsAspNetCoreOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
+                context => !IsNotAnIgnoredRoute(trackingMiddlwareOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
                            context.HasMetricsCurrentRouteName() &&
                            metricsOptionsAccessor.Value.MetricsEnabled &&
-                           metricsAspNetCoreOptionsAccessor.Value.ApdexTrackingEnabled,
+                           trackingMiddlwareOptionsAccessor.Value.ApdexTrackingEnabled,
                 appBuilder => { appBuilder.UseMiddleware<ApdexMiddleware>(); });
 
             return app;
@@ -92,9 +91,9 @@ namespace Microsoft.AspNetCore.Builder
             EnsureRequiredServices(app);
 
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
-            var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
-            UseMetricsgMiddleware<ErrorRequestMeterMiddleware>(app, metricsOptionsAccessor, metricsAspNetCoreOptionsAccessor);
+            UseMetricsgMiddleware<ErrorRequestMeterMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
 
             return app;
         }
@@ -108,12 +107,12 @@ namespace Microsoft.AspNetCore.Builder
         {
             EnsureRequiredServices(app);
 
-            var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
             app.UseWhen(
-                context => !IsNotAnIgnoredRoute(metricsAspNetCoreOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
+                context => !IsNotAnIgnoredRoute(trackingMiddlwareOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
                            context.OAuthClientId().IsPresent() &&
-                           metricsAspNetCoreOptionsAccessor.Value.OAuth2TrackingEnabled,
+                           trackingMiddlwareOptionsAccessor.Value.OAuth2TrackingEnabled,
                 appBuilder => { appBuilder.UseMiddleware<OAuthTrackingMiddleware>(); });
 
             return app;
@@ -130,9 +129,9 @@ namespace Microsoft.AspNetCore.Builder
             EnsureRequiredServices(app);
 
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
-            var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
-            UseMetricsgMiddleware<PostAndPutRequestSizeHistogramMiddleware>(app, metricsOptionsAccessor, metricsAspNetCoreOptionsAccessor);
+            UseMetricsgMiddleware<PostAndPutRequestSizeHistogramMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
 
             return app;
         }
@@ -147,10 +146,10 @@ namespace Microsoft.AspNetCore.Builder
             EnsureRequiredServices(app);
 
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
-            var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
-            UseMetricsgMiddleware<RequestTimerMiddleware>(app, metricsOptionsAccessor, metricsAspNetCoreOptionsAccessor);
-            UseMetricsgMiddleware<PerRequestTimerMiddleware>(app, metricsOptionsAccessor, metricsAspNetCoreOptionsAccessor);
+            UseMetricsgMiddleware<RequestTimerMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
+            UseMetricsgMiddleware<PerRequestTimerMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
 
             return app;
         }
@@ -175,10 +174,10 @@ namespace Microsoft.AspNetCore.Builder
         private static void UseMetricsgMiddleware<TMiddleware>(
             IApplicationBuilder app,
             IOptions<MetricsOptions> metricsOptionsAccessor,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
+            IOptions<MetricsTrackingMiddlewareOptions> trackingMiddlwareOptionsAccessor)
         {
             app.UseWhen(
-                context => !IsNotAnIgnoredRoute(metricsAspNetCoreOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
+                context => !IsNotAnIgnoredRoute(trackingMiddlwareOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
                            metricsOptionsAccessor.Value.MetricsEnabled,
                 appBuilder => { appBuilder.UseMiddleware<TMiddleware>(); });
         }

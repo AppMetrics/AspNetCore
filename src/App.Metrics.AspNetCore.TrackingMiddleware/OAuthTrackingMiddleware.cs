@@ -22,14 +22,14 @@ namespace App.Metrics.AspNetCore.TrackingMiddleware
 
         public OAuthTrackingMiddleware(
             RequestDelegate next,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
+            IOptions<MetricsTrackingMiddlewareOptions> trackingMiddlwareOptionsAccessor,
             ILogger<OAuthTrackingMiddleware> logger,
             IMetrics metrics)
         {
             _next = next;
             _logger = logger;
             _metrics = metrics;
-            _ignoredHttpStatusCodes = metricsAspNetCoreOptionsAccessor.Value.IgnoredHttpStatusCodes;
+            _ignoredHttpStatusCodes = trackingMiddlwareOptionsAccessor.Value.IgnoredHttpStatusCodes;
         }
 
         // ReSharper disable UnusedMember.Global

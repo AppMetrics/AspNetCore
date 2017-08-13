@@ -3,6 +3,7 @@
 // </copyright>
 
 using App.Metrics.AspNetCore.Endpoints;
+using App.Metrics.AspNetCore.TrackingMiddleware;
 using App.Metrics.Filters;
 using App.Metrics.ReservoirSampling.Uniform;
 using Microsoft.AspNetCore.Builder;
@@ -27,7 +28,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         protected void SetupServices(
             IServiceCollection services,
             MetricsOptions appMetricsOptions,
-            MetricsAspNetCoreOptions aspNetCoreOptions,
+            MetricsTrackingMiddlewareOptions trackingOptions,
             MetricsEndpointsOptions endpointsOptions,
             IFilterMetrics filter = null)
         {
@@ -46,22 +47,24 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
             builder.AddJsonFormatters();
 
-            services.AddAspNetCoreMetricsCore(
-                options =>
-                {
-                    options.OAuth2TrackingEnabled = aspNetCoreOptions.OAuth2TrackingEnabled;
-                    options.IgnoredRoutesRegexPatterns = aspNetCoreOptions.IgnoredRoutesRegexPatterns;
-                    options.IgnoredHttpStatusCodes = aspNetCoreOptions.IgnoredHttpStatusCodes;
-                }).AddEndpointOptionsCore(
-                options =>
-                {
-                    options.MetricsTextEndpointEnabled = endpointsOptions.MetricsTextEndpointEnabled;
-                    options.MetricsEndpointEnabled = endpointsOptions.MetricsEndpointEnabled;
-                    options.PingEndpointEnabled = endpointsOptions.PingEndpointEnabled;
-                    options.MetricsEndpoint = endpointsOptions.MetricsEndpoint;
-                    options.MetricsTextEndpoint = endpointsOptions.MetricsTextEndpoint;
-                    options.PingEndpoint = endpointsOptions.PingEndpoint;
-                });
+            services.AddAspNetCoreMetricsCore().
+                     AddTrackingMiddlewareOptionsCore(
+                         options =>
+                         {
+                             options.OAuth2TrackingEnabled = trackingOptions.OAuth2TrackingEnabled;
+                             options.IgnoredRoutesRegexPatterns = trackingOptions.IgnoredRoutesRegexPatterns;
+                             options.IgnoredHttpStatusCodes = trackingOptions.IgnoredHttpStatusCodes;
+                         }).
+                     AddEndpointOptionsCore(
+                         options =>
+                         {
+                             options.MetricsTextEndpointEnabled = endpointsOptions.MetricsTextEndpointEnabled;
+                             options.MetricsEndpointEnabled = endpointsOptions.MetricsEndpointEnabled;
+                             options.PingEndpointEnabled = endpointsOptions.PingEndpointEnabled;
+                             options.MetricsEndpoint = endpointsOptions.MetricsEndpoint;
+                             options.MetricsTextEndpoint = endpointsOptions.MetricsTextEndpoint;
+                             options.PingEndpoint = endpointsOptions.PingEndpoint;
+                         });
 
             if (filter != null)
             {

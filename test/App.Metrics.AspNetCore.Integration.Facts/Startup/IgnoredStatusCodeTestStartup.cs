@@ -3,6 +3,7 @@
 // </copyright>
 
 using App.Metrics.AspNetCore.Endpoints;
+using App.Metrics.AspNetCore.TrackingMiddleware;
 using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,10 +38,10 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                        PingEndpointEnabled = true
             };
 
-            var aspNetCoreOptions = new MetricsAspNetCoreOptions();
-            aspNetCoreOptions.IgnoredHttpStatusCodes.Add(401);
+            var trackingOptions = new MetricsTrackingMiddlewareOptions();
+            trackingOptions.IgnoredHttpStatusCodes.Add(401);
 
-            SetupServices(services, appMetricsOptions, aspNetCoreOptions, endpointsOptions);
+            SetupServices(services, appMetricsOptions, trackingOptions, endpointsOptions);
         }
     }
 }

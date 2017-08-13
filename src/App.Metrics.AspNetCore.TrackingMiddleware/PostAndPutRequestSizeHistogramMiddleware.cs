@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace App.Metrics.AspNetCore.TrackingMiddleware
 {
@@ -21,7 +20,6 @@ namespace App.Metrics.AspNetCore.TrackingMiddleware
 
         public PostAndPutRequestSizeHistogramMiddleware(
             RequestDelegate next,
-            IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor,
             ILogger<PostAndPutRequestSizeHistogramMiddleware> logger,
             IMetrics metrics)
         {
