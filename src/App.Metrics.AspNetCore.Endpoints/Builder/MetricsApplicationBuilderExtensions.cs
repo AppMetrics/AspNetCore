@@ -105,6 +105,11 @@ namespace Microsoft.AspNetCore.Builder
 
         private static void EnsureMetricsAdded(IApplicationBuilder app)
         {
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
+
             // Verify if AddMetrics was done before calling using middleware.
             // We use the MetricsMarkerService to make sure if all the services were added.
             AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(app.ApplicationServices);
@@ -120,7 +125,7 @@ namespace Microsoft.AspNetCore.Builder
                 : new DefaultMetricsResponseWriter(options, aspNetCoreOptions, formatter);
         }
 
-        private static DefaultMetricsResponseWriter GetMetricsTextResponseWriter(IServiceProvider serviceProvider, IMetricsOutputFormatter formatter = null)
+        private static IMetricsResponseWriter GetMetricsTextResponseWriter(IServiceProvider serviceProvider, IMetricsOutputFormatter formatter = null)
         {
             var options = serviceProvider.GetRequiredService<IOptions<MetricsOptions>>();
             var aspNetCoreOptions = serviceProvider.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();

@@ -136,7 +136,7 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             // Response Writers
             //
-            services.TryAddSingleton<IEnvResponseWriter, EnvResponseWriter>();
+            services.TryAddSingleton<IEnvResponseWriter, DefaultEnvResponseWriter>();
             services.TryAddSingleton<IMetricsResponseWriter, DefaultMetricsResponseWriter>();
 
             //

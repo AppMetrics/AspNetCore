@@ -1,4 +1,4 @@
-﻿// <copyright file="EnvResponseWriter.cs" company="Allan Hardy">
+﻿// <copyright file="DefaultEnvResponseWriter.cs" company="Allan Hardy">
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
@@ -15,22 +15,29 @@ using Microsoft.Net.Http.Headers;
 
 namespace App.Metrics.AspNetCore
 {
-    public class EnvResponseWriter : IEnvResponseWriter
+    public class DefaultEnvResponseWriter : IEnvResponseWriter
     {
+        private readonly IEnvOutputFormatter _formatter;
         private readonly MetricsOptions _metricsOptions;
 
-        public EnvResponseWriter(
+        public DefaultEnvResponseWriter(
             IOptions<MetricsOptions> metricsOptionsAccessor,
-            IOptions<MetricsAspNetCoreOptions> middlewareOptionsAccessor)
+            IEnvOutputFormatter formatter)
         {
             if (metricsOptionsAccessor == null)
             {
                 throw new ArgumentNullException(nameof(metricsOptionsAccessor));
             }
 
-            if (middlewareOptionsAccessor == null)
+            _formatter = formatter;
+            _metricsOptions = metricsOptionsAccessor.Value;
+        }
+
+        public DefaultEnvResponseWriter(IOptions<MetricsOptions> metricsOptionsAccessor)
+        {
+            if (metricsOptionsAccessor == null)
             {
-                throw new ArgumentNullException(nameof(middlewareOptionsAccessor));
+                throw new ArgumentNullException(nameof(metricsOptionsAccessor));
             }
 
             _metricsOptions = metricsOptionsAccessor.Value;
@@ -38,7 +45,7 @@ namespace App.Metrics.AspNetCore
 
         public Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default(CancellationToken))
         {
-            var formatter = context.Request.GetTypedHeaders().ResolveFormatter(
+            var formatter = _formatter ?? context.Request.GetTypedHeaders().ResolveFormatter(
                 _metricsOptions.DefaultOutputEnvFormatter,
                 metricsMediaTypeValue => _metricsOptions.OutputEnvFormatters.GetType(metricsMediaTypeValue));
 

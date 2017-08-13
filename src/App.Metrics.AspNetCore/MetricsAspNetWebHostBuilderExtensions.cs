@@ -33,6 +33,7 @@ namespace Microsoft.AspNetCore.Hosting
                 services.AddMetrics(context.Configuration.GetSection("MetricsOptions"));
                 var aspNetCoreCoreBuilder = services.AddAspNetCoreMetricsCore(context.Configuration.GetSection("MetricsAspNetCoreOptions"));
                 aspNetCoreCoreBuilder.AddEndpointOptionsCore(context.Configuration.GetSection("MetricsEndpointsOptions"));
+                aspNetCoreCoreBuilder.AddTrackingMiddlewareOptionsCore(context.Configuration.GetSection("MetricsTrackingMiddlewareOptions"));
                 services.AddSingleton<IStartupFilter>(new MetricsStartupFilter());
             });
 
