@@ -14,7 +14,8 @@ namespace App.Metrics.AspNetCore
         {
             return app =>
             {
-                app.UseMetricsEndpoints();
+                app.UseMetricsEndpoint();
+                app.UseMetricsTextEndpoint();
                 app.UseEnvInfoEndpoint();
                 app.UsePingEndpoint();
                 app.UseMetricsAllMiddleware();

@@ -1,10 +1,11 @@
-﻿// <copyright file="PingPongApplicationBuilderExtensions.cs" company="Allan Hardy">
+﻿// <copyright file="PingApplicationBuilderExtensions.cs" company="Allan Hardy">
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
 using System;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -16,7 +17,7 @@ namespace Microsoft.AspNetCore.Builder
     ///     Extension methods for <see cref="IApplicationBuilder" /> to add App Metrics ping pong to the request execution
     ///     pipeline.
     /// </summary>
-    public static class PingPongApplicationBuilderExtensions
+    public static class PingApplicationBuilderExtensions
     {
         /// <summary>
         ///     Adds App Metrics Ping middleware to the <see cref="IApplicationBuilder" /> request execution pipeline.
@@ -37,11 +38,17 @@ namespace Microsoft.AspNetCore.Builder
             return app;
         }
 
+        private static bool ShouldUsePing(IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor, HttpContext context)
+        {
+            return context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.PingEndpoint &&
+                   metricsAspNetCoreOptionsAccessor.Value.PingEndpointEnabled &&
+                   metricsAspNetCoreOptionsAccessor.Value.PingEndpoint.IsPresent();
+        }
+
         private static void UsePingMiddleware(IApplicationBuilder app, IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
         {
             app.UseWhen(
-                context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.PingEndpoint &&
-                           metricsAspNetCoreOptionsAccessor.Value.PingEndpointEnabled && metricsAspNetCoreOptionsAccessor.Value.PingEndpoint.IsPresent(),
+                context => ShouldUsePing(metricsAspNetCoreOptionsAccessor, context),
                 appBuilder => { appBuilder.UseMiddleware<PingEndpointMiddleware>(); });
         }
     }

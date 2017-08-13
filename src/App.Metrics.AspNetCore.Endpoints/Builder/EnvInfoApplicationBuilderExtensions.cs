@@ -5,6 +5,7 @@
 using System;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -38,13 +39,20 @@ namespace Microsoft.AspNetCore.Builder
             return app;
         }
 
+        private static bool ShouldUseEnvInfo(IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor, HttpContext context)
+        {
+            return metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
+                   metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent() &&
+                   context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint;
+        }
+
         private static void UseEnvInfoMiddleware(IApplicationBuilder app, IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
         {
             if (metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
                 metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent())
             {
                 app.UseWhen(
-                    context => context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint,
+                    context => ShouldUseEnvInfo(metricsAspNetCoreOptionsAccessor, context),
                     appBuilder => { appBuilder.UseMiddleware<EnvInfoMiddleware>(); });
             }
         }

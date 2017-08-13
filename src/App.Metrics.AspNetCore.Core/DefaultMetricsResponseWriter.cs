@@ -1,4 +1,4 @@
-﻿// <copyright file="MetricsResponseWriter.cs" company="Allan Hardy">
+﻿// <copyright file="DefaultMetricsResponseWriter.cs" company="Allan Hardy">
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
@@ -14,11 +14,31 @@ using Microsoft.Net.Http.Headers;
 
 namespace App.Metrics.AspNetCore
 {
-    public class MetricsResponseWriter : IMetricsResponseWriter
+    public class DefaultMetricsResponseWriter : IMetricsResponseWriter
     {
+        private readonly IMetricsOutputFormatter _formatter;
         private readonly MetricsOptions _metricsOptions;
 
-        public MetricsResponseWriter(
+        public DefaultMetricsResponseWriter(
+            IOptions<MetricsOptions> metricsOptionsAccessor,
+            IOptions<MetricsAspNetCoreOptions> middlewareOptionsAccessor,
+            IMetricsOutputFormatter formatter)
+        {
+            if (metricsOptionsAccessor == null)
+            {
+                throw new ArgumentNullException(nameof(metricsOptionsAccessor));
+            }
+
+            if (middlewareOptionsAccessor == null)
+            {
+                throw new ArgumentNullException(nameof(middlewareOptionsAccessor));
+            }
+
+            _formatter = formatter;
+            _metricsOptions = metricsOptionsAccessor.Value;
+        }
+
+        public DefaultMetricsResponseWriter(
             IOptions<MetricsOptions> metricsOptionsAccessor,
             IOptions<MetricsAspNetCoreOptions> middlewareOptionsAccessor)
         {
@@ -35,9 +55,10 @@ namespace App.Metrics.AspNetCore
             _metricsOptions = metricsOptionsAccessor.Value;
         }
 
+        /// <inheritdoc />
         public Task WriteAsync(HttpContext context, MetricsDataValueSource metricsData, CancellationToken token = default(CancellationToken))
         {
-            var formatter = context.Request.GetTypedHeaders().ResolveFormatter(
+            var formatter = _formatter ?? context.Request.GetTypedHeaders().ResolveFormatter(
                 _metricsOptions.DefaultOutputMetricsFormatter,
                 metricsMediaTypeValue => _metricsOptions.OutputMetricsFormatters.GetType(metricsMediaTypeValue));
 

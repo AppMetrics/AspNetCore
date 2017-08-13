@@ -27,7 +27,7 @@ namespace App.Metrics.AspNetCore
         /// <summary>
         ///     Gets or sets a value indicating whether the [overall web application's apdex should be measured].
         /// </summary>
-        /// <remarks>Only valid if UseMetricsApdexTrackingMiddleware configured on the <see cref="IApplicationBuilder"/>.</remarks>
+        /// <remarks>Only valid if UseMetricsApdexTrackingMiddleware configured on the <see cref="IApplicationBuilder" />.</remarks>
         /// <value>
         ///     <c>true</c> if [apdex should be measured]; otherwise, <c>false</c>.
         /// </value>
@@ -37,11 +37,29 @@ namespace App.Metrics.AspNetCore
         ///     Gets or sets the
         ///     <see href="https://alhardy.github.io/app-metrics-docs/getting-started/metric-types/apdex.html">apdex t seconds</see>
         /// </summary>
-        /// <remarks>Only valid if UseMetricsApdexTrackingMiddleware configured on the <see cref="IApplicationBuilder"/>.</remarks>
+        /// <remarks>Only valid if UseMetricsApdexTrackingMiddleware configured on the <see cref="IApplicationBuilder" />.</remarks>
         /// <value>
         ///     The apdex t seconds.
         /// </value>
         public double ApdexTSeconds { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the environment info endpoint, defaults to /env.
+        /// </summary>
+        /// <value>
+        ///     The environment info endpoint.
+        /// </value>
+        public string EnvironmentInfoEndpoint { get; set; } = MiddlewareConstants.DefaultRoutePaths.EnvironmentInfoEndpoint.EnsureLeadingSlash();
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether [environment info endpoint should be enabled], if disabled endpoint
+        ///     responds with 404.
+        /// </summary>
+        /// <remarks>Only valid if UseEnvInfoEndpoint configured on the <see cref="IApplicationBuilder" />.</remarks>
+        /// <value>
+        ///     <c>true</c> if [environment info endpoint enabled]; otherwise, <c>false</c>.
+        /// </value>
+        public bool EnvironmentInfoEndpointEnabled { get; set; }
 
         /// <summary>
         ///     Gets or sets the ignored HTTP status codes as a result of a request where metrics should not be measured.
@@ -50,6 +68,15 @@ namespace App.Metrics.AspNetCore
         ///     The ignored HTTP status codes.
         /// </value>
         public IList<int> IgnoredHttpStatusCodes { get; set; } = new List<int>();
+
+        /// <summary>
+        ///     Gets the ignored request routes where metrics should not be measured.
+        /// </summary>
+        /// <value>
+        ///     The ignored routes regex patterns.
+        /// </value>
+        public IReadOnlyList<Regex> IgnoredRoutesRegex =>
+            IgnoredRoutesRegexPatterns.Select(p => new Regex(p, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToList();
 
         /// <summary>
         ///     Gets or sets the ignored request routes where metrics should not be measured.
@@ -71,7 +98,7 @@ namespace App.Metrics.AspNetCore
         ///     Gets or sets a value indicating whether [metrics endpoint should be enabled], if disabled endpoint responds with
         ///     404.
         /// </summary>
-        /// <remarks>Only valid if UseMetricsEndpoints configured on the <see cref="IApplicationBuilder"/>.</remarks>
+        /// <remarks>Only valid if UseMetricsEndpoints configured on the <see cref="IApplicationBuilder" />.</remarks>
         /// <value>
         ///     <c>true</c> if [metrics endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
@@ -89,7 +116,7 @@ namespace App.Metrics.AspNetCore
         ///     Gets or sets a value indicating whether [metrics text endpoint should be enabled], if disabled endpoint responds
         ///     with 404.
         /// </summary>
-        /// <remarks>Only valid if UseMetricsEndpoints configured on the <see cref="IApplicationBuilder"/>.</remarks>
+        /// <remarks>Only valid if UseMetricsEndpoints configured on the <see cref="IApplicationBuilder" />.</remarks>
         /// <value>
         ///     <c>true</c> if [metrics text endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
@@ -113,38 +140,12 @@ namespace App.Metrics.AspNetCore
         public string PingEndpoint { get; set; } = MiddlewareConstants.DefaultRoutePaths.PingEndpoint.EnsureLeadingSlash();
 
         /// <summary>
-        ///     Gets or sets the environment info endpoint, defaults to /env.
-        /// </summary>
-        /// <value>
-        ///     The environment info endpoint.
-        /// </value>
-        public string EnvironmentInfoEndpoint { get; set; } = MiddlewareConstants.DefaultRoutePaths.EnvironmentInfoEndpoint.EnsureLeadingSlash();
-
-        /// <summary>
         ///     Gets or sets a value indicating whether [ping endpoint should be enabled], if disabled endpoint responds with 404.
         /// </summary>
-        /// <remarks>Only valid if UsePingEndpoint configured on the <see cref="IApplicationBuilder"/>.</remarks>
+        /// <remarks>Only valid if UsePingEndpoint configured on the <see cref="IApplicationBuilder" />.</remarks>
         /// <value>
         ///     <c>true</c> if [ping endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
         public bool PingEndpointEnabled { get; set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether [environment info endpoint should be enabled], if disabled endpoint
-        ///     responds with 404.
-        /// </summary>
-        /// <remarks>Only valid if UseEnvInfoEndpoint configured on the <see cref="IApplicationBuilder"/>.</remarks>
-        /// <value>
-        ///     <c>true</c> if [environment info endpoint enabled]; otherwise, <c>false</c>.
-        /// </value>
-        public bool EnvironmentInfoEndpointEnabled { get; set; }
-
-        /// <summary>
-        ///     Gets the ignored request routes where metrics should not be measured.
-        /// </summary>
-        /// <value>
-        ///     The ignored routes regex patterns.
-        /// </value>
-        public IReadOnlyList<Regex> IgnoredRoutesRegex => IgnoredRoutesRegexPatterns.Select(p => new Regex(p, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToList();
     }
 }

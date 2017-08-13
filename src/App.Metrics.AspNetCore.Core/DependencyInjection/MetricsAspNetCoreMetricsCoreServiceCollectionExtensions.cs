@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.DependencyInjection.Internal;
 using App.Metrics.AspNetCore.Internal;
@@ -129,14 +130,14 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             // Options
             //
-            services.TryAddEnumerable(ServiceDescriptor.Transient<IConfigureOptions<MetricsAspNetCoreOptions>, MetricsAspNetCoreMetricsAspNetCoreOptionsSetup>());
+            var metricsOptionsDescriptor = ServiceDescriptor.Transient<IConfigureOptions<MetricsOptions>, MetricsAspNetCoreMetricsOptionsSetup>();
+            services.TryAddEnumerable(metricsOptionsDescriptor);
 
             //
             // Response Writers
             //
             services.TryAddSingleton<IEnvResponseWriter, EnvResponseWriter>();
-            services.TryAddSingleton<IMetricsResponseWriter, MetricsResponseWriter>();
-            services.TryAddSingleton<IMetricsTextResponseWriter, MetricsTextResponseWriter>();
+            services.TryAddSingleton<IMetricsResponseWriter, DefaultMetricsResponseWriter>();
 
             //
             // Random Infrastructure

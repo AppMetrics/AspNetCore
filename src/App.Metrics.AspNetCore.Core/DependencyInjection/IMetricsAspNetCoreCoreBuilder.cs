@@ -11,6 +11,12 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public interface IMetricsAspNetCoreCoreBuilder
     {
+        /// <summary>
+        ///     Gets the <see cref="IServiceCollection" /> where essential App Metrics AspNet Core services are configured.
+        /// </summary>
+        /// <value>
+        ///     The <see cref="IServiceCollection" /> where essential App Metrics AspNet Core services are configure.
+        /// </value>
         IServiceCollection Services { get; }
     }
 }

@@ -4,7 +4,6 @@
 
 using App.Metrics.Counter;
 using App.Metrics.Filtering;
-using App.Metrics.Formatters.Ascii;
 using App.Metrics.Formatters.Json;
 using App.Metrics.Gauge;
 using App.Metrics.Histogram;
@@ -21,7 +20,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
     {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseMetricsEndpoints();
+            app.UseMetricsEndpoint();
+            app.UseMetricsTextEndpoint();
             app.UseMetricsAllMiddleware();
 
             SetupAppBuilder(app, env, loggerFactory);
@@ -34,8 +34,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
             var appMetricsOptions = new MetricsOptions
                                     {
                                         MetricsEnabled = true,
-                                        DefaultOutputMetricsFormatter = new MetricsJsonOutputFormatter(),
-                                        DefaultOutputMetricsTextFormatter = new MetricsTextOutputFormatter()
+                                        DefaultOutputMetricsFormatter = new MetricsJsonOutputFormatter()
                                     };
 
             var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions();

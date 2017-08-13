@@ -2,7 +2,6 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using App.Metrics.Formatters.Ascii;
 using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,7 +14,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
     {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseMetricsEndpoints();
+            app.UseMetricsEndpoint();
+            app.UseMetricsTextEndpoint();
             app.UseMetricsAllMiddleware();
 
             SetupAppBuilder(app, env, loggerFactory);
@@ -27,8 +27,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                     {
                                         DefaultContextLabel = "testing",
                                         MetricsEnabled = true,
-                                        DefaultOutputMetricsFormatter = new MetricsJsonOutputFormatter(),
-                                        DefaultOutputMetricsTextFormatter = new MetricsTextOutputFormatter()
+                                        DefaultOutputMetricsFormatter = new MetricsJsonOutputFormatter()
                                     };
 
             var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions

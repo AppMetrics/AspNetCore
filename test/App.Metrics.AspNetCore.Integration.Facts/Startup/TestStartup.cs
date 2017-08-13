@@ -42,7 +42,6 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                         options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
                         options.MetricsEnabled = appMetricsOptions.MetricsEnabled;
                         options.DefaultOutputMetricsFormatter = appMetricsOptions.DefaultOutputMetricsFormatter;
-                        options.DefaultOutputMetricsTextFormatter = appMetricsOptions.DefaultOutputMetricsTextFormatter;
                         options.DefaultOutputEnvFormatter = appMetricsOptions.DefaultOutputEnvFormatter;
                     })
                 .AddDefaultReservoir(() => new DefaultAlgorithmRReservoir(1028))
