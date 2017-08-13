@@ -13,6 +13,16 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class MetricsEndpiontsMetricsAspNetCoreBuilderExtensions
     {
+        /// <summary>
+        ///     Adds metrics endpoints configuration to the <see cref="IMetricsAspNetCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreBuilder" /> to add configuration to.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreBuilder AddEndpointOptions(
             this IMetricsAspNetCoreBuilder builder,
             Action<MetricsEndpointsOptions> setupAction)
@@ -24,6 +34,19 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics endpoints configuration to the <see cref="IMetricsAspNetCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreBuilder" /> to add configuration to.</param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreBuilder AddEndpointOptions(
             this IMetricsAspNetCoreBuilder builder,
             IConfiguration configuration,
@@ -36,6 +59,19 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics endpoints configuration to the <see cref="IMetricsAspNetCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreBuilder" /> to add configuration to.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreBuilder AddEndpointOptions(
             this IMetricsAspNetCoreBuilder builder,
             Action<MetricsEndpointsOptions> setupAction,
@@ -48,6 +84,16 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics endpoints configuration to the <see cref="IMetricsAspNetCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreBuilder" /> to add configuration to.</param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreBuilder AddEndpointOptions(
             this IMetricsAspNetCoreBuilder builder,
             IConfiguration configuration)

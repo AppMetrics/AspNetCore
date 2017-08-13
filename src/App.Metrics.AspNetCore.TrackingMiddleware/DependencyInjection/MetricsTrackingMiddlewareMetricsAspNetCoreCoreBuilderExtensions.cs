@@ -12,6 +12,16 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class MetricsTrackingMiddlewareMetricsAspNetCoreCoreBuilderExtensions
     {
+        /// <summary>
+        ///     Adds metrics tracking middleware configuration to the <see cref="IMetricsAspNetCoreCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreCoreBuilder" /> to add configuration to.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsTrackingMiddlewareOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreCoreBuilder AddTrackingMiddlewareOptionsCore(
             this IMetricsAspNetCoreCoreBuilder builder,
             Action<MetricsTrackingMiddlewareOptions> setupAction)
@@ -21,16 +31,24 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if (setupAction == null)
-            {
-                throw new ArgumentNullException(nameof(setupAction));
-            }
-
             builder.Services.Configure(setupAction);
 
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics tracking middleware configuration to the <see cref="IMetricsAspNetCoreCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreCoreBuilder" /> to add configuration to.</param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsTrackingMiddlewareOptions" />.
+        /// </param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsTrackingMiddlewareOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreCoreBuilder AddTrackingMiddlewareOptionsCore(
             this IMetricsAspNetCoreCoreBuilder builder,
             IConfiguration configuration,
@@ -41,17 +59,25 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if (setupAction == null)
-            {
-                throw new ArgumentNullException(nameof(setupAction));
-            }
-
             builder.Services.Configure<MetricsTrackingMiddlewareOptions>(configuration);
             builder.Services.Configure(setupAction);
 
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics tracking middleware configuration to the <see cref="IMetricsAspNetCoreCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreCoreBuilder" /> to add configuration to.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsTrackingMiddlewareOptions" />.
+        /// </param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsTrackingMiddlewareOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreCoreBuilder AddTrackingMiddlewareOptionsCore(
             this IMetricsAspNetCoreCoreBuilder builder,
             Action<MetricsTrackingMiddlewareOptions> setupAction,
@@ -62,17 +88,22 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if (setupAction == null)
-            {
-                throw new ArgumentNullException(nameof(setupAction));
-            }
-
             builder.Services.Configure(setupAction);
             builder.Services.Configure<MetricsTrackingMiddlewareOptions>(configuration);
 
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics tracking middleware configuration to the <see cref="IMetricsAspNetCoreCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreCoreBuilder" /> to add configuration to.</param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsTrackingMiddlewareOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreCoreBuilder AddTrackingMiddlewareOptionsCore(
             this IMetricsAspNetCoreCoreBuilder builder,
             IConfiguration configuration)

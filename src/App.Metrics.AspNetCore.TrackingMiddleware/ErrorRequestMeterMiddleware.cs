@@ -59,7 +59,11 @@ namespace App.Metrics.AspNetCore.TrackingMiddleware
             {
                 var routeTemplate = context.GetMetricsCurrentRouteName();
 
-                _metrics.RecordHttpRequestError(routeTemplate, (int)HttpStatusCode.InternalServerError);
+                if (_ignoredHttpStatusCodes.All(i => i != StatusCodes.Status500InternalServerError))
+                {
+                    _metrics.RecordHttpRequestError(routeTemplate, StatusCodes.Status500InternalServerError);
+                }
+
                 _metrics.RecordException(routeTemplate, exception.GetType().FullName);
 
                 throw;

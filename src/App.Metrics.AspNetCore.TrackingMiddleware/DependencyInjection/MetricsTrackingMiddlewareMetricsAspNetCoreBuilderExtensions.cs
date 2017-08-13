@@ -13,6 +13,16 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class MetricsTrackingMiddlewareMetricsAspNetCoreBuilderExtensions
     {
+        /// <summary>
+        ///     Adds metrics tracking middleware configuration to the <see cref="IMetricsAspNetCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreBuilder" /> to add configuration to.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsTrackingMiddlewareOptions}" /> to configure the provided <see cref="MetricsTrackingMiddlewareOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreBuilder AddTrackingMiddlewareOptions(
             this IMetricsAspNetCoreBuilder builder,
             Action<MetricsTrackingMiddlewareOptions> setupAction)
@@ -24,6 +34,19 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics tracking middleware configuration to the <see cref="IMetricsAspNetCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreBuilder" /> to add configuration to.</param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreCoreBuilder" />.
+        /// </param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsAspNetCoreCoreBuilder" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreBuilder AddTrackingMiddlewareOptions(
             this IMetricsAspNetCoreBuilder builder,
             IConfiguration configuration,
@@ -36,6 +59,19 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics tracking middleware configuration to the <see cref="IMetricsAspNetCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreBuilder" /> to add configuration to.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsAspNetCoreCoreBuilder" />.
+        /// </param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreCoreBuilder" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreBuilder AddTrackingMiddlewareOptions(
             this IMetricsAspNetCoreBuilder builder,
             Action<MetricsTrackingMiddlewareOptions> setupAction,
@@ -48,6 +84,16 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics tracking middleware configuration to the <see cref="IMetricsAspNetCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreBuilder" /> to add configuration to.</param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreCoreBuilder" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreBuilder AddTrackingMiddlewareOptions(
             this IMetricsAspNetCoreBuilder builder,
             IConfiguration configuration)

@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Builder;
 
 namespace App.Metrics.AspNetCore.TrackingMiddleware
 {
+    /// <summary>
+    ///     Provides programmatic configuration for metrics tracking middleware in the App Metrics framework.
+    /// </summary>
     public class MetricsTrackingMiddlewareOptions
     {
         public MetricsTrackingMiddlewareOptions()

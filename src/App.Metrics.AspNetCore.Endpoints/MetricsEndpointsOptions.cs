@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Builder;
 
 namespace App.Metrics.AspNetCore.Endpoints
 {
+    /// <summary>
+    ///     Provides programmatic configuration for metrics endpoints in the App Metrics framework.
+    /// </summary>
     public class MetricsEndpointsOptions
     {
         public MetricsEndpointsOptions()

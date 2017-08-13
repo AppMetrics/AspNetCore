@@ -12,6 +12,16 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class MetricsEndpiontsMetricsAspNetCoreCoreBuilderExtensions
     {
+        /// <summary>
+        ///     Adds metrics endpoints configuration to the <see cref="IMetricsAspNetCoreCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreCoreBuilder" /> to add configuration to.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreCoreBuilder AddEndpointOptionsCore(
             this IMetricsAspNetCoreCoreBuilder builder,
             Action<MetricsEndpointsOptions> setupAction)
@@ -31,6 +41,19 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics endpoints configuration to the <see cref="IMetricsAspNetCoreCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreCoreBuilder" /> to add configuration to.</param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreCoreBuilder AddEndpointOptionsCore(
             this IMetricsAspNetCoreCoreBuilder builder,
             IConfiguration configuration,
@@ -52,6 +75,19 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics endpoints configuration to the <see cref="IMetricsAspNetCoreCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreCoreBuilder" /> to add configuration to.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreCoreBuilder AddEndpointOptionsCore(
             this IMetricsAspNetCoreCoreBuilder builder,
             Action<MetricsEndpointsOptions> setupAction,
@@ -73,6 +109,16 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        ///     Adds metrics endpoints configuration to the <see cref="IMetricsAspNetCoreCoreBuilder"/>
+        /// </summary>
+        /// <param name="builder">The <see cref="IMetricsAspNetCoreCoreBuilder" /> to add configuration to.</param>
+        /// <param name="configuration">
+        ///     The <see cref="IConfiguration" /> from where to load <see cref="MetricsEndpointsOptions" />.
+        /// </param>
+        /// <returns>
+        ///     An <see cref="IMetricsAspNetCoreCoreBuilder" /> that can be used to further configure the App Metrics services.
+        /// </returns>
         public static IMetricsAspNetCoreCoreBuilder AddEndpointOptionsCore(
             this IMetricsAspNetCoreCoreBuilder builder,
             IConfiguration configuration)

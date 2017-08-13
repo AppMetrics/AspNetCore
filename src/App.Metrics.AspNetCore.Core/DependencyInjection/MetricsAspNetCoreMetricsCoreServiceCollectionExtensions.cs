@@ -128,12 +128,6 @@ namespace Microsoft.Extensions.DependencyInjection
         internal static void AddAspNetCoreMetricsServices(IServiceCollection services)
         {
             //
-            // Options
-            //
-            var metricsOptionsDescriptor = ServiceDescriptor.Transient<IConfigureOptions<MetricsOptions>, MetricsAspNetCoreMetricsOptionsSetup>();
-            services.TryAddEnumerable(metricsOptionsDescriptor);
-
-            //
             // Response Writers
             //
             services.TryAddSingleton<IEnvResponseWriter, DefaultEnvResponseWriter>();
