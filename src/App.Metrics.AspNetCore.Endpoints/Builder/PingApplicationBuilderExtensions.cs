@@ -3,7 +3,6 @@
 // </copyright>
 
 using System;
-using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,24 +30,24 @@ namespace Microsoft.AspNetCore.Builder
                 throw new ArgumentNullException(nameof(app));
             }
 
-            var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
 
-            UsePingMiddleware(app, metricsAspNetCoreOptionsAccessor);
+            UsePingMiddleware(app, endpointsOptionsAccessor);
 
             return app;
         }
 
-        private static bool ShouldUsePing(IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor, HttpContext context)
+        private static bool ShouldUsePing(IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, HttpContext context)
         {
-            return context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.PingEndpoint &&
-                   metricsAspNetCoreOptionsAccessor.Value.PingEndpointEnabled &&
-                   metricsAspNetCoreOptionsAccessor.Value.PingEndpoint.IsPresent();
+            return context.Request.Path == endpointsOptionsAccessor.Value.PingEndpoint &&
+                   endpointsOptionsAccessor.Value.PingEndpointEnabled &&
+                   endpointsOptionsAccessor.Value.PingEndpoint.IsPresent();
         }
 
-        private static void UsePingMiddleware(IApplicationBuilder app, IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
+        private static void UsePingMiddleware(IApplicationBuilder app, IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor)
         {
             app.UseWhen(
-                context => ShouldUsePing(metricsAspNetCoreOptionsAccessor, context),
+                context => ShouldUsePing(endpointsOptionsAccessor, context),
                 appBuilder => { appBuilder.UseMiddleware<PingEndpointMiddleware>(); });
         }
     }

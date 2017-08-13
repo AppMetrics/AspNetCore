@@ -3,7 +3,6 @@
 // </copyright>
 
 using System;
-using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,27 +31,27 @@ namespace Microsoft.AspNetCore.Builder
                 throw new ArgumentNullException(nameof(app));
             }
 
-            var metricsAspNetCoreOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
 
-            UseEnvInfoMiddleware(app, metricsAspNetCoreOptionsAccessor);
+            UseEnvInfoMiddleware(app, endpointsOptionsAccessor);
 
             return app;
         }
 
-        private static bool ShouldUseEnvInfo(IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor, HttpContext context)
+        private static bool ShouldUseEnvInfo(IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, HttpContext context)
         {
-            return metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
-                   metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent() &&
-                   context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint;
+            return endpointsOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
+                   endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent() &&
+                   context.Request.Path == endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint;
         }
 
-        private static void UseEnvInfoMiddleware(IApplicationBuilder app, IOptions<MetricsAspNetCoreOptions> metricsAspNetCoreOptionsAccessor)
+        private static void UseEnvInfoMiddleware(IApplicationBuilder app, IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor)
         {
-            if (metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
-                metricsAspNetCoreOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent())
+            if (endpointsOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
+                endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent())
             {
                 app.UseWhen(
-                    context => ShouldUseEnvInfo(metricsAspNetCoreOptionsAccessor, context),
+                    context => ShouldUseEnvInfo(endpointsOptionsAccessor, context),
                     appBuilder => { appBuilder.UseMiddleware<EnvInfoMiddleware>(); });
             }
         }

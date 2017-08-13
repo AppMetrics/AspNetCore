@@ -2,6 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,16 +30,17 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                         DefaultOutputMetricsFormatter = new MetricsJsonOutputFormatter()
                                     };
 
-            var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions
-                                       {
-                                           MetricsTextEndpointEnabled = true,
-                                           MetricsEndpointEnabled = true,
-                                           PingEndpointEnabled = true
-                                       };
+            var endpointsOptions = new MetricsEndpointsOptions
+                                   {
+                                       MetricsTextEndpointEnabled = true,
+                                       MetricsEndpointEnabled = true,
+                                       PingEndpointEnabled = true
+                                   };
 
-            appMetricsMiddlewareOptions.IgnoredRoutesRegexPatterns.Add("(?i)^api/test/ignore");
+            var aspNetCoreOptions = new MetricsAspNetCoreOptions();
+            aspNetCoreOptions.IgnoredRoutesRegexPatterns.Add("(?i)^api/test/ignore");
 
-            SetupServices(services, appMetricsOptions, appMetricsMiddlewareOptions);
+            SetupServices(services, appMetricsOptions, aspNetCoreOptions, endpointsOptions);
         }
     }
 }

@@ -2,6 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.Filters;
 using App.Metrics.ReservoirSampling.Uniform;
 using Microsoft.AspNetCore.Builder;
@@ -26,44 +27,41 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         protected void SetupServices(
             IServiceCollection services,
             MetricsOptions appMetricsOptions,
-            MetricsAspNetCoreOptions metricsAspNetCoreOptions,
+            MetricsAspNetCoreOptions aspNetCoreOptions,
+            MetricsEndpointsOptions endpointsOptions,
             IFilterMetrics filter = null)
         {
-            services
-                .AddLogging()
-                .AddRouting(options => { options.LowercaseUrls = true; });
+            services.AddLogging().AddRouting(options => { options.LowercaseUrls = true; });
 
             services.AddMvc(options => options.AddMetricsResourceFilter());
 
-            var builder = services
-                .AddMetricsCore(
-                    options =>
-                    {
-                        options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
-                        options.MetricsEnabled = appMetricsOptions.MetricsEnabled;
-                        options.DefaultOutputMetricsFormatter = appMetricsOptions.DefaultOutputMetricsFormatter;
-                        options.DefaultOutputEnvFormatter = appMetricsOptions.DefaultOutputEnvFormatter;
-                    })
-                .AddDefaultReservoir(() => new DefaultAlgorithmRReservoir(1028))
-                .AddClockType<TestClock>();
+            var builder = services.AddMetricsCore(
+                                       options =>
+                                       {
+                                           options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
+                                           options.MetricsEnabled = appMetricsOptions.MetricsEnabled;
+                                           options.DefaultOutputMetricsFormatter = appMetricsOptions.DefaultOutputMetricsFormatter;
+                                           options.DefaultOutputEnvFormatter = appMetricsOptions.DefaultOutputEnvFormatter;
+                                       }).AddDefaultReservoir(() => new DefaultAlgorithmRReservoir(1028)).AddClockType<TestClock>();
 
             builder.AddJsonFormatters();
 
             services.AddAspNetCoreMetricsCore(
-                    options =>
-                    {
-                        options.MetricsTextEndpointEnabled = metricsAspNetCoreOptions.MetricsTextEndpointEnabled;
-                        options.MetricsEndpointEnabled = metricsAspNetCoreOptions.MetricsEndpointEnabled;
-                        options.PingEndpointEnabled = metricsAspNetCoreOptions.PingEndpointEnabled;
-                        options.OAuth2TrackingEnabled = metricsAspNetCoreOptions.OAuth2TrackingEnabled;
-
-                        options.MetricsEndpoint = metricsAspNetCoreOptions.MetricsEndpoint;
-                        options.MetricsTextEndpoint = metricsAspNetCoreOptions.MetricsTextEndpoint;
-                        options.PingEndpoint = metricsAspNetCoreOptions.PingEndpoint;
-
-                        options.IgnoredRoutesRegexPatterns = metricsAspNetCoreOptions.IgnoredRoutesRegexPatterns;
-                        options.IgnoredHttpStatusCodes = metricsAspNetCoreOptions.IgnoredHttpStatusCodes;
-                    });
+                options =>
+                {
+                    options.OAuth2TrackingEnabled = aspNetCoreOptions.OAuth2TrackingEnabled;
+                    options.IgnoredRoutesRegexPatterns = aspNetCoreOptions.IgnoredRoutesRegexPatterns;
+                    options.IgnoredHttpStatusCodes = aspNetCoreOptions.IgnoredHttpStatusCodes;
+                }).AddEndpointOptionsCore(
+                options =>
+                {
+                    options.MetricsTextEndpointEnabled = endpointsOptions.MetricsTextEndpointEnabled;
+                    options.MetricsEndpointEnabled = endpointsOptions.MetricsEndpointEnabled;
+                    options.PingEndpointEnabled = endpointsOptions.PingEndpointEnabled;
+                    options.MetricsEndpoint = endpointsOptions.MetricsEndpoint;
+                    options.MetricsTextEndpoint = endpointsOptions.MetricsTextEndpoint;
+                    options.PingEndpoint = endpointsOptions.PingEndpoint;
+                });
 
             if (filter != null)
             {

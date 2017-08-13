@@ -2,6 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using App.Metrics.AspNetCore.Endpoints;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,12 +25,16 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         {
             var appMetricsOptions = new MetricsOptions();
 
-            var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions
-                                       {
-                                           MetricsTextEndpointEnabled = false
-                                       };
+            var endpointsOptions = new MetricsEndpointsOptions
+                                   {
+                                       MetricsTextEndpointEnabled = false,
+                                       MetricsEndpointEnabled = true,
+                                       PingEndpointEnabled = true
+                                   };
 
-            SetupServices(services, appMetricsOptions, appMetricsMiddlewareOptions);
+            var aspNetCoreOptions = new MetricsAspNetCoreOptions();
+
+            SetupServices(services, appMetricsOptions, aspNetCoreOptions, endpointsOptions);
         }
     }
 }

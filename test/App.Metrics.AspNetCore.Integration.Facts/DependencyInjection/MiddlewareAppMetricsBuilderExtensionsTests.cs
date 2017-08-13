@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using App.Metrics.AspNetCore.Endpoints;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,19 +18,23 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
         public void Can_load_settings_from_configuration()
         {
             var options = new MetricsAspNetCoreOptions();
+            var endpointOptions = new MetricsEndpointsOptions();
 
             var provider = SetupServicesAndConfiguration();
             Action resolveOptions = () => { options = provider.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>().Value; };
+            Action resolveEndpointsOptions = () => { endpointOptions = provider.GetRequiredService<IOptions<MetricsEndpointsOptions>>().Value; };
 
             resolveOptions.ShouldNotThrow();
+            resolveEndpointsOptions.ShouldNotThrow();
+
             options.ApdexTrackingEnabled.Should().Be(false);
             options.ApdexTSeconds.Should().Be(0.8);
-            options.MetricsEndpoint.Should().Be("/metrics-test");
-            options.MetricsTextEndpoint.Should().Be("/metrics-text-test");
-            options.PingEndpoint.Should().Be("/ping-test");
-            options.MetricsTextEndpointEnabled.Should().Be(false);
-            options.MetricsEndpointEnabled.Should().Be(false);
-            options.PingEndpointEnabled.Should().Be(false);
+            endpointOptions.MetricsEndpoint.Should().Be("/metrics-test");
+            endpointOptions.MetricsTextEndpoint.Should().Be("/metrics-text-test");
+            endpointOptions.PingEndpoint.Should().Be("/ping-test");
+            endpointOptions.MetricsTextEndpointEnabled.Should().Be(false);
+            endpointOptions.MetricsEndpointEnabled.Should().Be(false);
+            endpointOptions.PingEndpointEnabled.Should().Be(false);
         }
 
         [Fact]
@@ -51,7 +56,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
         }
 
         private IServiceProvider SetupServicesAndConfiguration(
-            Action<MetricsAspNetCoreOptions> setupAction = null)
+            Action<MetricsAspNetCoreOptions> setupAction = null,
+            Action<MetricsEndpointsOptions> setupEndpointAction = null)
         {
             var services = new ServiceCollection();
             services.AddOptions();
@@ -63,16 +69,26 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
             var configuration = builder.Build();
 
             var metricsBuilder = services.AddMetrics();
+            IMetricsAspNetCoreBuilder aspNetCoreBuilder;
 
             if (setupAction == null)
             {
-                metricsBuilder.AddAspNetCoreMetrics(configuration.GetSection("MetricsAspNetCoreOptions"));
+                aspNetCoreBuilder = metricsBuilder.AddAspNetCoreMetrics(configuration.GetSection("MetricsAspNetCoreOptions"));
             }
             else
             {
-                metricsBuilder.AddAspNetCoreMetrics(
+                aspNetCoreBuilder = metricsBuilder.AddAspNetCoreMetrics(
                     configuration.GetSection("MetricsAspNetCoreOptions"),
                     setupAction);
+            }
+
+            if (setupEndpointAction == null)
+            {
+                aspNetCoreBuilder.AddEndpointOptions(configuration.GetSection("MetricsEndpointsOptions"));
+            }
+            else
+            {
+                aspNetCoreBuilder.AddEndpointOptions(configuration.GetSection("MetricsEndpointsOptions"), setupEndpointAction);
             }
 
             return services.BuildServiceProvider();

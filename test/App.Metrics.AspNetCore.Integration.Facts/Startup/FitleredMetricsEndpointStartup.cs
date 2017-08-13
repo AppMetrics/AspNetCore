@@ -2,6 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.Counter;
 using App.Metrics.Filtering;
 using App.Metrics.Formatters.Json;
@@ -37,12 +38,14 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                         DefaultOutputMetricsFormatter = new MetricsJsonOutputFormatter()
                                     };
 
-            var appMetricsMiddlewareOptions = new MetricsAspNetCoreOptions();
+            var endpointOptions = new MetricsEndpointsOptions();
+            var aspNetCoreOptions = new MetricsAspNetCoreOptions();
 
             SetupServices(
                 services,
                 appMetricsOptions,
-                appMetricsMiddlewareOptions,
+                aspNetCoreOptions,
+                endpointOptions,
                 new DefaultMetricsFilter().WhereType(MetricType.Counter));
         }
 

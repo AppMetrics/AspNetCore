@@ -31,7 +31,8 @@ namespace Microsoft.AspNetCore.Hosting
             hostBuilder.ConfigureServices((context, services) =>
             {
                 services.AddMetrics(context.Configuration.GetSection("MetricsOptions"));
-                services.AddAspNetCoreMetricsCore(context.Configuration.GetSection("MetricsAspNetCoreOptions"));
+                var aspNetCoreCoreBuilder = services.AddAspNetCoreMetricsCore(context.Configuration.GetSection("MetricsAspNetCoreOptions"));
+                aspNetCoreCoreBuilder.AddEndpointOptionsCore(context.Configuration.GetSection("MetricsEndpointsOptions"));
                 services.AddSingleton<IStartupFilter>(new MetricsStartupFilter());
             });
 
