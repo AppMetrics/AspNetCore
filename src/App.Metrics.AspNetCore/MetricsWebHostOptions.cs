@@ -21,7 +21,7 @@ namespace App.Metrics.AspNetCore
         }
 
         /// <summary>
-        ///     Gets or sets <see cref="Action{T}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        ///     Gets or sets <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
         /// </summary>
         public Action<MetricsEndpointsOptions> EndpointOptions { get; set; }
 

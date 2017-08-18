@@ -4,6 +4,8 @@
 
 using System;
 using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Ascii;
+using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
@@ -25,7 +27,12 @@ namespace MetricsSandboxMvc
         {
             return options =>
             {
-                options.EndpointOptions = endpointsOptions => { endpointsOptions.MetricsEndpoint = "/metrics2"; };
+                options.EndpointOptions = endpointsOptions =>
+                {
+                    endpointsOptions.MetricsEndpointOutputFormatter = new MetricsTextOutputFormatter();
+                    endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsJsonOutputFormatter();
+                    endpointsOptions.MetricsEndpoint = "/metrics2";
+                };
 
                 options.MetricsOptions = metricsOptions => { metricsOptions.MetricsEnabled = true; };
 

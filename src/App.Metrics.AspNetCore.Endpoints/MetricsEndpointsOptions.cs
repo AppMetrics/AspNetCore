@@ -4,6 +4,7 @@
 
 using System;
 using App.Metrics.AspNetCore.Internal;
+using App.Metrics.Formatters;
 using Microsoft.AspNetCore.Builder;
 
 namespace App.Metrics.AspNetCore.Endpoints
@@ -58,6 +59,15 @@ namespace App.Metrics.AspNetCore.Endpoints
         public bool MetricsEndpointEnabled { get; set; }
 
         /// <summary>
+        ///     Gets or sets the <see cref="IMetricsOutputFormatter" /> used to write metrics when the metrics endpoint is
+        ///     requested.
+        /// </summary>
+        /// <value>
+        ///     The <see cref="IMetricsOutputFormatter" /> used to write metrics.
+        /// </value>
+        public IMetricsOutputFormatter MetricsEndpointOutputFormatter { get; set; }
+
+        /// <summary>
         ///     Gets or sets the metrics text endpoint, defaults to metrics-text.
         /// </summary>
         /// <value>
@@ -74,6 +84,15 @@ namespace App.Metrics.AspNetCore.Endpoints
         ///     <c>true</c> if [metrics text endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
         public bool MetricsTextEndpointEnabled { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the <see cref="IMetricsOutputFormatter" /> used to write metrics when the metrics text endpoint is
+        ///     requested.
+        /// </summary>
+        /// <value>
+        ///     The <see cref="IMetricsOutputFormatter" /> used to write metrics.
+        /// </value>
+        public IMetricsOutputFormatter MetricsTextEndpointOutputFormatter { get; set; }
 
         /// <summary>
         ///     Gets or sets the ping endpoint, defaults to /ping.

@@ -163,6 +163,8 @@ namespace Microsoft.AspNetCore.Builder
             IOptions<MetricsOptions> metricsOptionsAccessor,
             IMetricsOutputFormatter formatter = null)
         {
+            formatter = formatter ?? endpointsOptionsAccessor.Value.MetricsEndpointOutputFormatter;
+
             app.UseWhen(
                 context => ShouldUseMetricsEndpoint(endpointsOptionsAccessor, metricsOptionsAccessor, context),
                 appBuilder =>
@@ -178,6 +180,8 @@ namespace Microsoft.AspNetCore.Builder
             IOptions<MetricsOptions> metricsOptionsAccessor,
             IMetricsOutputFormatter formatter = null)
         {
+            formatter = formatter ?? endpointsOptionsAccessor.Value.MetricsTextEndpointOutputFormatter;
+
             app.UseWhen(
                 context => ShouldUseMetricsTextEndpoint(endpointsOptionsAccessor, metricsOptionsAccessor, context),
                 appBuilder =>

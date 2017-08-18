@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Microsoft.AspNetCore.Hosting
     // ReSharper restore CheckNamespace
 {
+    /// <summary>
+    ///     Extension methods for setting up App Metrics AspNet Core services in an <see cref="IWebHostBuilder" />.
+    /// </summary>
     public static class MetricsAspNetWebHostBuilderExtensions
     {
         /// <summary>
