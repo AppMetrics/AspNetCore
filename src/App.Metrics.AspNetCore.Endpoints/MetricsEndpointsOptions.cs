@@ -23,6 +23,18 @@ namespace App.Metrics.AspNetCore.Endpoints
         }
 
         /// <summary>
+        ///     Gets or sets the port to host available endpoints provided by App Metrics.
+        /// </summary>
+        /// <remarks>
+        ///     This overrides all endpoing specific port configuration allowing a the port to be specific on a single
+        ///     setting.
+        /// </remarks>
+        /// <value>
+        ///     The App Metrics available endpoint's port.
+        /// </value>
+        public int? AllEndpointsPort { get; set; }
+
+        /// <summary>
         ///     Gets or sets the environment info endpoint, defaults to /env.
         /// </summary>
         /// <value>
@@ -39,6 +51,14 @@ namespace App.Metrics.AspNetCore.Endpoints
         ///     <c>true</c> if [environment info endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
         public bool EnvironmentInfoEndpointEnabled { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the port to host the env info endpoint.
+        /// </summary>
+        /// <value>
+        ///     The env info endpoint's port.
+        /// </value>
+        public int? EnvironmentInfoEndpointPort { get; set; }
 
         /// <summary>
         ///     Gets or sets the metrics endpoint, defaults to /metrics.
@@ -68,6 +88,14 @@ namespace App.Metrics.AspNetCore.Endpoints
         public IMetricsOutputFormatter MetricsEndpointOutputFormatter { get; set; }
 
         /// <summary>
+        ///     Gets or sets the port to host the metrics endpoint.
+        /// </summary>
+        /// <value>
+        ///     The metrics endpoint's port.
+        /// </value>
+        public int? MetricsEndpointPort { get; set; }
+
+        /// <summary>
         ///     Gets or sets the metrics text endpoint, defaults to metrics-text.
         /// </summary>
         /// <value>
@@ -95,6 +123,14 @@ namespace App.Metrics.AspNetCore.Endpoints
         public IMetricsOutputFormatter MetricsTextEndpointOutputFormatter { get; set; }
 
         /// <summary>
+        ///     Gets or sets the port to host the metrics text endpoint.
+        /// </summary>
+        /// <value>
+        ///     The metrics text endpoint's port.
+        /// </value>
+        public int? MetricsTextEndpointPort { get; set; }
+
+        /// <summary>
         ///     Gets or sets the ping endpoint, defaults to /ping.
         /// </summary>
         /// <value>
@@ -110,5 +146,13 @@ namespace App.Metrics.AspNetCore.Endpoints
         ///     <c>true</c> if [ping endpoint enabled]; otherwise, <c>false</c>.
         /// </value>
         public bool PingEndpointEnabled { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the port to host the ping endpoint.
+        /// </summary>
+        /// <value>
+        ///     The pint endpoint's port.
+        /// </value>
+        public int? PingEndpointPort { get; set; }
     }
 }

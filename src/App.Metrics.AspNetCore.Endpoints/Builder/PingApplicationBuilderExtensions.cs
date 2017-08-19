@@ -5,6 +5,7 @@
 using System;
 using App.Metrics.AspNetCore.Endpoints;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -39,9 +40,21 @@ namespace Microsoft.AspNetCore.Builder
 
         private static bool ShouldUsePing(IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, HttpContext context)
         {
+            int? port = null;
+
+            if (endpointsOptionsAccessor.Value.AllEndpointsPort.HasValue)
+            {
+                port = endpointsOptionsAccessor.Value.AllEndpointsPort.Value;
+            }
+            else if (endpointsOptionsAccessor.Value.PingEndpointPort.HasValue)
+            {
+                port = endpointsOptionsAccessor.Value.PingEndpointPort.Value;
+            }
+
             return context.Request.Path == endpointsOptionsAccessor.Value.PingEndpoint &&
                    endpointsOptionsAccessor.Value.PingEndpointEnabled &&
-                   endpointsOptionsAccessor.Value.PingEndpoint.IsPresent();
+                   endpointsOptionsAccessor.Value.PingEndpoint.IsPresent() &&
+                   (!port.HasValue || context.Features.Get<IHttpConnectionFeature>()?.LocalPort == port.Value);
         }
 
         private static void UsePingMiddleware(IApplicationBuilder app, IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor)

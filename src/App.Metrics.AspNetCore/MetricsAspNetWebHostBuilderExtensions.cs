@@ -3,7 +3,11 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using App.Metrics.AspNetCore;
+using App.Metrics.AspNetCore.Endpoints;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable CheckNamespace
@@ -31,7 +35,15 @@ namespace Microsoft.AspNetCore.Hosting
                 throw new ArgumentNullException(nameof(hostBuilder));
             }
 
-            hostBuilder.ConfigureServices((context, services) => { ConfigureMetricsServices(services, context); });
+            hostBuilder.ConfigureServices(
+                (context, services) =>
+                {
+                    var endpointsOptions = new MetricsEndpointsOptions();
+                    context.Configuration.Bind("MetricsEndpointsOptions", endpointsOptions);
+
+                    ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
+                    ConfigureMetricsServices(services, context);
+                });
 
             return hostBuilder;
         }
@@ -61,6 +73,48 @@ namespace Microsoft.AspNetCore.Hosting
                     var metricsOptions = new MetricsWebHostOptions();
                     setupAction?.Invoke(metricsOptions);
 
+                    var endpointsOptions = new MetricsEndpointsOptions();
+                    context.Configuration.Bind("MetricsEndpointsOptions", endpointsOptions);
+                    metricsOptions.EndpointOptions(endpointsOptions);
+
+                    ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
+                    ConfigureMetricsServices(services, context, metricsOptions);
+                });
+
+            return hostBuilder;
+        }
+
+        /// <summary>
+        ///     Adds App Metrics services, configuration and middleware to the
+        ///     <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" />.
+        /// </summary>
+        /// <param name="hostBuilder">The <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" />.</param>
+        /// <param name="setupAction">
+        ///     An <see cref="Action{WebHostBuilderContext, MetricsWebHostOptions}" /> to configure the provided
+        ///     <see cref="MetricsWebHostOptions" />.
+        /// </param>
+        /// <returns>A reference to this instance after the operation has completed.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" /> cannot be null
+        /// </exception>
+        public static IWebHostBuilder UseMetrics(this IWebHostBuilder hostBuilder, Action<WebHostBuilderContext, MetricsWebHostOptions> setupAction)
+        {
+            if (hostBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(hostBuilder));
+            }
+
+            hostBuilder.ConfigureServices(
+                (context, services) =>
+                {
+                    var metricsOptions = new MetricsWebHostOptions();
+                    setupAction?.Invoke(context, metricsOptions);
+
+                    var endpointsOptions = new MetricsEndpointsOptions();
+                    context.Configuration.Bind("MetricsEndpointsOptions", endpointsOptions);
+                    metricsOptions.EndpointOptions(endpointsOptions);
+
+                    ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
                     ConfigureMetricsServices(services, context, metricsOptions);
                 });
 
@@ -103,6 +157,45 @@ namespace Microsoft.AspNetCore.Hosting
             // Add the default metrics startup filter using all metrics tracking middleware and metrics endpoints
             //
             services.AddSingleton<IStartupFilter>(new DefaultMetricsStartupFilter());
+        }
+
+        private static void ConfigureServerUrlsKey(IWebHostBuilder hostBuilder, MetricsEndpointsOptions endpointsOptions)
+        {
+            var ports = new List<int>();
+
+            if (endpointsOptions.AllEndpointsPort.HasValue)
+            {
+                ports.Add(endpointsOptions.AllEndpointsPort.Value);
+            }
+            else
+            {
+                if (endpointsOptions.MetricsEndpointPort.HasValue)
+                {
+                    ports.Add(endpointsOptions.MetricsEndpointPort.Value);
+                }
+
+                if (endpointsOptions.MetricsTextEndpointPort.HasValue)
+                {
+                    ports.Add(endpointsOptions.MetricsTextEndpointPort.Value);
+                }
+
+                if (endpointsOptions.PingEndpointPort.HasValue)
+                {
+                    ports.Add(endpointsOptions.PingEndpointPort.Value);
+                }
+
+                if (endpointsOptions.EnvironmentInfoEndpointPort.HasValue)
+                {
+                    ports.Add(endpointsOptions.EnvironmentInfoEndpointPort.Value);
+                }
+            }
+
+            if (ports.Any())
+            {
+                var existingUrl = hostBuilder.GetSetting(WebHostDefaults.ServerUrlsKey);
+                var additionalUrls = string.Join(";", ports.Distinct().Select(p => $"http://localhost:{p}"));
+                hostBuilder.UseSetting(WebHostDefaults.ServerUrlsKey, $"{existingUrl};{additionalUrls}");
+            }
         }
     }
 }

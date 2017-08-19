@@ -10,6 +10,7 @@ using App.Metrics.DependencyInjection.Internal;
 using App.Metrics.Formatters;
 using App.Metrics.Formatters.Ascii;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -84,9 +85,21 @@ namespace Microsoft.AspNetCore.Builder
 
         private static bool ShouldUseEnvInfo(IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, HttpContext context)
         {
+            int? port = null;
+
+            if (endpointsOptionsAccessor.Value.AllEndpointsPort.HasValue)
+            {
+                port = endpointsOptionsAccessor.Value.AllEndpointsPort.Value;
+            }
+            else if (endpointsOptionsAccessor.Value.EnvironmentInfoEndpointPort.HasValue)
+            {
+                port = endpointsOptionsAccessor.Value.EnvironmentInfoEndpointPort.Value;
+            }
+
             return endpointsOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
                    endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent() &&
-                   context.Request.Path == endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint;
+                   context.Request.Path == endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint &&
+                   (!port.HasValue || context.Features.Get<IHttpConnectionFeature>()?.LocalPort == port.Value);
         }
 
         private static void UseEnvInfoMiddleware(IApplicationBuilder app, IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, IEnvOutputFormatter formatter = null)

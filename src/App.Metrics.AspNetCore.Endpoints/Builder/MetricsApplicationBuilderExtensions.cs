@@ -10,6 +10,7 @@ using App.Metrics.DependencyInjection.Internal;
 using App.Metrics.Formatters;
 using App.Metrics.Formatters.Ascii;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -136,25 +137,49 @@ namespace Microsoft.AspNetCore.Builder
         }
 
         private static bool ShouldUseMetricsEndpoint(
-            IOptions<MetricsEndpointsOptions> metricsAspNetCoreOptionsAccessor,
+            IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor,
             IOptions<MetricsOptions> metricsOptionsAccessor,
             HttpContext context)
         {
-            return context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsEndpoint &&
-                   metricsAspNetCoreOptionsAccessor.Value.MetricsEndpointEnabled &&
+            int? port = null;
+
+            if (endpointsOptionsAccessor.Value.AllEndpointsPort.HasValue)
+            {
+                port = endpointsOptionsAccessor.Value.AllEndpointsPort.Value;
+            }
+            else if (endpointsOptionsAccessor.Value.MetricsEndpointPort.HasValue)
+            {
+                port = endpointsOptionsAccessor.Value.MetricsEndpointPort.Value;
+            }
+
+            return context.Request.Path == endpointsOptionsAccessor.Value.MetricsEndpoint &&
+                   endpointsOptionsAccessor.Value.MetricsEndpointEnabled &&
                    metricsOptionsAccessor.Value.MetricsEnabled &&
-                   metricsAspNetCoreOptionsAccessor.Value.MetricsEndpoint.IsPresent();
+                   endpointsOptionsAccessor.Value.MetricsEndpoint.IsPresent() &&
+                   (!port.HasValue || context.Features.Get<IHttpConnectionFeature>()?.LocalPort == port.Value);
         }
 
         private static bool ShouldUseMetricsTextEndpoint(
-            IOptions<MetricsEndpointsOptions> metricsAspNetCoreOptionsAccessor,
+            IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor,
             IOptions<MetricsOptions> metricsOptionsAccessor,
             HttpContext context)
         {
-            return context.Request.Path == metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint &&
-                   metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpointEnabled &&
+            int? port = null;
+
+            if (endpointsOptionsAccessor.Value.AllEndpointsPort.HasValue)
+            {
+                port = endpointsOptionsAccessor.Value.AllEndpointsPort.Value;
+            }
+            else if (endpointsOptionsAccessor.Value.MetricsTextEndpointPort.HasValue)
+            {
+                port = endpointsOptionsAccessor.Value.MetricsTextEndpointPort.Value;
+            }
+
+            return context.Request.Path == endpointsOptionsAccessor.Value.MetricsTextEndpoint &&
+                   endpointsOptionsAccessor.Value.MetricsTextEndpointEnabled &&
                    metricsOptionsAccessor.Value.MetricsEnabled &&
-                   metricsAspNetCoreOptionsAccessor.Value.MetricsTextEndpoint.IsPresent();
+                   endpointsOptionsAccessor.Value.MetricsTextEndpoint.IsPresent() &&
+                   (!port.HasValue || context.Features.Get<IHttpConnectionFeature>()?.LocalPort == port.Value);
         }
 
         private static void UseMetricsMiddleware(
