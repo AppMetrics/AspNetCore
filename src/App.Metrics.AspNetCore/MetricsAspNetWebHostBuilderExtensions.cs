@@ -5,8 +5,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
+using App.Metrics.AspNetCore.TrackingMiddleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,7 +41,7 @@ namespace Microsoft.AspNetCore.Hosting
                 (context, services) =>
                 {
                     var endpointsOptions = new MetricsEndpointsOptions();
-                    context.Configuration.Bind("MetricsEndpointsOptions", endpointsOptions);
+                    context.Configuration.Bind(nameof(MetricsEndpointsOptions), endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
                     ConfigureMetricsServices(services, context);
@@ -74,7 +76,7 @@ namespace Microsoft.AspNetCore.Hosting
                     setupAction?.Invoke(metricsOptions);
 
                     var endpointsOptions = new MetricsEndpointsOptions();
-                    context.Configuration.Bind("MetricsEndpointsOptions", endpointsOptions);
+                    context.Configuration.Bind(nameof(MetricsEndpointsOptions), endpointsOptions);
                     metricsOptions.EndpointOptions(endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
@@ -111,7 +113,7 @@ namespace Microsoft.AspNetCore.Hosting
                     setupAction?.Invoke(context, metricsOptions);
 
                     var endpointsOptions = new MetricsEndpointsOptions();
-                    context.Configuration.Bind("MetricsEndpointsOptions", endpointsOptions);
+                    context.Configuration.Bind(nameof(MetricsEndpointsOptions), endpointsOptions);
                     metricsOptions.EndpointOptions(endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
@@ -134,23 +136,23 @@ namespace Microsoft.AspNetCore.Hosting
             //
             // Add metrics services with options, configuration section takes precedence
             //
-            var metricsBuilder = services.AddMetrics(context.Configuration.GetSection("MetricsOptions"), metricsOptions.MetricsOptions);
+            var metricsBuilder = services.AddMetrics(context.Configuration.GetSection(nameof(MetricsOptions)), metricsOptions.MetricsOptions);
 
             //
             // Add metrics aspnet core essesntial services
             //
-            var aspNetCoreMetricsBuilder = metricsBuilder.AddAspNetCoreMetrics(context.Configuration.GetSection("MetricsAspNetCoreOptions"));
+            var aspNetCoreMetricsBuilder = metricsBuilder.AddAspNetCoreMetrics(context.Configuration.GetSection(nameof(MetricsAspNetCoreOptions)));
 
             //
             // Add metrics endpoint options, configuration section takes precedence
             //
-            aspNetCoreMetricsBuilder.AddEndpointOptions(context.Configuration.GetSection("MetricsEndpointsOptions"), metricsOptions.EndpointOptions);
+            aspNetCoreMetricsBuilder.AddEndpointOptions(context.Configuration.GetSection(nameof(MetricsEndpointsOptions)), metricsOptions.EndpointOptions);
 
             //
             // Add metrics tracking middleware options, configuration section takes precedence
             //
             aspNetCoreMetricsBuilder.AddTrackingMiddlewareOptions(
-                context.Configuration.GetSection("MetricsTrackingMiddlewareOptions"),
+                context.Configuration.GetSection(nameof(MetricsTrackingMiddlewareOptions)),
                 metricsOptions.TrackingMiddlewareOptions);
 
             //
