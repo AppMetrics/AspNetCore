@@ -28,7 +28,6 @@ namespace MetricsSandboxMvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTestStuff();
-
             services.AddMvc(options => options.AddMetricsResourceFilter());
         }
     }

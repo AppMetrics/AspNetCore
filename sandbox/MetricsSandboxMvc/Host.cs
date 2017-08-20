@@ -6,8 +6,10 @@ using System;
 using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Ascii;
 using App.Metrics.Formatters.Json;
+using App.Metrics.ReservoirSampling.Uniform;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MetricsSandboxMvc
 {
@@ -16,8 +18,8 @@ namespace MetricsSandboxMvc
         public static IWebHost BuildWebHost(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                          // .UseMetrics(ConfigureMetricsOptions())
-                          .UseMetrics()
+                          .UseMetrics(ConfigureMetricsOptions())
+                          // .UseMetrics()
                           .UseStartup<Startup>().Build();
         }
 
@@ -27,6 +29,8 @@ namespace MetricsSandboxMvc
         {
             return options =>
             {
+                options.CoreBuilder.AddDefaultReservoir(() => new DefaultAlgorithmRReservoir());
+
                 options.EndpointOptions = endpointsOptions =>
                 {
                     endpointsOptions.MetricsEndpointOutputFormatter = new MetricsTextOutputFormatter();

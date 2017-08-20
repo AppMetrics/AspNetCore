@@ -9,6 +9,7 @@ using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.AspNetCore.TrackingMiddleware;
+using App.Metrics.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -40,11 +41,12 @@ namespace Microsoft.AspNetCore.Hosting
             hostBuilder.ConfigureServices(
                 (context, services) =>
                 {
+                    var metricsOptions = new MetricsWebHostOptions { CoreBuilder = new MetricsCoreBuilder(services) };
                     var endpointsOptions = new MetricsEndpointsOptions();
                     context.Configuration.Bind(nameof(MetricsEndpointsOptions), endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
-                    ConfigureMetricsServices(services, context);
+                    ConfigureMetricsServices(context, metricsOptions);
                 });
 
             return hostBuilder;
@@ -72,7 +74,7 @@ namespace Microsoft.AspNetCore.Hosting
             hostBuilder.ConfigureServices(
                 (context, services) =>
                 {
-                    var metricsOptions = new MetricsWebHostOptions();
+                    var metricsOptions = new MetricsWebHostOptions { CoreBuilder = new MetricsCoreBuilder(services) };
                     setupAction?.Invoke(metricsOptions);
 
                     var endpointsOptions = new MetricsEndpointsOptions();
@@ -80,7 +82,7 @@ namespace Microsoft.AspNetCore.Hosting
                     metricsOptions.EndpointOptions(endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
-                    ConfigureMetricsServices(services, context, metricsOptions);
+                    ConfigureMetricsServices(context, metricsOptions);
                 });
 
             return hostBuilder;
@@ -109,7 +111,7 @@ namespace Microsoft.AspNetCore.Hosting
             hostBuilder.ConfigureServices(
                 (context, services) =>
                 {
-                    var metricsOptions = new MetricsWebHostOptions();
+                    var metricsOptions = new MetricsWebHostOptions { CoreBuilder = new MetricsCoreBuilder(services) };
                     setupAction?.Invoke(context, metricsOptions);
 
                     var endpointsOptions = new MetricsEndpointsOptions();
@@ -117,26 +119,20 @@ namespace Microsoft.AspNetCore.Hosting
                     metricsOptions.EndpointOptions(endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
-                    ConfigureMetricsServices(services, context, metricsOptions);
+                    ConfigureMetricsServices(context, metricsOptions);
                 });
 
             return hostBuilder;
         }
 
         private static void ConfigureMetricsServices(
-            IServiceCollection services,
             WebHostBuilderContext context,
-            MetricsWebHostOptions metricsOptions = null)
+            MetricsWebHostOptions metricsOptions)
         {
-            if (metricsOptions == null)
-            {
-                metricsOptions = new MetricsWebHostOptions();
-            }
-
             //
             // Add metrics services with options, setup action takes precedence over configuration section
             //
-            var metricsBuilder = services.AddMetrics(context.Configuration.GetSection(nameof(MetricsOptions)), metricsOptions.MetricsOptions);
+            var metricsBuilder = metricsOptions.CoreBuilder.Services.AddMetrics(context.Configuration.GetSection(nameof(MetricsOptions)), metricsOptions.MetricsOptions);
 
             //
             // Add metrics aspnet core essesntial services
@@ -158,7 +154,7 @@ namespace Microsoft.AspNetCore.Hosting
             //
             // Add the default metrics startup filter using all metrics tracking middleware and metrics endpoints
             //
-            services.AddSingleton<IStartupFilter>(new DefaultMetricsStartupFilter());
+            metricsOptions.CoreBuilder.Services.AddSingleton<IStartupFilter>(new DefaultMetricsStartupFilter());
         }
 
         private static void ConfigureServerUrlsKey(IWebHostBuilder hostBuilder, MetricsEndpointsOptions endpointsOptions)
@@ -195,7 +191,7 @@ namespace Microsoft.AspNetCore.Hosting
             if (ports.Any())
             {
                 var existingUrl = hostBuilder.GetSetting(WebHostDefaults.ServerUrlsKey);
-                var additionalUrls = string.Join(";", ports.Distinct().Select(p => $"http://localhost:{p}"));
+                var additionalUrls = string.Join(";", ports.Distinct().Select(p => $"http://localhost:{p}/"));
                 hostBuilder.UseSetting(WebHostDefaults.ServerUrlsKey, $"{existingUrl};{additionalUrls}");
             }
         }

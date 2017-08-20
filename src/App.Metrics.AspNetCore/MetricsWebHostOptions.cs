@@ -5,11 +5,13 @@
 using System;
 using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.AspNetCore.TrackingMiddleware;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Metrics.AspNetCore
 {
     /// <summary>
-    ///     Provides programmatic configuration for metrics, metrics endpoints and tracking middleware in the App Metrics framework.
+    ///     Provides programmatic configuration for metrics, metrics endpoints and tracking middleware in the App Metrics
+    ///     framework.
     /// </summary>
     public class MetricsWebHostOptions
     {
@@ -21,7 +23,12 @@ namespace App.Metrics.AspNetCore
         }
 
         /// <summary>
-        ///     Gets or sets <see cref="Action{MetricsEndpointsOptions}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        ///     Gets the <see cref="IMetricsCoreBuilder" /> allowing configuration of additional core metrics services and options.
+        /// </summary>
+        public IMetricsCoreBuilder CoreBuilder { get; internal set; }
+
+        /// <summary>
+        ///     Gets or sets <see cref="Action{T}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
         /// </summary>
         public Action<MetricsEndpointsOptions> EndpointOptions { get; set; }
 

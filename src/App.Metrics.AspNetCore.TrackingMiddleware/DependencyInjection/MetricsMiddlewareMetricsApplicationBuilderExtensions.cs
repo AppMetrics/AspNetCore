@@ -35,7 +35,7 @@ namespace Microsoft.AspNetCore.Builder
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
             var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
-            UseMetricsgMiddleware<ActiveRequestCounterEndpointMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
+            UseMetricsMiddleware<ActiveRequestCounterEndpointMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
 
             return app;
         }
@@ -93,7 +93,7 @@ namespace Microsoft.AspNetCore.Builder
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
             var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
-            UseMetricsgMiddleware<ErrorRequestMeterMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
+            UseMetricsMiddleware<ErrorRequestMeterMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
 
             return app;
         }
@@ -131,7 +131,7 @@ namespace Microsoft.AspNetCore.Builder
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
             var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
-            UseMetricsgMiddleware<PostAndPutRequestSizeHistogramMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
+            UseMetricsMiddleware<PostAndPutRequestSizeHistogramMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
 
             return app;
         }
@@ -148,8 +148,8 @@ namespace Microsoft.AspNetCore.Builder
             var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
             var trackingMiddlwareOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
 
-            UseMetricsgMiddleware<RequestTimerMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
-            UseMetricsgMiddleware<PerRequestTimerMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
+            UseMetricsMiddleware<RequestTimerMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
+            UseMetricsMiddleware<PerRequestTimerMiddleware>(app, metricsOptionsAccessor, trackingMiddlwareOptionsAccessor);
 
             return app;
         }
@@ -171,7 +171,7 @@ namespace Microsoft.AspNetCore.Builder
             return false;
         }
 
-        private static void UseMetricsgMiddleware<TMiddleware>(
+        private static void UseMetricsMiddleware<TMiddleware>(
             IApplicationBuilder app,
             IOptions<MetricsOptions> metricsOptionsAccessor,
             IOptions<MetricsTrackingMiddlewareOptions> trackingMiddlwareOptionsAccessor)
