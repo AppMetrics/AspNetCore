@@ -134,7 +134,7 @@ namespace Microsoft.AspNetCore.Hosting
             }
 
             //
-            // Add metrics services with options, configuration section takes precedence
+            // Add metrics services with options, setup action takes precedence over configuration section
             //
             var metricsBuilder = services.AddMetrics(context.Configuration.GetSection(nameof(MetricsOptions)), metricsOptions.MetricsOptions);
 
@@ -144,12 +144,12 @@ namespace Microsoft.AspNetCore.Hosting
             var aspNetCoreMetricsBuilder = metricsBuilder.AddAspNetCoreMetrics(context.Configuration.GetSection(nameof(MetricsAspNetCoreOptions)));
 
             //
-            // Add metrics endpoint options, configuration section takes precedence
+            // Add metrics endpoint options, setup action takes precedence over configuration section
             //
             aspNetCoreMetricsBuilder.AddEndpointOptions(context.Configuration.GetSection(nameof(MetricsEndpointsOptions)), metricsOptions.EndpointOptions);
 
             //
-            // Add metrics tracking middleware options, configuration section takes precedence
+            // Add metrics tracking middleware options, setup action takes precedence over configuration section
             //
             aspNetCoreMetricsBuilder.AddTrackingMiddlewareOptions(
                 context.Configuration.GetSection(nameof(MetricsTrackingMiddlewareOptions)),

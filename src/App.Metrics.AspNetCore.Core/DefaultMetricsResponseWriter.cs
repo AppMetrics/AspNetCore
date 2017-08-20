@@ -24,35 +24,25 @@ namespace App.Metrics.AspNetCore
             IOptions<MetricsAspNetCoreOptions> middlewareOptionsAccessor,
             IMetricsOutputFormatter formatter)
         {
-            if (metricsOptionsAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(metricsOptionsAccessor));
-            }
-
             if (middlewareOptionsAccessor == null)
             {
                 throw new ArgumentNullException(nameof(middlewareOptionsAccessor));
             }
 
             _formatter = formatter;
-            _metricsOptions = metricsOptionsAccessor.Value;
+            _metricsOptions = metricsOptionsAccessor?.Value ?? throw new ArgumentNullException(nameof(metricsOptionsAccessor));
         }
 
         public DefaultMetricsResponseWriter(
             IOptions<MetricsOptions> metricsOptionsAccessor,
             IOptions<MetricsAspNetCoreOptions> middlewareOptionsAccessor)
         {
-            if (metricsOptionsAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(metricsOptionsAccessor));
-            }
-
             if (middlewareOptionsAccessor == null)
             {
                 throw new ArgumentNullException(nameof(middlewareOptionsAccessor));
             }
 
-            _metricsOptions = metricsOptionsAccessor.Value;
+            _metricsOptions = metricsOptionsAccessor?.Value ?? throw new ArgumentNullException(nameof(metricsOptionsAccessor));
         }
 
         /// <inheritdoc />

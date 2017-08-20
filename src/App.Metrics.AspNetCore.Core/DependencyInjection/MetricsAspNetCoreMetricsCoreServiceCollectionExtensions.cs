@@ -3,13 +3,11 @@
 // </copyright>
 
 using System;
-using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.DependencyInjection.Internal;
 using App.Metrics.AspNetCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 // ReSharper disable CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
