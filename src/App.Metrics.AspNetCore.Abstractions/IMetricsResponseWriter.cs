@@ -17,6 +17,6 @@ namespace App.Metrics.AspNetCore
         /// <param name="metricsData">The metrics snapshot to write.</param>
         /// <param name="token">The <see cref="CancellationToken" /></param>
         /// <returns>A <see cref="Task" /> which writes the given <see cref="MetricsDataValueSource" /> to the HTTP reponse.</returns>
-        Task WriteAsync(HttpContext context, MetricsDataValueSource metricsData, CancellationToken token = default(CancellationToken));
+        Task WriteAsync(HttpContext context, MetricsDataValueSource metricsData, CancellationToken token = default);
     }
 }

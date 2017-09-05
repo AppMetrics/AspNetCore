@@ -26,7 +26,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
             var appMetricsOptions = new MetricsOptions
                                     {
                                         DefaultContextLabel = "testing",
-                                        MetricsEnabled = false
+                                        Enabled = false
                                     };
 
             var endpointsOptions = new MetricsEndpointsOptions

@@ -35,8 +35,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         {
             var appMetricsOptions = new MetricsOptions
                                     {
-                                        MetricsEnabled = true,
-                                        DefaultOutputMetricsFormatter = new MetricsJsonOutputFormatter()
+                                        Enabled = true
                                     };
 
             var endpointOptions = new MetricsEndpointsOptions();

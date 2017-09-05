@@ -17,93 +17,93 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class MetricsAspNetCoreMetricsBuilderExtensions
     {
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IServiceCollection" />.
         /// </summary>
-        /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
+        /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
         /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
-        public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(this IMetricsBuilder builder)
+        public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(this IServiceCollection services)
         {
-            builder.Services.AddAspNetCoreMetricsCore();
+            services.AddAspNetCoreMetricsCore();
 
-            return new MetricsAspNetCoreBuilder(builder.Services);
+            return new MetricsAspNetCoreBuilder(services);
         }
 
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IServiceCollection" />.
         /// </summary>
-        /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
+        /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
         /// <param name="configuration">The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreOptions" />.</param>
         /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(
-            this IMetricsBuilder builder,
+            this IServiceCollection services,
             IConfiguration configuration)
         {
-            var aspNetCoreBuilder = builder.AddAspNetCoreMetrics();
+            var aspNetCoreBuilder = services.AddAspNetCoreMetrics();
 
-            builder.Services.Configure<MetricsAspNetCoreOptions>(configuration);
+            services.Configure<MetricsAspNetCoreOptions>(configuration);
 
             return aspNetCoreBuilder;
         }
 
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IServiceCollection" />.
         /// </summary>
-        /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
+        /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
         /// <param name="configuration">The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreOptions" />.</param>
         /// <param name="setupAction">
         ///     An <see cref="Action{MetricsAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
         /// </param>
         /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(
-            this IMetricsBuilder builder,
+            this IServiceCollection services,
             IConfiguration configuration,
             Action<MetricsAspNetCoreOptions> setupAction)
         {
-            var aspNetCoreBuilder = builder.AddAspNetCoreMetrics();
+            var aspNetCoreBuilder = services.AddAspNetCoreMetrics();
 
-            builder.Services.Configure<MetricsAspNetCoreOptions>(configuration);
-            builder.Services.Configure(setupAction);
+            services.Configure<MetricsAspNetCoreOptions>(configuration);
+            services.Configure(setupAction);
 
             return aspNetCoreBuilder;
         }
 
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IServiceCollection" />.
         /// </summary>
-        /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
+        /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
         /// <param name="setupAction">
         ///     An <see cref="Action{MetricsAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
         /// </param>
         /// <param name="configuration">The <see cref="IConfiguration" /> from where to load <see cref="MetricsAspNetCoreOptions" />.</param>
         /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(
-            this IMetricsBuilder builder,
+            this IServiceCollection services,
             Action<MetricsAspNetCoreOptions> setupAction,
             IConfiguration configuration)
         {
-            var aspNetCoreBuilder = builder.AddAspNetCoreMetrics();
+            var aspNetCoreBuilder = services.AddAspNetCoreMetrics();
 
-            builder.Services.Configure(setupAction);
-            builder.Services.Configure<MetricsAspNetCoreOptions>(configuration);
+            services.Configure(setupAction);
+            services.Configure<MetricsAspNetCoreOptions>(configuration);
 
             return aspNetCoreBuilder;
         }
 
         /// <summary>
-        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IMetricsBuilder" />.
+        ///     Adds essential App Metrics AspNet Core services to the specified <see cref="IServiceCollection" />.
         /// </summary>
-        /// <param name="builder">The <see cref="IMetricsBuilder" /> to add services to.</param>
+        /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
         /// <param name="setupAction">
         ///     An <see cref="Action{MetricsAspNetCoreOptions}" /> to configure the provided <see cref="MetricsAspNetCoreOptions" />.
         /// </param>
         /// <returns>An <see cref="IMetricsAspNetCoreBuilder"/> that can be used to further configure the App Metrics AspNet Core services.</returns>
         public static IMetricsAspNetCoreBuilder AddAspNetCoreMetrics(
-            this IMetricsBuilder builder,
+            this IServiceCollection services,
             Action<MetricsAspNetCoreOptions> setupAction)
         {
-            var aspNetCoreBuilder = builder.AddAspNetCoreMetrics();
+            var aspNetCoreBuilder = services.AddAspNetCoreMetrics();
 
-            builder.Services.Configure(setupAction);
+            services.Configure(setupAction);
 
             return aspNetCoreBuilder;
         }

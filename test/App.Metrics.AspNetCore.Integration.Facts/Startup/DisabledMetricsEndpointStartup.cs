@@ -25,7 +25,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         {
             var appMetricsOptions = new MetricsOptions
                                     {
-                                        MetricsEnabled = true
+                                        Enabled = true
                                     };
 
             var endpointsOptions = new MetricsEndpointsOptions

@@ -9,48 +9,35 @@ using System.Threading.Tasks;
 using App.Metrics.Formatters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
-using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 
 namespace App.Metrics.AspNetCore
 {
     public class DefaultMetricsResponseWriter : IMetricsResponseWriter
     {
+        private readonly IMetricsOutputFormatter _fallbackFormatter;
         private readonly IMetricsOutputFormatter _formatter;
-        private readonly MetricsOptions _metricsOptions;
+        private readonly MetricsFormatterCollection _formatters;
 
         public DefaultMetricsResponseWriter(
-            IOptions<MetricsOptions> metricsOptionsAccessor,
-            IOptions<MetricsAspNetCoreOptions> middlewareOptionsAccessor,
-            IMetricsOutputFormatter formatter)
+            IMetricsOutputFormatter fallbackFormatter,
+            MetricsFormatterCollection formatters)
         {
-            if (middlewareOptionsAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(middlewareOptionsAccessor));
-            }
-
-            _formatter = formatter;
-            _metricsOptions = metricsOptionsAccessor?.Value ?? throw new ArgumentNullException(nameof(metricsOptionsAccessor));
+            _formatters = formatters ?? throw new ArgumentNullException(nameof(formatters));
+            _fallbackFormatter = fallbackFormatter ?? throw new ArgumentNullException(nameof(fallbackFormatter));
         }
 
-        public DefaultMetricsResponseWriter(
-            IOptions<MetricsOptions> metricsOptionsAccessor,
-            IOptions<MetricsAspNetCoreOptions> middlewareOptionsAccessor)
+        public DefaultMetricsResponseWriter(IMetricsOutputFormatter formatter)
         {
-            if (middlewareOptionsAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(middlewareOptionsAccessor));
-            }
-
-            _metricsOptions = metricsOptionsAccessor?.Value ?? throw new ArgumentNullException(nameof(metricsOptionsAccessor));
+            _formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
         }
 
         /// <inheritdoc />
-        public Task WriteAsync(HttpContext context, MetricsDataValueSource metricsData, CancellationToken token = default(CancellationToken))
+        public Task WriteAsync(HttpContext context, MetricsDataValueSource metricsData, CancellationToken token = default)
         {
             var formatter = _formatter ?? context.Request.GetTypedHeaders().ResolveFormatter(
-                _metricsOptions.DefaultOutputMetricsFormatter,
-                metricsMediaTypeValue => _metricsOptions.OutputMetricsFormatters.GetType(metricsMediaTypeValue));
+                                _fallbackFormatter,
+                                metricsMediaTypeValue => _formatters.GetType(metricsMediaTypeValue));
 
             context.SetNoCacheHeaders();
 

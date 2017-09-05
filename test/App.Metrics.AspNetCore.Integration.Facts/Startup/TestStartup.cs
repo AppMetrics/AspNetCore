@@ -36,16 +36,26 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
             services.AddMvc(options => options.AddMetricsResourceFilter());
 
-            var builder = services.AddMetricsCore(
-                                       options =>
-                                       {
-                                           options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
-                                           options.MetricsEnabled = appMetricsOptions.MetricsEnabled;
-                                           options.DefaultOutputMetricsFormatter = appMetricsOptions.DefaultOutputMetricsFormatter;
-                                           options.DefaultOutputEnvFormatter = appMetricsOptions.DefaultOutputEnvFormatter;
-                                       }).AddDefaultReservoir(() => new DefaultAlgorithmRReservoir(1028)).AddClockType<TestClock>();
+            var builder = new MetricsBuilder()
+                .Configuration.Configure(
+                    options =>
+                    {
+                        options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
+                        options.Enabled = appMetricsOptions.Enabled;
+                    })
+                .OutputEnvInfo.AsPlainText()
+                .OutputEnvInfo.AsJson()
+                .OutputMetrics.AsJson()
+                .OutputMetrics.AsPlainText()
+                .SampleWith.AlgorithmR(1028)
+                .TimeWith.Clock<TestClock>();
 
-            builder.AddJsonFormatters();
+            if (filter != null)
+            {
+                builder.Filter.With(filter);
+            }
+
+            services.AddMetrics(builder);
 
             services.AddAspNetCoreMetricsCore().
                      AddTrackingMiddlewareOptionsCore(
@@ -65,11 +75,6 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                              options.MetricsTextEndpoint = endpointsOptions.MetricsTextEndpoint;
                              options.PingEndpoint = endpointsOptions.PingEndpoint;
                          });
-
-            if (filter != null)
-            {
-                builder.AddGlobalFilter(filter);
-            }
         }
     }
 }

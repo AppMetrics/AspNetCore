@@ -14,15 +14,15 @@ namespace Microsoft.AspNetCore.Http.Headers
     {
         public static TFormatter ResolveFormatter<TFormatter>(
             this RequestHeaders headers,
-            TFormatter defaultFormatter,
+            TFormatter fallbackFormatter,
             Func<MetricsMediaTypeValue, TFormatter> resolveOutputFormatter)
         {
             if (headers.Accept == null)
             {
-                return defaultFormatter;
+                return fallbackFormatter;
             }
 
-            var formatter = defaultFormatter;
+            var formatter = fallbackFormatter;
 
             foreach (var accept in headers.Accept)
             {
@@ -39,7 +39,7 @@ namespace Microsoft.AspNetCore.Http.Headers
                 }
             }
 
-            return defaultFormatter;
+            return fallbackFormatter;
         }
     }
 }

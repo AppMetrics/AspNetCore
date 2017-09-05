@@ -11,6 +11,6 @@ namespace App.Metrics.AspNetCore
 {
     public interface IEnvResponseWriter
     {
-        Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default(CancellationToken));
+        Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default);
     }
 }

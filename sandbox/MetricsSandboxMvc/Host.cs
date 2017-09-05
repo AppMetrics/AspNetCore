@@ -2,14 +2,8 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using System;
-using App.Metrics.AspNetCore;
-using App.Metrics.Formatters.Ascii;
-using App.Metrics.Formatters.Json;
-using App.Metrics.ReservoirSampling.Uniform;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace MetricsSandboxMvc
 {
@@ -18,30 +12,24 @@ namespace MetricsSandboxMvc
         public static IWebHost BuildWebHost(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                          .UseMetrics(ConfigureMetricsOptions())
-                          // .UseMetrics()
+                          .UseMetrics()
                           .UseStartup<Startup>().Build();
         }
 
         public static void Main(string[] args) { BuildWebHost(args).Run(); }
 
-        private static Action<MetricsWebHostOptions> ConfigureMetricsOptions()
-        {
-            return options =>
-            {
-                options.CoreBuilder.AddDefaultReservoir(() => new DefaultAlgorithmRReservoir());
-
-                options.EndpointOptions = endpointsOptions =>
-                {
-                    endpointsOptions.MetricsEndpointOutputFormatter = new MetricsTextOutputFormatter();
-                    endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsJsonOutputFormatter();
-                    endpointsOptions.MetricsEndpoint = "/metrics2";
-                };
-
-                options.MetricsOptions = metricsOptions => { metricsOptions.MetricsEnabled = true; };
-
-                options.TrackingMiddlewareOptions = middlewareOptions => { middlewareOptions.IgnoredHttpStatusCodes = new[] { 500 }; };
-            };
-        }
+        // private static Action<MetricsWebHostOptions> Configure()
+        // {
+        //     return options =>
+        //     {
+        //         options.EndpointOptions = endpointsOptions =>
+        //         {
+        //             endpointsOptions.MetricsEndpointOutputFormatter = new MetricsTextOutputFormatter();
+        //             endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsJsonOutputFormatter();
+        //             endpointsOptions.MetricsEndpoint = "/metrics2";
+        //         };
+        //         options.TrackingMiddlewareOptions = middlewareOptions => { middlewareOptions.IgnoredHttpStatusCodes = new[] { 500 }; };
+        //     };
+        // }
     }
 }

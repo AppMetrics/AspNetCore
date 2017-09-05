@@ -25,10 +25,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var appMetricsOptions = new MetricsOptions
-                                    {
-                                        DefaultOutputMetricsFormatter = new MetricsJsonOutputFormatter()
-                                    };
+            var appMetricsOptions = new MetricsOptions();
 
             var endpointsOptions = new MetricsEndpointsOptions
             {

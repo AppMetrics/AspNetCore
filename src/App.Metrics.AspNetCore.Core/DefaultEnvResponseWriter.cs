@@ -10,44 +10,34 @@ using App.Metrics.Formatters;
 using App.Metrics.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
-using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 
 namespace App.Metrics.AspNetCore
 {
     public class DefaultEnvResponseWriter : IEnvResponseWriter
     {
+        private readonly IEnvOutputFormatter _fallbackFormatter;
         private readonly IEnvOutputFormatter _formatter;
-        private readonly MetricsOptions _metricsOptions;
+        private readonly EnvFormatterCollection _formatters;
 
         public DefaultEnvResponseWriter(
-            IOptions<MetricsOptions> metricsOptionsAccessor,
-            IEnvOutputFormatter formatter)
+            IEnvOutputFormatter fallbackFormatter,
+            EnvFormatterCollection formatters)
         {
-            if (metricsOptionsAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(metricsOptionsAccessor));
-            }
-
-            _formatter = formatter;
-            _metricsOptions = metricsOptionsAccessor.Value;
+            _formatters = formatters ?? throw new ArgumentNullException(nameof(formatters));
+            _fallbackFormatter = fallbackFormatter ?? throw new ArgumentNullException(nameof(fallbackFormatter));
         }
 
-        public DefaultEnvResponseWriter(IOptions<MetricsOptions> metricsOptionsAccessor)
+        public DefaultEnvResponseWriter(IEnvOutputFormatter formatter)
         {
-            if (metricsOptionsAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(metricsOptionsAccessor));
-            }
-
-            _metricsOptions = metricsOptionsAccessor.Value;
+            _formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
         }
 
-        public Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default(CancellationToken))
+        public Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default)
         {
             var formatter = _formatter ?? context.Request.GetTypedHeaders().ResolveFormatter(
-                _metricsOptions.DefaultOutputEnvFormatter,
-                metricsMediaTypeValue => _metricsOptions.OutputEnvFormatters.GetType(metricsMediaTypeValue));
+                                _fallbackFormatter,
+                                metricsMediaTypeValue => _formatters.GetType(metricsMediaTypeValue));
 
             context.SetNoCacheHeaders();
 

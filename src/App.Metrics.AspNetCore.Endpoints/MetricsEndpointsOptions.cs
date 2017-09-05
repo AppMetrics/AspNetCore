@@ -123,6 +123,15 @@ namespace App.Metrics.AspNetCore.Endpoints
         public IMetricsOutputFormatter MetricsTextEndpointOutputFormatter { get; set; }
 
         /// <summary>
+        ///     Gets or sets the <see cref="IEnvOutputFormatter" /> used to write environment information when the env endpoint is
+        ///     requested.
+        /// </summary>
+        /// <value>
+        ///     The <see cref="IEnvOutputFormatter" /> used to write metrics.
+        /// </value>
+        public IEnvOutputFormatter EnvInfoEndpointOutputFormatter { get; set; }
+
+        /// <summary>
         ///     Gets or sets the port to host the metrics text endpoint.
         /// </summary>
         /// <value>

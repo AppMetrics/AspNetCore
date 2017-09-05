@@ -6,7 +6,7 @@ using System;
 using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
-using App.Metrics.DependencyInjection.Internal;
+using App.Metrics.Extensions.DependencyInjection.Internal;
 using App.Metrics.Formatters;
 using App.Metrics.Formatters.Ascii;
 using Microsoft.AspNetCore.Http;
@@ -36,10 +36,10 @@ namespace Microsoft.AspNetCore.Builder
         {
             EnsureMetricsAdded(app);
 
-            var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
+            var metricsOptions = app.ApplicationServices.GetRequiredService<MetricsOptions>();
             var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
 
-            UseMetricsMiddleware(app, endpointsOptionsAccessor, metricsOptionsAccessor);
+            UseMetricsMiddleware(app, endpointsOptionsAccessor, metricsOptions);
 
             return app;
         }
@@ -57,10 +57,10 @@ namespace Microsoft.AspNetCore.Builder
         {
             EnsureMetricsAdded(app);
 
-            var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
+            var metricsOptions = app.ApplicationServices.GetRequiredService<MetricsOptions>();
             var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
 
-            UseMetricsMiddleware(app, endpointsOptionsAccessor, metricsOptionsAccessor, formatter);
+            UseMetricsMiddleware(app, endpointsOptionsAccessor, metricsOptions, formatter);
 
             return app;
         }
@@ -75,10 +75,10 @@ namespace Microsoft.AspNetCore.Builder
         {
             EnsureMetricsAdded(app);
 
-            var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
+            var metricsOptions = app.ApplicationServices.GetRequiredService<MetricsOptions>();
             var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
 
-            UseMetricsTextMiddleware(app, endpointsOptionsAccessor, metricsOptionsAccessor);
+            UseMetricsTextMiddleware(app, endpointsOptionsAccessor, metricsOptions);
 
             return app;
         }
@@ -96,10 +96,10 @@ namespace Microsoft.AspNetCore.Builder
         {
             EnsureMetricsAdded(app);
 
-            var metricsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsOptions>>();
+            var metricsOptions = app.ApplicationServices.GetRequiredService<MetricsOptions>();
             var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
 
-            UseMetricsTextMiddleware(app, endpointsOptionsAccessor, metricsOptionsAccessor, formatter);
+            UseMetricsTextMiddleware(app, endpointsOptionsAccessor, metricsOptions, formatter);
 
             return app;
         }
@@ -116,29 +116,38 @@ namespace Microsoft.AspNetCore.Builder
             AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(app.ApplicationServices);
         }
 
-        private static DefaultMetricsResponseWriter GetMetricsResponseWriter(IServiceProvider serviceProvider, IMetricsOutputFormatter formatter = null)
+        private static DefaultMetricsResponseWriter GetMetricsResponseWriter(
+            IServiceProvider serviceProvider,
+            IMetricsOutputFormatter formatter = null)
         {
-            var options = serviceProvider.GetRequiredService<IOptions<MetricsOptions>>();
-            var aspNetCoreOptions = serviceProvider.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
+            var formatters = serviceProvider.GetRequiredService<MetricsFormatterCollection>();
 
-            return formatter == null
-                ? new DefaultMetricsResponseWriter(options, aspNetCoreOptions)
-                : new DefaultMetricsResponseWriter(options, aspNetCoreOptions, formatter);
+            if (formatter != null)
+            {
+                return new DefaultMetricsResponseWriter(formatter, formatters);
+            }
+
+            var options = serviceProvider.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
+            return new DefaultMetricsResponseWriter(options.Value.MetricsEndpointOutputFormatter, formatters);
         }
 
         private static IMetricsResponseWriter GetMetricsTextResponseWriter(IServiceProvider serviceProvider, IMetricsOutputFormatter formatter = null)
         {
-            var options = serviceProvider.GetRequiredService<IOptions<MetricsOptions>>();
-            var aspNetCoreOptions = serviceProvider.GetRequiredService<IOptions<MetricsAspNetCoreOptions>>();
-            var textOptions = serviceProvider.GetRequiredService<IOptions<MetricsTextOptions>>();
-            var textFormatter = formatter ?? new MetricsTextOutputFormatter(textOptions.Value);
-            var responseWriter = new DefaultMetricsResponseWriter(options, aspNetCoreOptions, textFormatter);
-            return responseWriter;
+            var formatters = serviceProvider.GetRequiredService<MetricsFormatterCollection>();
+
+            if (formatter != null)
+            {
+                var responseWriter = new DefaultMetricsResponseWriter(formatter, formatters);
+                return responseWriter;
+            }
+
+            var options = serviceProvider.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
+            return new DefaultMetricsResponseWriter(options.Value.MetricsTextEndpointOutputFormatter, formatters);
         }
 
         private static bool ShouldUseMetricsEndpoint(
             IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor,
-            IOptions<MetricsOptions> metricsOptionsAccessor,
+            MetricsOptions metricsOptions,
             HttpContext context)
         {
             int? port = null;
@@ -154,14 +163,14 @@ namespace Microsoft.AspNetCore.Builder
 
             return context.Request.Path == endpointsOptionsAccessor.Value.MetricsEndpoint &&
                    endpointsOptionsAccessor.Value.MetricsEndpointEnabled &&
-                   metricsOptionsAccessor.Value.MetricsEnabled &&
+                   metricsOptions.Enabled &&
                    endpointsOptionsAccessor.Value.MetricsEndpoint.IsPresent() &&
                    (!port.HasValue || context.Features.Get<IHttpConnectionFeature>()?.LocalPort == port.Value);
         }
 
         private static bool ShouldUseMetricsTextEndpoint(
             IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor,
-            IOptions<MetricsOptions> metricsOptionsAccessor,
+            MetricsOptions metricsOptions,
             HttpContext context)
         {
             int? port = null;
@@ -177,7 +186,7 @@ namespace Microsoft.AspNetCore.Builder
 
             return context.Request.Path == endpointsOptionsAccessor.Value.MetricsTextEndpoint &&
                    endpointsOptionsAccessor.Value.MetricsTextEndpointEnabled &&
-                   metricsOptionsAccessor.Value.MetricsEnabled &&
+                   metricsOptions.Enabled &&
                    endpointsOptionsAccessor.Value.MetricsTextEndpoint.IsPresent() &&
                    (!port.HasValue || context.Features.Get<IHttpConnectionFeature>()?.LocalPort == port.Value);
         }
@@ -185,13 +194,13 @@ namespace Microsoft.AspNetCore.Builder
         private static void UseMetricsMiddleware(
             IApplicationBuilder app,
             IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor,
-            IOptions<MetricsOptions> metricsOptionsAccessor,
+            MetricsOptions metricsOptions,
             IMetricsOutputFormatter formatter = null)
         {
             formatter = formatter ?? endpointsOptionsAccessor.Value.MetricsEndpointOutputFormatter;
 
             app.UseWhen(
-                context => ShouldUseMetricsEndpoint(endpointsOptionsAccessor, metricsOptionsAccessor, context),
+                context => ShouldUseMetricsEndpoint(endpointsOptionsAccessor, metricsOptions, context),
                 appBuilder =>
                 {
                     var responseWriter = GetMetricsResponseWriter(app.ApplicationServices, formatter);
@@ -202,13 +211,13 @@ namespace Microsoft.AspNetCore.Builder
         private static void UseMetricsTextMiddleware(
             IApplicationBuilder app,
             IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor,
-            IOptions<MetricsOptions> metricsOptionsAccessor,
+            MetricsOptions metricsOptions,
             IMetricsOutputFormatter formatter = null)
         {
             formatter = formatter ?? endpointsOptionsAccessor.Value.MetricsTextEndpointOutputFormatter;
 
             app.UseWhen(
-                context => ShouldUseMetricsTextEndpoint(endpointsOptionsAccessor, metricsOptionsAccessor, context),
+                context => ShouldUseMetricsTextEndpoint(endpointsOptionsAccessor, metricsOptions, context),
                 appBuilder =>
                 {
                     var responseWriter = GetMetricsTextResponseWriter(appBuilder.ApplicationServices, formatter);

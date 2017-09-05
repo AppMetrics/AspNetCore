@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.DependencyInjection.Internal;
-using App.Metrics.DependencyInjection.Internal;
+using App.Metrics.Extensions.DependencyInjection.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

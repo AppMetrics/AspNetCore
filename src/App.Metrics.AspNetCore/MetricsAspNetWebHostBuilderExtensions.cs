@@ -9,7 +9,7 @@ using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.AspNetCore.TrackingMiddleware;
-using App.Metrics.Internal;
+using App.Metrics.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,11 +27,12 @@ namespace Microsoft.AspNetCore.Hosting
         ///     <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" />.
         /// </summary>
         /// <param name="hostBuilder">The <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" />.</param>
+        /// <param name="metricsBuilder">The <see cref="IMetricsBuilder"/> instance used to configure metrics.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
         /// <exception cref="ArgumentNullException">
         ///     <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" /> cannot be null
         /// </exception>
-        public static IWebHostBuilder UseMetrics(this IWebHostBuilder hostBuilder)
+        public static IWebHostBuilder UseMetrics(this IWebHostBuilder hostBuilder, IMetricsBuilder metricsBuilder = null)
         {
             if (hostBuilder == null)
             {
@@ -41,12 +42,12 @@ namespace Microsoft.AspNetCore.Hosting
             hostBuilder.ConfigureServices(
                 (context, services) =>
                 {
-                    var metricsOptions = new MetricsWebHostOptions { CoreBuilder = new MetricsCoreBuilder(services) };
+                    var metricsOptions = new MetricsWebHostOptions();
                     var endpointsOptions = new MetricsEndpointsOptions();
                     context.Configuration.Bind(nameof(MetricsEndpointsOptions), endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
-                    ConfigureMetricsServices(context, metricsOptions);
+                    ConfigureMetricsServices(context, metricsBuilder, services, metricsOptions);
                 });
 
             return hostBuilder;
@@ -60,11 +61,15 @@ namespace Microsoft.AspNetCore.Hosting
         /// <param name="setupAction">
         ///     An <see cref="Action{MetricsWebHostOptions}" /> to configure the provided <see cref="MetricsWebHostOptions" />.
         /// </param>
+        /// <param name="metricsBuilder">The <see cref="IMetricsBuilder"/> instance used to configure metrics.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
         /// <exception cref="ArgumentNullException">
         ///     <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" /> cannot be null
         /// </exception>
-        public static IWebHostBuilder UseMetrics(this IWebHostBuilder hostBuilder, Action<MetricsWebHostOptions> setupAction)
+        public static IWebHostBuilder UseMetrics(
+            this IWebHostBuilder hostBuilder,
+            Action<MetricsWebHostOptions> setupAction,
+            IMetricsBuilder metricsBuilder = null)
         {
             if (hostBuilder == null)
             {
@@ -74,7 +79,7 @@ namespace Microsoft.AspNetCore.Hosting
             hostBuilder.ConfigureServices(
                 (context, services) =>
                 {
-                    var metricsOptions = new MetricsWebHostOptions { CoreBuilder = new MetricsCoreBuilder(services) };
+                    var metricsOptions = new MetricsWebHostOptions();
                     setupAction?.Invoke(metricsOptions);
 
                     var endpointsOptions = new MetricsEndpointsOptions();
@@ -82,7 +87,7 @@ namespace Microsoft.AspNetCore.Hosting
                     metricsOptions.EndpointOptions(endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
-                    ConfigureMetricsServices(context, metricsOptions);
+                    ConfigureMetricsServices(context, metricsBuilder, services, metricsOptions);
                 });
 
             return hostBuilder;
@@ -97,11 +102,15 @@ namespace Microsoft.AspNetCore.Hosting
         ///     An <see cref="Action{WebHostBuilderContext, MetricsWebHostOptions}" /> to configure the provided
         ///     <see cref="MetricsWebHostOptions" />.
         /// </param>
+        /// <param name="metricsBuilder">The <see cref="IMetricsBuilder"/> instance used to configure metrics.</param>
         /// <returns>A reference to this instance after the operation has completed.</returns>
         /// <exception cref="ArgumentNullException">
         ///     <see cref="T:Microsoft.AspNetCore.Hosting.IWebHostBuilder" /> cannot be null
         /// </exception>
-        public static IWebHostBuilder UseMetrics(this IWebHostBuilder hostBuilder, Action<WebHostBuilderContext, MetricsWebHostOptions> setupAction)
+        public static IWebHostBuilder UseMetrics(
+            this IWebHostBuilder hostBuilder,
+            Action<WebHostBuilderContext, MetricsWebHostOptions> setupAction,
+            IMetricsBuilder metricsBuilder = null)
         {
             if (hostBuilder == null)
             {
@@ -111,7 +120,7 @@ namespace Microsoft.AspNetCore.Hosting
             hostBuilder.ConfigureServices(
                 (context, services) =>
                 {
-                    var metricsOptions = new MetricsWebHostOptions { CoreBuilder = new MetricsCoreBuilder(services) };
+                    var metricsOptions = new MetricsWebHostOptions();
                     setupAction?.Invoke(context, metricsOptions);
 
                     var endpointsOptions = new MetricsEndpointsOptions();
@@ -119,7 +128,7 @@ namespace Microsoft.AspNetCore.Hosting
                     metricsOptions.EndpointOptions(endpointsOptions);
 
                     ConfigureServerUrlsKey(hostBuilder, endpointsOptions);
-                    ConfigureMetricsServices(context, metricsOptions);
+                    ConfigureMetricsServices(context, metricsBuilder, services, metricsOptions);
                 });
 
             return hostBuilder;
@@ -127,17 +136,26 @@ namespace Microsoft.AspNetCore.Hosting
 
         private static void ConfigureMetricsServices(
             WebHostBuilderContext context,
+            IMetricsBuilder metricsBuilder,
+            IServiceCollection services,
             MetricsWebHostOptions metricsOptions)
         {
+            if (metricsBuilder == null)
+            {
+                metricsBuilder = AppMetrics.CreateDefaultBuilder();
+            }
+
             //
             // Add metrics services with options, setup action takes precedence over configuration section
             //
-            var metricsBuilder = metricsOptions.CoreBuilder.Services.AddMetrics(context.Configuration.GetSection(nameof(MetricsOptions)), metricsOptions.MetricsOptions);
+            metricsBuilder.Configuration.Configure(context.Configuration);
+
+            services.AddMetrics(metricsBuilder);
 
             //
             // Add metrics aspnet core essesntial services
             //
-            var aspNetCoreMetricsBuilder = metricsBuilder.AddAspNetCoreMetrics(context.Configuration.GetSection(nameof(MetricsAspNetCoreOptions)));
+            var aspNetCoreMetricsBuilder = services.AddAspNetCoreMetrics(context.Configuration.GetSection(nameof(MetricsAspNetCoreOptions)));
 
             //
             // Add metrics endpoint options, setup action takes precedence over configuration section
@@ -154,7 +172,7 @@ namespace Microsoft.AspNetCore.Hosting
             //
             // Add the default metrics startup filter using all metrics tracking middleware and metrics endpoints
             //
-            metricsOptions.CoreBuilder.Services.AddSingleton<IStartupFilter>(new DefaultMetricsStartupFilter());
+            services.AddSingleton<IStartupFilter>(new DefaultMetricsStartupFilter());
         }
 
         private static void ConfigureServerUrlsKey(IWebHostBuilder hostBuilder, MetricsEndpointsOptions endpointsOptions)

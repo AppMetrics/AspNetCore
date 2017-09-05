@@ -69,8 +69,9 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
 
             var configuration = builder.Build();
 
-            var metricsBuilder = services.AddMetrics();
-            var aspNetCoreBuilder = metricsBuilder.AddAspNetCoreMetrics();
+            services.AddMetrics();
+
+            var aspNetCoreBuilder = services.AddAspNetCoreMetrics();
 
             if (trackingSetupAction == null)
             {

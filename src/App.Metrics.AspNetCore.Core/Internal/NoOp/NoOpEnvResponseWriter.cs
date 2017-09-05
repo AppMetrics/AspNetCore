@@ -14,7 +14,7 @@ namespace App.Metrics.AspNetCore.Internal.NoOp
     public class NoOpEnvResponseWriter : IEnvResponseWriter
     {
         /// <inheritdoc />
-        public Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default(CancellationToken))
+        public Task WriteAsync(HttpContext context, EnvironmentInfo environmentInfo, CancellationToken token = default)
         {
             return context.Response.WriteAsync("No formatter has been registered. See App.Metrics.Formatters.Ascii for example.", token);
         }

@@ -4,7 +4,10 @@
 
 using System;
 using App.Metrics.AspNetCore.Endpoints;
+using App.Metrics.AspNetCore.Endpoints.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 // ReSharper disable CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -26,17 +29,8 @@ namespace Microsoft.Extensions.DependencyInjection
             this IMetricsAspNetCoreCoreBuilder builder,
             Action<MetricsEndpointsOptions> setupAction)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (setupAction == null)
-            {
-                throw new ArgumentNullException(nameof(setupAction));
-            }
-
             builder.Services.Configure(setupAction);
+            AddRequiredEndpointOptions(builder.Services);
 
             return builder;
         }
@@ -59,18 +53,9 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration configuration,
             Action<MetricsEndpointsOptions> setupAction)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (setupAction == null)
-            {
-                throw new ArgumentNullException(nameof(setupAction));
-            }
-
             builder.Services.Configure<MetricsEndpointsOptions>(configuration);
             builder.Services.Configure(setupAction);
+            AddRequiredEndpointOptions(builder.Services);
 
             return builder;
         }
@@ -93,18 +78,9 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<MetricsEndpointsOptions> setupAction,
             IConfiguration configuration)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (setupAction == null)
-            {
-                throw new ArgumentNullException(nameof(setupAction));
-            }
-
             builder.Services.Configure(setupAction);
             builder.Services.Configure<MetricsEndpointsOptions>(configuration);
+            AddRequiredEndpointOptions(builder.Services);
 
             return builder;
         }
@@ -123,14 +99,16 @@ namespace Microsoft.Extensions.DependencyInjection
             this IMetricsAspNetCoreCoreBuilder builder,
             IConfiguration configuration)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
             builder.Services.Configure<MetricsEndpointsOptions>(configuration);
+            AddRequiredEndpointOptions(builder.Services);
 
             return builder;
+        }
+
+        private static void AddRequiredEndpointOptions(IServiceCollection services)
+        {
+            var descriptor = ServiceDescriptor.Transient<IConfigureOptions<MetricsEndpointsOptions>, MetricsEndpointsOptionsSetup>();
+            services.TryAddEnumerable(descriptor);
         }
     }
 }

@@ -3,12 +3,10 @@
 // </copyright>
 
 using System;
-using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
-using App.Metrics.DependencyInjection.Internal;
+using App.Metrics.Extensions.DependencyInjection.Internal;
 using App.Metrics.Formatters;
-using App.Metrics.Formatters.Ascii;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
@@ -76,11 +74,16 @@ namespace Microsoft.AspNetCore.Builder
 
         private static IEnvResponseWriter GetEnvInfoResponseWriter(IServiceProvider serviceProvider, IEnvOutputFormatter formatter = null)
         {
-            var options = serviceProvider.GetRequiredService<IOptions<MetricsOptions>>();
-            var textOptions = serviceProvider.GetRequiredService<IOptions<MetricsTextOptions>>();
-            var textFormatter = formatter ?? new EnvironmentInfoTextOutputFormatter(textOptions.Value);
-            var responseWriter = new DefaultEnvResponseWriter(options, textFormatter);
-            return responseWriter;
+            var formatters = serviceProvider.GetRequiredService<EnvFormatterCollection>();
+
+            if (formatter != null)
+            {
+                var responseWriter = new DefaultEnvResponseWriter(formatter, formatters);
+                return responseWriter;
+            }
+
+            var options = serviceProvider.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
+            return new DefaultEnvResponseWriter(options.Value.EnvInfoEndpointOutputFormatter, formatters);
         }
 
         private static bool ShouldUseEnvInfo(IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, HttpContext context)
