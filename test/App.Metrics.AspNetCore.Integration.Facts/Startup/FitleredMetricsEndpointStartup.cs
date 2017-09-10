@@ -3,7 +3,7 @@
 // </copyright>
 
 using App.Metrics.AspNetCore.Endpoints;
-using App.Metrics.AspNetCore.TrackingMiddleware;
+using App.Metrics.AspNetCore.Tracking;
 using App.Metrics.Counter;
 using App.Metrics.Filtering;
 using App.Metrics.Formatters.Json;
@@ -38,8 +38,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                         Enabled = true
                                     };
 
-            var endpointOptions = new MetricsEndpointsOptions();
-            var trackingOptions = new MetricsTrackingMiddlewareOptions();
+            var endpointOptions = new MetricEndpointsOptions();
+            var trackingOptions = new MetricsWebTrackingOptions();
 
             SetupServices(
                 services,

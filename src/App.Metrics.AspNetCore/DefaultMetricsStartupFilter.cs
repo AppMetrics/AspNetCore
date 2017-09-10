@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 namespace App.Metrics.AspNetCore
 {
     /// <summary>
-    /// Inserts the App Metrics Middleware at the beginning of the pipeline.
+    /// Inserts the App Metrics Middleware at the request pipeline
     /// </summary>
     public class DefaultMetricsStartupFilter : IStartupFilter
     {
@@ -18,15 +18,12 @@ namespace App.Metrics.AspNetCore
         {
             return AddAllMetricsEndpointsAndTrackingMiddleware;
 
-            void AddAllMetricsEndpointsAndTrackingMiddleware(IApplicationBuilder builder)
+            void AddAllMetricsEndpointsAndTrackingMiddleware(IApplicationBuilder app)
             {
-                builder.UseMetricsEndpoint();
-                builder.UseMetricsTextEndpoint();
-                builder.UseEnvInfoEndpoint();
-                builder.UsePingEndpoint();
-                builder.UseMetricsAllMiddleware();
+                app.UseMetricsAllEndpoints();
+                app.UseMetricsAllMiddleware();
 
-                next(builder);
+                next(app);
             }
         }
     }

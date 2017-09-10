@@ -2,7 +2,6 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using System;
 using System.Linq;
 using App.Metrics.Formatters;
 using App.Metrics.Formatters.Ascii;
@@ -12,9 +11,9 @@ using Microsoft.Extensions.Options;
 namespace App.Metrics.AspNetCore.Endpoints.Internal
 {
     /// <summary>
-    ///     Sets up default metric endpoint options for <see cref="MetricsEndpointsOptions"/>.
+    ///     Sets up default metric endpoint options for <see cref="MetricEndpointsOptions"/>.
     /// </summary>
-    public class MetricsEndpointsOptionsSetup : IConfigureOptions<MetricsEndpointsOptions>
+    public class MetricsEndpointsOptionsSetup : IConfigureOptions<MetricEndpointsOptions>
     {
         private readonly EnvFormatterCollection _envFormatters;
         private readonly MetricsFormatterCollection _metricsFormatters;
@@ -26,9 +25,8 @@ namespace App.Metrics.AspNetCore.Endpoints.Internal
         }
 
         /// <inheritdoc />
-        public void Configure(MetricsEndpointsOptions options)
+        public void Configure(MetricEndpointsOptions options)
         {
-            // TODO: want a dependency on Ascii and Json formatter projects?
             if (options.MetricsTextEndpointOutputFormatter == null)
             {
                 options.MetricsTextEndpointOutputFormatter =

@@ -3,7 +3,7 @@
 // </copyright>
 
 using App.Metrics.AspNetCore.Endpoints;
-using App.Metrics.AspNetCore.TrackingMiddleware;
+using App.Metrics.AspNetCore.Tracking;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,14 +26,14 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         {
             var appMetricsOptions = new MetricsOptions();
 
-            var endpointsOptions = new MetricsEndpointsOptions
+            var endpointsOptions = new MetricEndpointsOptions
                                    {
                                        MetricsTextEndpointEnabled = false,
                                        MetricsEndpointEnabled = true,
                                        PingEndpointEnabled = true
                                    };
 
-            var trackingOptions = new MetricsTrackingMiddlewareOptions();
+            var trackingOptions = new MetricsWebTrackingOptions();
 
             SetupServices(services, appMetricsOptions, trackingOptions, endpointsOptions);
         }

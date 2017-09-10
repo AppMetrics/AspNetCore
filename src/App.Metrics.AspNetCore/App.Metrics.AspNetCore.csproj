@@ -3,20 +3,15 @@
   <Import Project="..\..\build\common.props" />
   
   <PropertyGroup>
-    <Description>App Metrics ASP.NET Core is a an open-source web framework allowing you to record typical web metrics and expose metrics, health check results and environment information over HTTP.</Description>
+    <Description>App Metrics ASP.NET Core is a an open-source web framework allowing you to record typical web metrics and expose metrics andenvironment information over HTTP and more.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>appmetrics;aspnetcore;metrics</PackageTags>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="App.Metrics" Version="$(AppMetricsCoreVersion)" />    
-  </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\App.Metrics.AspNetCore.Endpoints\App.Metrics.AspNetCore.Endpoints.csproj" />
-    <ProjectReference Include="..\App.Metrics.AspNetCore.TrackingMiddleware\App.Metrics.AspNetCore.TrackingMiddleware.csproj" />
+    <ProjectReference Include="..\App.Metrics.AspNetCore.Tracking\App.Metrics.AspNetCore.Tracking.csproj" />
   </ItemGroup>
 
 </Project>

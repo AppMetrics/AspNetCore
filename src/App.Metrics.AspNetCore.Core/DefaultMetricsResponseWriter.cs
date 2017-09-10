@@ -24,7 +24,7 @@ namespace App.Metrics.AspNetCore
             MetricsFormatterCollection formatters)
         {
             _formatters = formatters ?? throw new ArgumentNullException(nameof(formatters));
-            _fallbackFormatter = fallbackFormatter ?? throw new ArgumentNullException(nameof(fallbackFormatter));
+            _fallbackFormatter = fallbackFormatter;
         }
 
         public DefaultMetricsResponseWriter(IMetricsOutputFormatter formatter)

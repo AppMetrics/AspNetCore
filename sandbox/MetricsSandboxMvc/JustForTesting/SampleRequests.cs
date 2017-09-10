@@ -18,9 +18,15 @@ namespace MetricsSandboxMvc.JustForTesting
         private const int SlaEndpointsInterval = 2;
         private const int PutAndPostRequestsInterval = 6;
         private static readonly Uri ApiBaseAddress = new Uri("http://localhost:1111/");
+        private static readonly bool RunSampleRequests = false;
 
         public static void Run(CancellationToken token)
         {
+            if (!RunSampleRequests)
+            {
+                return;
+            }
+
             var randomBufferGenerator = new RandomBufferGenerator(50000);
             var scheduler = new DefaultTaskScheduler();
             var httpClient = new HttpClient

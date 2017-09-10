@@ -4,7 +4,7 @@
 
 using System;
 using App.Metrics.AspNetCore;
-using App.Metrics.AspNetCore.TrackingMiddleware;
+using App.Metrics.AspNetCore.Tracking;
 using MetricsSandboxMvc.JustForTesting;
 using Microsoft.Extensions.Options;
 
@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient(
                 provider =>
                 {
-                    var trackingOptionsAccessor = provider.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>();
+                    var trackingOptionsAccessor = provider.GetRequiredService<IOptions<MetricsWebTrackingOptions>>();
                     return new RequestDurationForApdexTesting(trackingOptionsAccessor.Value.ApdexTSeconds);
                 });
 

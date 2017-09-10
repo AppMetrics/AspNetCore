@@ -4,7 +4,8 @@
 
 using System;
 using App.Metrics.AspNetCore.Endpoints;
-using App.Metrics.AspNetCore.TrackingMiddleware;
+using App.Metrics.AspNetCore.Tracking;
+using App.Metrics.Extensions.Configuration;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,21 +19,18 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
         [Fact]
         public void Can_load_settings_from_configuration()
         {
-            var trackingOptions = new MetricsTrackingMiddlewareOptions();
-            var endpointOptions = new MetricsEndpointsOptions();
+            var trackingOptions = new MetricsWebTrackingOptions();
+            var endpointOptions = new MetricEndpointsOptions();
 
             var provider = SetupServicesAndConfiguration();
-            Action resolveOptions = () => { trackingOptions = provider.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>().Value; };
-            Action resolveEndpointsOptions = () => { endpointOptions = provider.GetRequiredService<IOptions<MetricsEndpointsOptions>>().Value; };
+            Action resolveOptions = () => { trackingOptions = provider.GetRequiredService<IOptions<MetricsWebTrackingOptions>>().Value; };
+            Action resolveEndpointsOptions = () => { endpointOptions = provider.GetRequiredService<IOptions<MetricEndpointsOptions>>().Value; };
 
             resolveOptions.ShouldNotThrow();
             resolveEndpointsOptions.ShouldNotThrow();
 
             trackingOptions.ApdexTrackingEnabled.Should().Be(false);
             trackingOptions.ApdexTSeconds.Should().Be(0.8);
-            endpointOptions.MetricsEndpoint.Should().Be("/metrics-test");
-            endpointOptions.MetricsTextEndpoint.Should().Be("/metrics-text-test");
-            endpointOptions.PingEndpoint.Should().Be("/ping-test");
             endpointOptions.MetricsTextEndpointEnabled.Should().Be(false);
             endpointOptions.MetricsEndpointEnabled.Should().Be(false);
             endpointOptions.PingEndpointEnabled.Should().Be(false);
@@ -41,7 +39,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
         [Fact]
         public void Can_override_settings_from_configuration()
         {
-            var options = new MetricsTrackingMiddlewareOptions();
+            var options = new MetricsWebTrackingOptions();
             var provider = SetupServicesAndConfiguration(
                 (o) =>
                 {
@@ -49,7 +47,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
                     o.ApdexTrackingEnabled = true;
                 });
 
-            Action resolveOptions = () => { options = provider.GetRequiredService<IOptions<MetricsTrackingMiddlewareOptions>>().Value; };
+            Action resolveOptions = () => { options = provider.GetRequiredService<IOptions<MetricsWebTrackingOptions>>().Value; };
 
             resolveOptions.ShouldNotThrow();
             options.ApdexTrackingEnabled.Should().Be(true);
@@ -57,8 +55,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
         }
 
         private IServiceProvider SetupServicesAndConfiguration(
-            Action<MetricsTrackingMiddlewareOptions> trackingSetupAction = null,
-            Action<MetricsEndpointsOptions> setupEndpointAction = null)
+            Action<MetricsWebTrackingOptions> trackingSetupAction = null,
+            Action<MetricEndpointsOptions> setupEndpointAction = null)
         {
             var services = new ServiceCollection();
             services.AddOptions();
@@ -69,28 +67,26 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
 
             var configuration = builder.Build();
 
-            services.AddMetrics();
-
-            var aspNetCoreBuilder = services.AddAspNetCoreMetrics();
-
-            if (trackingSetupAction == null)
-            {
-                aspNetCoreBuilder.AddTrackingMiddlewareOptions(configuration.GetSection("MetricsTrackingMiddlewareOptions"));
-            }
-            else
-            {
-                aspNetCoreBuilder.AddTrackingMiddlewareOptions(
-                    configuration.GetSection("MetricsTrackingMiddlewareOptions"),
-                    trackingSetupAction);
-            }
+            var metricsBuilder = AppMetrics.CreateDefaultBuilder();
+            metricsBuilder.Configuration.ReadFrom(configuration);
+            services.AddMetrics(metricsBuilder);
 
             if (setupEndpointAction == null)
             {
-                aspNetCoreBuilder.AddEndpointOptions(configuration.GetSection("MetricsEndpointsOptions"));
+                services.AddMetricsEndpoints(configuration.GetSection(nameof(MetricEndpointsOptions)));
             }
             else
             {
-                aspNetCoreBuilder.AddEndpointOptions(configuration.GetSection("MetricsEndpointsOptions"), setupEndpointAction);
+                services.AddMetricsEndpoints(configuration.GetSection(nameof(MetricEndpointsOptions)), setupEndpointAction);
+            }
+
+            if (trackingSetupAction == null)
+            {
+                services.AddMetricsTrackingMiddleware(configuration.GetSection(nameof(MetricsWebTrackingOptions)));
+            }
+            else
+            {
+                services.AddMetricsTrackingMiddleware(configuration.GetSection(nameof(MetricsWebTrackingOptions)), trackingSetupAction);
             }
 
             return services.BuildServiceProvider();

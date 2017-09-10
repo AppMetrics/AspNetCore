@@ -12,23 +12,28 @@ namespace Microsoft.Extensions.Logging
     [ExcludeFromCodeCoverage]
     internal static class AppMetricsMiddlewareLoggerExtensions
     {
-        public static void MiddlewareExecuted(this ILogger logger, Type middleware)
+        public static void MiddlewareExecuted<TMiddleware>(this ILogger logger)
         {
-            logger.LogTrace(AppMetricsEventIds.Middleware.MiddlewareExecutedId, $"Executed AspNet Metrics Middleware {middleware.FullName}");
+            if (logger.IsEnabled(LogLevel.Trace))
+            {
+                logger.LogTrace(AppMetricsEventIds.Middleware.MiddlewareExecutedId, $"Executed App Metrics Middleware {typeof(TMiddleware).FullName}");
+            }
         }
 
-        public static void MiddlewareExecuting(this ILogger logger, Type middleware)
+        public static void MiddlewareExecuting<TMiddleware>(this ILogger logger)
         {
-            logger.LogTrace(AppMetricsEventIds.Middleware.MiddlewareExecutingId, $"Executing AspNet Metrics Middleware {middleware.FullName}");
+            if (logger.IsEnabled(LogLevel.Trace))
+            {
+                logger.LogTrace(AppMetricsEventIds.Middleware.MiddlewareExecutingId, $"Executing App Metrics Middleware {typeof(TMiddleware).FullName}");
+            }
         }
 
         private static class AppMetricsEventIds
         {
             public static class Middleware
             {
-                public const int MiddlewareExecutedId = MiddlewareStart + 1;
-                public const int MiddlewareExecutingId = MiddlewareStart + 2;
-                private const int MiddlewareStart = 3000;
+                public const int MiddlewareExecutedId = 1;
+                public const int MiddlewareExecutingId = 2;
             }
         }
     }

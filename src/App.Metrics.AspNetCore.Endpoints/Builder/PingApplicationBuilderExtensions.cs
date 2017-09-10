@@ -4,6 +4,7 @@
 
 using System;
 using App.Metrics.AspNetCore.Endpoints;
+using App.Metrics.AspNetCore.Endpoints.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,36 +32,43 @@ namespace Microsoft.AspNetCore.Builder
                 throw new ArgumentNullException(nameof(app));
             }
 
-            var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
+            var metricsEndpointsHostingOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsHostingOptions>>();
+            var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricEndpointsOptions>>();
 
-            UsePingMiddleware(app, endpointsOptionsAccessor);
+            UsePingMiddleware(app, metricsEndpointsHostingOptionsAccessor, endpointsOptionsAccessor);
 
             return app;
         }
 
-        private static bool ShouldUsePing(IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, HttpContext context)
+        private static bool ShouldUsePing(
+            IOptions<MetricsEndpointsHostingOptions> endpointsHostingOptionsAccessor,
+            IOptions<MetricEndpointsOptions> endpointsOptionsAccessor,
+            HttpContext context)
         {
             int? port = null;
 
-            if (endpointsOptionsAccessor.Value.AllEndpointsPort.HasValue)
+            if (endpointsHostingOptionsAccessor.Value.AllEndpointsPort.HasValue)
             {
-                port = endpointsOptionsAccessor.Value.AllEndpointsPort.Value;
+                port = endpointsHostingOptionsAccessor.Value.AllEndpointsPort.Value;
             }
-            else if (endpointsOptionsAccessor.Value.PingEndpointPort.HasValue)
+            else if (endpointsHostingOptionsAccessor.Value.PingEndpointPort.HasValue)
             {
-                port = endpointsOptionsAccessor.Value.PingEndpointPort.Value;
+                port = endpointsHostingOptionsAccessor.Value.PingEndpointPort.Value;
             }
 
-            return context.Request.Path == endpointsOptionsAccessor.Value.PingEndpoint &&
+            return context.Request.Path == endpointsHostingOptionsAccessor.Value.PingEndpoint &&
                    endpointsOptionsAccessor.Value.PingEndpointEnabled &&
-                   endpointsOptionsAccessor.Value.PingEndpoint.IsPresent() &&
+                   endpointsHostingOptionsAccessor.Value.PingEndpoint.IsPresent() &&
                    (!port.HasValue || context.Features.Get<IHttpConnectionFeature>()?.LocalPort == port.Value);
         }
 
-        private static void UsePingMiddleware(IApplicationBuilder app, IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor)
+        private static void UsePingMiddleware(
+            IApplicationBuilder app,
+            IOptions<MetricsEndpointsHostingOptions> metricsEndpointsHostingOptionsAccessor,
+            IOptions<MetricEndpointsOptions> endpointsOptionsAccessor)
         {
             app.UseWhen(
-                context => ShouldUsePing(endpointsOptionsAccessor, context),
+                context => ShouldUsePing(metricsEndpointsHostingOptionsAccessor, endpointsOptionsAccessor, context),
                 appBuilder => { appBuilder.UseMiddleware<PingEndpointMiddleware>(); });
         }
     }

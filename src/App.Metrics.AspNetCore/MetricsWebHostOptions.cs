@@ -4,7 +4,7 @@
 
 using System;
 using App.Metrics.AspNetCore.Endpoints;
-using App.Metrics.AspNetCore.TrackingMiddleware;
+using App.Metrics.AspNetCore.Tracking;
 
 namespace App.Metrics.AspNetCore
 {
@@ -21,14 +21,14 @@ namespace App.Metrics.AspNetCore
         }
 
         /// <summary>
-        ///     Gets or sets <see cref="Action{T}" /> to configure the provided <see cref="MetricsEndpointsOptions" />.
+        ///     Gets or sets <see cref="Action{T}" /> to configure the provided <see cref="MetricEndpointsOptions" />.
         /// </summary>
-        public Action<MetricsEndpointsOptions> EndpointOptions { get; set; }
+        public Action<MetricEndpointsOptions> EndpointOptions { get; set; }
 
         /// <summary>
-        ///     Gets or sets <see cref="Action{MetricsTrackingMiddlewareOptions}" /> to configure the provided
-        ///     <see cref="MetricsTrackingMiddlewareOptions" />.
+        ///     Gets or sets <see cref="Action{MetricsWebTrackingOptions}" /> to configure the provided
+        ///     <see cref="MetricsWebTrackingOptions" />.
         /// </summary>
-        public Action<MetricsTrackingMiddlewareOptions> TrackingMiddlewareOptions { get; set; }
+        public Action<MetricsWebTrackingOptions> TrackingMiddlewareOptions { get; set; }
     }
 }

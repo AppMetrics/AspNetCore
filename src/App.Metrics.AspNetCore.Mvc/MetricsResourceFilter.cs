@@ -5,7 +5,6 @@
 using System;
 using System.Threading.Tasks;
 using App.Metrics.AspNetCore;
-using App.Metrics.AspNetCore.DependencyInjection.Internal;
 using App.Metrics.Extensions.DependencyInjection.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,10 +26,8 @@ namespace Microsoft.AspNetCore.Mvc.Filters
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
-            // Verify if AddMetrics and AddAspNetMetrics was done before calling UseMetricsEndpoint
-            // We use the MetricsMarkerService and MetricsAspNetCoreServicesHelper to make sure if all the services were added.
+            // Verify if AppMetrics was configured
             AppMetricsServicesHelper.ThrowIfMetricsNotRegistered(context.HttpContext.RequestServices);
-            MetricsAspNetCoreServicesHelper.ThrowIfMetricsNotRegistered(context.HttpContext.RequestServices);
 
             EnsureServices(context.HttpContext);
 

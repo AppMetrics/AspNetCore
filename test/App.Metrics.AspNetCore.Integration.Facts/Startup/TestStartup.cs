@@ -3,9 +3,8 @@
 // </copyright>
 
 using App.Metrics.AspNetCore.Endpoints;
-using App.Metrics.AspNetCore.TrackingMiddleware;
+using App.Metrics.AspNetCore.Tracking;
 using App.Metrics.Filters;
-using App.Metrics.ReservoirSampling.Uniform;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,27 +27,21 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         protected void SetupServices(
             IServiceCollection services,
             MetricsOptions appMetricsOptions,
-            MetricsTrackingMiddlewareOptions trackingOptions,
-            MetricsEndpointsOptions endpointsOptions,
+            MetricsWebTrackingOptions webTrackingOptions,
+            MetricEndpointsOptions endpointsOptions,
             IFilterMetrics filter = null)
         {
             services.AddLogging().AddRouting(options => { options.LowercaseUrls = true; });
 
             services.AddMvc(options => options.AddMetricsResourceFilter());
 
-            var builder = new MetricsBuilder()
-                .Configuration.Configure(
-                    options =>
-                    {
-                        options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
-                        options.Enabled = appMetricsOptions.Enabled;
-                    })
-                .OutputEnvInfo.AsPlainText()
-                .OutputEnvInfo.AsJson()
-                .OutputMetrics.AsJson()
-                .OutputMetrics.AsPlainText()
-                .SampleWith.AlgorithmR(1028)
-                .TimeWith.Clock<TestClock>();
+            var builder = new MetricsBuilder().Configuration.Configure(
+                                                   options =>
+                                                   {
+                                                       options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
+                                                       options.Enabled = appMetricsOptions.Enabled;
+                                                   }).OutputEnvInfo.AsPlainText().OutputEnvInfo.AsJson().OutputMetrics.AsJson().OutputMetrics.
+                                               AsPlainText().SampleWith.AlgorithmR(1028).TimeWith.Clock<TestClock>();
 
             if (filter != null)
             {
@@ -57,24 +50,21 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 
             services.AddMetrics(builder);
 
-            services.AddAspNetCoreMetricsCore().
-                     AddTrackingMiddlewareOptionsCore(
-                         options =>
-                         {
-                             options.OAuth2TrackingEnabled = trackingOptions.OAuth2TrackingEnabled;
-                             options.IgnoredRoutesRegexPatterns = trackingOptions.IgnoredRoutesRegexPatterns;
-                             options.IgnoredHttpStatusCodes = trackingOptions.IgnoredHttpStatusCodes;
-                         }).
-                     AddEndpointOptionsCore(
-                         options =>
-                         {
-                             options.MetricsTextEndpointEnabled = endpointsOptions.MetricsTextEndpointEnabled;
-                             options.MetricsEndpointEnabled = endpointsOptions.MetricsEndpointEnabled;
-                             options.PingEndpointEnabled = endpointsOptions.PingEndpointEnabled;
-                             options.MetricsEndpoint = endpointsOptions.MetricsEndpoint;
-                             options.MetricsTextEndpoint = endpointsOptions.MetricsTextEndpoint;
-                             options.PingEndpoint = endpointsOptions.PingEndpoint;
-                         });
+            services.AddMetricsEndpoints(
+                options =>
+                {
+                    options.MetricsTextEndpointEnabled = endpointsOptions.MetricsTextEndpointEnabled;
+                    options.MetricsEndpointEnabled = endpointsOptions.MetricsEndpointEnabled;
+                    options.PingEndpointEnabled = endpointsOptions.PingEndpointEnabled;
+                });
+
+            services.AddMetricsTrackingMiddleware(
+                options =>
+                {
+                    options.OAuth2TrackingEnabled = webTrackingOptions.OAuth2TrackingEnabled;
+                    options.IgnoredRoutesRegexPatterns = webTrackingOptions.IgnoredRoutesRegexPatterns;
+                    options.IgnoredHttpStatusCodes = webTrackingOptions.IgnoredHttpStatusCodes;
+                });
         }
     }
 }

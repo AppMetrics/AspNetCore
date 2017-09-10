@@ -3,7 +3,7 @@
   <Import Project="..\..\build\common.props" />
   
   <PropertyGroup>
-    <Description>App Metrics ASP.NET Core is a an open-source web framework allowing you to record typical web metrics and expose metrics, health check results and environment information over HTTP.</Description>
+    <Description>App Metrics ASP.NET Core core components.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>App.Metrics.AspNetCore</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -11,14 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="App.Metrics.Extensions.Configuration" Version="$(AppMetricsMicrosoftExtensionsVersion)" />
+    <PackageReference Include="App.Metrics.Extensions.DependencyInjection" Version="$(AppMetricsMicrosoftExtensionsVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="App.Metrics" Version="$(AppMetricsCoreVersion)" />
-    <PackageReference Include="App.Metrics.Extensions.Configuration" Version="$(AppMetricsCoreVersion)" />
-    <PackageReference Include="App.Metrics.Extensions.DependencyInjection" Version="$(AppMetricsCoreVersion)" />
-    <PackageReference Include="App.Metrics.Reporting" Version="$(AppMetricsReportingVersion)" />    
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using App.Metrics.AspNetCore.Endpoints;
-using App.Metrics.AspNetCore.TrackingMiddleware;
+using App.Metrics.AspNetCore.Tracking;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,14 +32,14 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                         Enabled = true
                                     };
 
-            var endpointsOptions = new MetricsEndpointsOptions
+            var endpointsOptions = new MetricEndpointsOptions
                                    {
                                        MetricsTextEndpointEnabled = true,
                                        MetricsEndpointEnabled = true,
                                        PingEndpointEnabled = true
                                    };
 
-            var trackingoptions = new MetricsTrackingMiddlewareOptions
+            var trackingoptions = new MetricsWebTrackingOptions
                                     {
                                         OAuth2TrackingEnabled = true
                                     };

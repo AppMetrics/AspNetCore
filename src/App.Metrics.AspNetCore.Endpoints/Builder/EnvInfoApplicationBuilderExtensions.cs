@@ -5,6 +5,7 @@
 using System;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
+using App.Metrics.AspNetCore.Endpoints.Middleware;
 using App.Metrics.Extensions.DependencyInjection.Internal;
 using App.Metrics.Formatters;
 using Microsoft.AspNetCore.Http;
@@ -32,9 +33,10 @@ namespace Microsoft.AspNetCore.Builder
         {
             EnsureMetricsAdded(app);
 
-            var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
+            var endpointHostingOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsHostingOptions>>();
+            var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricEndpointsOptions>>();
 
-            UseEnvInfoMiddleware(app, endpointsOptionsAccessor);
+            UseEnvInfoMiddleware(app, endpointHostingOptionsAccessor, endpointsOptionsAccessor);
 
             return app;
         }
@@ -53,9 +55,10 @@ namespace Microsoft.AspNetCore.Builder
         {
             EnsureMetricsAdded(app);
 
-            var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
+            var endpointHostingOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricsEndpointsHostingOptions>>();
+            var endpointsOptionsAccessor = app.ApplicationServices.GetRequiredService<IOptions<MetricEndpointsOptions>>();
 
-            UseEnvInfoMiddleware(app, endpointsOptionsAccessor, formatter);
+            UseEnvInfoMiddleware(app, endpointHostingOptionsAccessor, endpointsOptionsAccessor, formatter);
 
             return app;
         }
@@ -82,36 +85,43 @@ namespace Microsoft.AspNetCore.Builder
                 return responseWriter;
             }
 
-            var options = serviceProvider.GetRequiredService<IOptions<MetricsEndpointsOptions>>();
+            var options = serviceProvider.GetRequiredService<IOptions<MetricEndpointsOptions>>();
             return new DefaultEnvResponseWriter(options.Value.EnvInfoEndpointOutputFormatter, formatters);
         }
 
-        private static bool ShouldUseEnvInfo(IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, HttpContext context)
+        private static bool ShouldUseEnvInfo(
+            IOptions<MetricsEndpointsHostingOptions> endpointHostingOptionsAccessor,
+            IOptions<MetricEndpointsOptions> endpointsOptionsAccessor,
+            HttpContext context)
         {
             int? port = null;
 
-            if (endpointsOptionsAccessor.Value.AllEndpointsPort.HasValue)
+            if (endpointHostingOptionsAccessor.Value.AllEndpointsPort.HasValue)
             {
-                port = endpointsOptionsAccessor.Value.AllEndpointsPort.Value;
+                port = endpointHostingOptionsAccessor.Value.AllEndpointsPort.Value;
             }
-            else if (endpointsOptionsAccessor.Value.EnvironmentInfoEndpointPort.HasValue)
+            else if (endpointHostingOptionsAccessor.Value.EnvironmentInfoEndpointPort.HasValue)
             {
-                port = endpointsOptionsAccessor.Value.EnvironmentInfoEndpointPort.Value;
+                port = endpointHostingOptionsAccessor.Value.EnvironmentInfoEndpointPort.Value;
             }
 
             return endpointsOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
-                   endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent() &&
-                   context.Request.Path == endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint &&
+                   endpointHostingOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent() &&
+                   context.Request.Path == endpointHostingOptionsAccessor.Value.EnvironmentInfoEndpoint &&
                    (!port.HasValue || context.Features.Get<IHttpConnectionFeature>()?.LocalPort == port.Value);
         }
 
-        private static void UseEnvInfoMiddleware(IApplicationBuilder app, IOptions<MetricsEndpointsOptions> endpointsOptionsAccessor, IEnvOutputFormatter formatter = null)
+        private static void UseEnvInfoMiddleware(
+            IApplicationBuilder app,
+            IOptions<MetricsEndpointsHostingOptions> endpointHostingOptionsAccessor,
+            IOptions<MetricEndpointsOptions> endpointsOptionsAccessor,
+            IEnvOutputFormatter formatter = null)
         {
             if (endpointsOptionsAccessor.Value.EnvironmentInfoEndpointEnabled &&
-                endpointsOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent())
+                endpointHostingOptionsAccessor.Value.EnvironmentInfoEndpoint.IsPresent())
             {
                 app.UseWhen(
-                    context => ShouldUseEnvInfo(endpointsOptionsAccessor, context),
+                    context => ShouldUseEnvInfo(endpointHostingOptionsAccessor, endpointsOptionsAccessor, context),
                     appBuilder =>
                     {
                         var responseWriter = GetEnvInfoResponseWriter(appBuilder.ApplicationServices, formatter);
