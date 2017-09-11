@@ -104,8 +104,8 @@ namespace Microsoft.AspNetCore.Hosting
                 {
                     if (!_metricsBuilt)
                     {
-                        var builder = AppMetrics.CreateDefaultBuilder();
-                        builder.Configuration.ReadFrom(context.Configuration);
+                        var builder = AppMetrics.CreateDefaultBuilder()
+                            .Configuration.ReadFrom(context.Configuration);
                         services.AddMetrics(builder);
                         _metricsBuilt = true;
                     }

@@ -67,8 +67,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
 
             var configuration = builder.Build();
 
-            var metricsBuilder = AppMetrics.CreateDefaultBuilder();
-            metricsBuilder.Configuration.ReadFrom(configuration);
+            var metricsBuilder = AppMetrics.CreateDefaultBuilder()
+                .Configuration.ReadFrom(configuration);
             services.AddMetrics(metricsBuilder);
 
             if (setupEndpointAction == null)
