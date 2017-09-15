@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="App.Metrics.Core" Version="$(AppMetricsCoreVersion)" />
     <PackageReference Include="App.Metrics.Extensions.Configuration" Version="$(AppMetricsMicrosoftExtensionsVersion)" />
     <PackageReference Include="App.Metrics.Extensions.DependencyInjection" Version="$(AppMetricsMicrosoftExtensionsVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="$(AspNetCoreVersion)" />

@@ -8,6 +8,8 @@ using App.Metrics.Formatters.Ascii;
 using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Serilog;
+using Serilog.Events;
 
 namespace MetricsSandboxMvc
 {
@@ -15,6 +17,8 @@ namespace MetricsSandboxMvc
     {
         public static IWebHost BuildWebHost(string[] args)
         {
+            ConfigureLogging();
+
             return WebHost.CreateDefaultBuilder(args)
 
                           #region App Metrics configuration options
@@ -63,6 +67,7 @@ namespace MetricsSandboxMvc
                           #endregion
 
                           .UseMetrics()
+                          .UseSerilog()
                           .UseStartup<Startup>()
                           .Build();
         }
@@ -80,6 +85,16 @@ namespace MetricsSandboxMvc
                 };
                 options.TrackingMiddlewareOptions = middlewareOptions => { middlewareOptions.IgnoredHttpStatusCodes = new[] { 500 }; };
             };
+        }
+
+        private static void ConfigureLogging()
+        {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Verbose)
+                .WriteTo.LiterateConsole(LogEventLevel.Verbose)
+                .WriteTo.Seq("http://localhost:5341", LogEventLevel.Verbose)
+                .CreateLogger();
         }
     }
 }

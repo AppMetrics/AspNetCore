@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\App.Metrics.AspNetCore.Routing\App.Metrics.AspNetCore.Routing.csproj" />
     <ProjectReference Include="..\App.Metrics.AspNetCore\App.Metrics.AspNetCore.csproj" />
+    <ProjectReference Include="..\App.Metrics.AspNetCore.Routing\App.Metrics.AspNetCore.Routing.csproj" />
   </ItemGroup>
 
 </Project>
