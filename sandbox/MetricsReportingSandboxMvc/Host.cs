@@ -38,12 +38,14 @@ namespace MetricsReportingSandboxMvc
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Verbose)
-                .WriteTo.LiterateConsole(LogEventLevel.Verbose)
-                .WriteTo.Seq("http://localhost:5341", LogEventLevel.Verbose)
+                .WriteTo.LiterateConsole()
+                .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
         }
 
+        // ReSharper disable UnusedMember.Local - .UseMetrics(ObserveReporterErrors())
         private static Action<MetricsWebHostOptions> ObserveReporterErrors()
+            // ReSharper restore UnusedMember.Local
         {
             return options => options.UnobservedTaskExceptionHandler = (sender, args2) => { Trace.WriteLine(args2.Exception); };
         }

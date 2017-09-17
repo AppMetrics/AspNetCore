@@ -18,11 +18,13 @@ namespace App.Metrics.AspNetCore.Endpoints.Middleware
         private readonly EnvironmentInfo _environmentInfo;
         private readonly IEnvResponseWriter _envResponseWriter;
 
+        // ReSharper disable UnusedParameter.Local - next required by middleware components
         public EnvInfoMiddleware(
             RequestDelegate next,
             ILogger<EnvInfoMiddleware> logger,
             IEnvResponseWriter environmentInfoResponseWriter,
             EnvironmentInfoProvider environmentInfoProvider)
+            // ReSharper restore UnusedParameter.Local
         {
             _logger = logger;
             _environmentInfo = environmentInfoProvider.Build();

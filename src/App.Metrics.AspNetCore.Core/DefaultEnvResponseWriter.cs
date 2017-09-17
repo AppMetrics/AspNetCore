@@ -24,14 +24,13 @@ namespace App.Metrics.AspNetCore
 
         public DefaultEnvResponseWriter(
             IEnvOutputFormatter fallbackFormatter,
-            IReadOnlyCollection<IEnvOutputFormatter> formatters)
+            IEnumerable<IEnvOutputFormatter> formatters)
         {
             if (formatters == null)
             {
                 throw new ArgumentNullException(nameof(formatters));
             }
 
-            // TODO: need this?
             _formatters = new EnvFormatterCollection(formatters.ToList());
             _fallbackFormatter = fallbackFormatter ?? throw new ArgumentNullException(nameof(fallbackFormatter));
         }

@@ -14,9 +14,11 @@ namespace App.Metrics.AspNetCore.Endpoints.Middleware
     {
         private readonly ILogger<PingEndpointMiddleware> _logger;
 
+        // ReSharper disable UnusedParameter.Local - next required by middleware components
         public PingEndpointMiddleware(
             RequestDelegate next,
             ILogger<PingEndpointMiddleware> logger)
+            // ReSharper restore UnusedParameter.Local
         {
             _logger = logger;
         }

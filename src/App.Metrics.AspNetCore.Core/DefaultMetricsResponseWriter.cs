@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -24,19 +23,20 @@ namespace App.Metrics.AspNetCore
 
         public DefaultMetricsResponseWriter(
             IMetricsOutputFormatter fallbackFormatter,
-            IReadOnlyCollection<IMetricsOutputFormatter> formatters)
+            IEnumerable<IMetricsOutputFormatter> formatters)
         {
             if (formatters == null)
             {
                 throw new ArgumentNullException(nameof(formatters));
             }
 
-            // TODO: Need to do this?
             _formatters = new MetricsFormatterCollection(formatters.ToList());
             _fallbackFormatter = fallbackFormatter;
         }
 
+        // ReSharper disable UnusedMember.Global
         public DefaultMetricsResponseWriter(IMetricsOutputFormatter formatter)
+            // ReSharper restore UnusedMember.Global
         {
             _formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
         }

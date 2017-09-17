@@ -28,7 +28,7 @@ namespace Microsoft.AspNetCore.Http.Headers
             {
                 var metricsMediaTypeValue = accept.ToMetricsMediaType();
 
-                if (metricsMediaTypeValue != default(MetricsMediaTypeValue))
+                if (metricsMediaTypeValue != default)
                 {
                     formatter = resolveOutputFormatter(metricsMediaTypeValue);
                 }

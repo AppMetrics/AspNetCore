@@ -4,7 +4,6 @@
 
 using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.AspNetCore.Tracking;
-using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +11,13 @@ using Microsoft.Extensions.Logging;
 
 namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 {
+    // ReSharper disable ClassNeverInstantiated.Global
     public class IgnoredRouteTestStartup : TestStartup
+        // ReSharper restore ClassNeverInstantiated.Global
     {
+        // ReSharper disable UnusedMember.Global
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+            // ReSharper restore UnusedMember.Global
         {
             app.UseMetricsEndpoint();
             app.UseMetricsAllMiddleware();
@@ -22,7 +25,9 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
             SetupAppBuilder(app, env, loggerFactory);
         }
 
+        // ReSharper disable UnusedMember.Global
         public void ConfigureServices(IServiceCollection services)
+            // ReSharper restore UnusedMember.Global
         {
             var appMetricsOptions = new MetricsOptions
                                     {

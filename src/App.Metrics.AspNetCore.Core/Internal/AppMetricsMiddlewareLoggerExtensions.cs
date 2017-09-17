@@ -2,7 +2,6 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 // ReSharper disable CheckNamespace

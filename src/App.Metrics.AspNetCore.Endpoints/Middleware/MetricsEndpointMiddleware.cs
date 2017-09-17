@@ -17,11 +17,13 @@ namespace App.Metrics.AspNetCore.Endpoints.Middleware
         private readonly IMetrics _metrics;
         private readonly IMetricsResponseWriter _metricsResponseWriter;
 
+        // ReSharper disable UnusedParameter.Local - next required by middleware components
         public MetricsEndpointMiddleware(
             RequestDelegate next,
             ILogger<MetricsEndpointMiddleware> logger,
             IMetrics metrics,
             IMetricsResponseWriter metricsResponseWriter)
+            // ReSharper restore UnusedParameter.Local
         {
             _logger = logger;
             _metrics = metrics;
