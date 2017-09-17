@@ -23,7 +23,7 @@ namespace App.Metrics.AspNetCore
 
         public DefaultMetricsResponseWriter(
             IMetricsOutputFormatter fallbackFormatter,
-            IEnumerable<IMetricsOutputFormatter> formatters)
+            IReadOnlyCollection<IMetricsOutputFormatter> formatters)
         {
             if (formatters == null)
             {

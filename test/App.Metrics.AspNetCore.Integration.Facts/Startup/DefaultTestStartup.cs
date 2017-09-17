@@ -11,7 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace App.Metrics.AspNetCore.Integration.Facts.Startup
 {
+    // ReSharper disable ClassNeverInstantiated.Global
     public class DefaultTestStartup : TestStartup
+        // ReSharper restore ClassNeverInstantiated.Global
     {
         // ReSharper disable UnusedMember.Global
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

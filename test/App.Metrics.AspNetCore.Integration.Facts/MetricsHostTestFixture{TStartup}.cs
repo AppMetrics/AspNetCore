@@ -4,14 +4,15 @@
 
 using System;
 using System.Net.Http;
-using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Metrics.AspNetCore.Integration.Facts
 {
+    // ReSharper disable ClassNeverInstantiated.Global
     public class MetricsHostTestFixture<TStartup> : IDisposable
+        // ReSharper restore ClassNeverInstantiated.Global
         where TStartup : class
     {
         private readonly TestServer _server;
@@ -23,14 +24,11 @@ namespace App.Metrics.AspNetCore.Integration.Facts
 
             Client = _server.CreateClient();
             Context = _server.Host.Services.GetRequiredService<IMetrics>();
-            JsonMetricsOutputFormatter = new MetricsJsonOutputFormatter();
         }
 
         public HttpClient Client { get; }
 
         public IMetrics Context { get; }
-
-        public MetricsJsonOutputFormatter JsonMetricsOutputFormatter { get; }
 
         public void Dispose()
         {

@@ -26,6 +26,9 @@ namespace MetricsReportingSandboxMvc.JustForTesting
         public TimeSpan FlushInterval { get; set; }
 
         /// <inheritdoc />
+        public IMetricsOutputFormatter Formatter { get; set; }
+
+        /// <inheritdoc />
         public async Task<bool> FlushAsync(MetricsDataValueSource metricsData, CancellationToken cancellationToken = default)
         {
             Console.WriteLine("Metrics Report");

@@ -19,7 +19,7 @@ namespace App.Metrics.AspNetCore.Endpoints.Internal
         private readonly EnvFormatterCollection _envFormatters;
         private readonly MetricsFormatterCollection _metricsFormatters;
 
-        public MetricsEndpointsOptionsSetup(IEnumerable<IEnvOutputFormatter> envFormatters, IEnumerable<IMetricsOutputFormatter> metricsFormatters)
+        public MetricsEndpointsOptionsSetup(IReadOnlyCollection<IEnvOutputFormatter> envFormatters, IReadOnlyCollection<IMetricsOutputFormatter> metricsFormatters)
         {
             _envFormatters = new EnvFormatterCollection(envFormatters.ToList());
             _metricsFormatters = new MetricsFormatterCollection(metricsFormatters.ToList());

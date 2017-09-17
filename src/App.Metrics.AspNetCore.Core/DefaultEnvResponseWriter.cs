@@ -24,7 +24,7 @@ namespace App.Metrics.AspNetCore
 
         public DefaultEnvResponseWriter(
             IEnvOutputFormatter fallbackFormatter,
-            IEnumerable<IEnvOutputFormatter> formatters)
+            IReadOnlyCollection<IEnvOutputFormatter> formatters)
         {
             if (formatters == null)
             {

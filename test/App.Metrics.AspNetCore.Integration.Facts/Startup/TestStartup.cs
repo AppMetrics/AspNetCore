@@ -40,8 +40,13 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                                                    {
                                                        options.DefaultContextLabel = appMetricsOptions.DefaultContextLabel;
                                                        options.Enabled = appMetricsOptions.Enabled;
-                                                   }).OutputEnvInfo.AsPlainText().OutputEnvInfo.AsJson().OutputMetrics.AsJson().OutputMetrics.
-                                               AsPlainText().SampleWith.AlgorithmR(1028).TimeWith.Clock<TestClock>();
+                                                   })
+                                               .OutputEnvInfo.AsPlainText()
+                                               .OutputEnvInfo.AsJson()
+                                               .OutputMetrics.AsJson()
+                                               .OutputMetrics.AsPlainText()
+                                               .SampleWith.AlgorithmR(1028)
+                                               .TimeWith.Clock<TestClock>();
 
             if (filter != null)
             {
