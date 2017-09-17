@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.AspNetCore.Endpoints.Middleware;
@@ -77,7 +78,7 @@ namespace Microsoft.AspNetCore.Builder
 
         private static IEnvResponseWriter GetEnvInfoResponseWriter(IServiceProvider serviceProvider, IEnvOutputFormatter formatter = null)
         {
-            var formatters = serviceProvider.GetRequiredService<EnvFormatterCollection>();
+            var formatters = serviceProvider.GetRequiredService<IReadOnlyCollection<IEnvOutputFormatter>>();
 
             if (formatter != null)
             {

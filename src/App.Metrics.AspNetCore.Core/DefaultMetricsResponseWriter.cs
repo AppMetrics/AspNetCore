@@ -3,6 +3,9 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,9 +24,15 @@ namespace App.Metrics.AspNetCore
 
         public DefaultMetricsResponseWriter(
             IMetricsOutputFormatter fallbackFormatter,
-            MetricsFormatterCollection formatters)
+            IReadOnlyCollection<IMetricsOutputFormatter> formatters)
         {
-            _formatters = formatters ?? throw new ArgumentNullException(nameof(formatters));
+            if (formatters == null)
+            {
+                throw new ArgumentNullException(nameof(formatters));
+            }
+
+            // TODO: Need to do this?
+            _formatters = new MetricsFormatterCollection(formatters.ToList());
             _fallbackFormatter = fallbackFormatter;
         }
 

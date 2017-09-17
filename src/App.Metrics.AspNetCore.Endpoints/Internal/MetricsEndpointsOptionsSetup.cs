@@ -2,6 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Linq;
 using App.Metrics.Formatters;
 using App.Metrics.Formatters.Ascii;
@@ -18,10 +19,11 @@ namespace App.Metrics.AspNetCore.Endpoints.Internal
         private readonly EnvFormatterCollection _envFormatters;
         private readonly MetricsFormatterCollection _metricsFormatters;
 
-        public MetricsEndpointsOptionsSetup(EnvFormatterCollection envFormatters, MetricsFormatterCollection metricsFormatters)
+        public MetricsEndpointsOptionsSetup(IReadOnlyCollection<IEnvOutputFormatter> envFormatters, IReadOnlyCollection<IMetricsOutputFormatter> metricsFormatters)
         {
-            _envFormatters = envFormatters;
-            _metricsFormatters = metricsFormatters;
+            // TODO: Need to do this?
+            _envFormatters = new EnvFormatterCollection(envFormatters.ToList());
+            _metricsFormatters = new MetricsFormatterCollection(metricsFormatters.ToList());
         }
 
         /// <inheritdoc />

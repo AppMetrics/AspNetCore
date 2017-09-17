@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using App.Metrics;
 using App.Metrics.AspNetCore;
 using App.Metrics.AspNetCore.Endpoints;
@@ -125,7 +126,7 @@ namespace Microsoft.AspNetCore.Builder
             IServiceProvider serviceProvider,
             IMetricsOutputFormatter formatter = null)
         {
-            var formatters = serviceProvider.GetRequiredService<MetricsFormatterCollection>();
+            var formatters = serviceProvider.GetRequiredService<IReadOnlyCollection<IMetricsOutputFormatter>>();
 
             if (formatter != null)
             {
@@ -138,7 +139,7 @@ namespace Microsoft.AspNetCore.Builder
 
         private static IMetricsResponseWriter GetMetricsTextResponseWriter(IServiceProvider serviceProvider, IMetricsOutputFormatter formatter = null)
         {
-            var formatters = serviceProvider.GetRequiredService<MetricsFormatterCollection>();
+            var formatters = serviceProvider.GetRequiredService<IReadOnlyCollection<IMetricsOutputFormatter>>();
 
             if (formatter != null)
             {

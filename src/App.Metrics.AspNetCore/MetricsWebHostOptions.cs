@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 using App.Metrics.AspNetCore.Endpoints;
 using App.Metrics.AspNetCore.Tracking;
 
@@ -30,5 +31,10 @@ namespace App.Metrics.AspNetCore
         ///     <see cref="MetricsWebTrackingOptions" />.
         /// </summary>
         public Action<MetricsWebTrackingOptions> TrackingMiddlewareOptions { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the <see cref="EventHandler" /> registered with an exception is thrown.
+        /// </summary>
+        public EventHandler<UnobservedTaskExceptionEventArgs> UnobservedTaskExceptionHandler { get; set; }
     }
 }

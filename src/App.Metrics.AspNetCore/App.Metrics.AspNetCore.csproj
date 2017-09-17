@@ -15,6 +15,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\App.Metrics.AspNetCore.Endpoints\App.Metrics.AspNetCore.Endpoints.csproj" />
+    <ProjectReference Include="..\App.Metrics.AspNetCore.Reporting\App.Metrics.AspNetCore.Reporting.csproj" />
     <ProjectReference Include="..\App.Metrics.AspNetCore.Tracking\App.Metrics.AspNetCore.Tracking.csproj" />
   </ItemGroup>
 

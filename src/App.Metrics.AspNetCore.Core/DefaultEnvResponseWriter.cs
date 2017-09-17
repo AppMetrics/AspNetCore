@@ -3,6 +3,8 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,9 +24,15 @@ namespace App.Metrics.AspNetCore
 
         public DefaultEnvResponseWriter(
             IEnvOutputFormatter fallbackFormatter,
-            EnvFormatterCollection formatters)
+            IReadOnlyCollection<IEnvOutputFormatter> formatters)
         {
-            _formatters = formatters ?? throw new ArgumentNullException(nameof(formatters));
+            if (formatters == null)
+            {
+                throw new ArgumentNullException(nameof(formatters));
+            }
+
+            // TODO: need this?
+            _formatters = new EnvFormatterCollection(formatters.ToList());
             _fallbackFormatter = fallbackFormatter ?? throw new ArgumentNullException(nameof(fallbackFormatter));
         }
 

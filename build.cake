@@ -41,6 +41,7 @@ var packDirs                    = new [] {
 											Directory("./src/App.Metrics.AspNetCore.Endpoints"),
 											Directory("./src/App.Metrics.AspNetCore.Hosting"),
 											Directory("./src/App.Metrics.AspNetCore.Mvc"),
+											Directory("./src/App.Metrics.AspNetCore.Reporting"),
 											Directory("./src/App.Metrics.AspNetCore.Routing"),	
 											Directory("./src/App.Metrics.AspNetCore.Tracking")
 										};
