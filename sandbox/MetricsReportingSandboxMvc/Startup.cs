@@ -29,18 +29,6 @@ namespace MetricsReportingSandboxMvc
         {
             services.AddTestStuff();
 
-            // DEVNOTE: To add reporting on the IServiceCollection directly as opposed to use the IWebHostBuilder
-            // services.AddMetricsReportingCore()
-            //     .AddConsole()
-            //     .AddTextFile(
-            //         textFileOptions =>
-            //         {
-            //             textFileOptions.OutputPathAndFileName = @"C:\metrics\metrics_web.txt";
-            //             textFileOptions.ReportInterval = TimeSpan.FromSeconds(20);
-            //             textFileOptions.AppendMetricsToTextFile = false;
-            //         })
-            //     .AddHostedServiceSchedulingCore();
-
             services.AddMvc(options => options.AddMetricsResourceFilter());
         }
     }
