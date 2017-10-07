@@ -134,7 +134,6 @@ namespace Microsoft.AspNetCore.Hosting
             {
                 Console.WriteLine($"Hosting {metricsEndpointHostingOptions.MetricsEndpoint} on port {metricsEndpointHostingOptions.AllEndpointsPort.Value}");
                 Console.WriteLine($"Hosting {metricsEndpointHostingOptions.MetricsTextEndpoint} endpoint on port {metricsEndpointHostingOptions.AllEndpointsPort.Value}");
-                Console.WriteLine($"Hosting {metricsEndpointHostingOptions.PingEndpoint} on port {metricsEndpointHostingOptions.AllEndpointsPort.Value}");
                 Console.WriteLine($"Hosting {metricsEndpointHostingOptions.EnvironmentInfoEndpoint} endpoint on port {metricsEndpointHostingOptions.AllEndpointsPort.Value}");
 
                 ports.Add(metricsEndpointHostingOptions.AllEndpointsPort.Value);
@@ -151,12 +150,6 @@ namespace Microsoft.AspNetCore.Hosting
                 {
                     Console.WriteLine($"Hosting {metricsEndpointHostingOptions.MetricsTextEndpoint} endpoint on port {metricsEndpointHostingOptions.MetricsTextEndpointPort.Value}");
                     ports.Add(metricsEndpointHostingOptions.MetricsTextEndpointPort.Value);
-                }
-
-                if (metricsEndpointHostingOptions.PingEndpointPort.HasValue)
-                {
-                    Console.WriteLine($"Hosting {metricsEndpointHostingOptions.PingEndpoint} on port {metricsEndpointHostingOptions.PingEndpointPort.Value}");
-                    ports.Add(metricsEndpointHostingOptions.PingEndpointPort.Value);
                 }
 
                 if (metricsEndpointHostingOptions.EnvironmentInfoEndpointPort.HasValue)

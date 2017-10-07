@@ -71,21 +71,5 @@ namespace App.Metrics.AspNetCore.Endpoints
         ///     The metrics text endpoint's port.
         /// </value>
         public int? MetricsTextEndpointPort { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the ping endpoint, defaults to /ping.
-        /// </summary>
-        /// <value>
-        ///     The ping endpoint.
-        /// </value>
-        public string PingEndpoint { get; set; } = MiddlewareConstants.DefaultRoutePaths.PingEndpoint.EnsureLeadingSlash();
-
-        /// <summary>
-        ///     Gets or sets the port to host the ping endpoint.
-        /// </summary>
-        /// <value>
-        ///     The pint endpoint's port.
-        /// </value>
-        public int? PingEndpointPort { get; set; }
     }
 }

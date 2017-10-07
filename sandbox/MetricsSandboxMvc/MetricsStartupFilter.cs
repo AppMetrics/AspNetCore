@@ -23,7 +23,6 @@ namespace MetricsSandboxMvc
                 builder.UseMetricsEndpoint();
                 builder.UseMetricsTextEndpoint();
                 builder.UseEnvInfoEndpoint();
-                builder.UsePingEndpoint();
                 builder.UseMetricsAllMiddleware();
 
                 next(builder);

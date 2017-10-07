@@ -35,8 +35,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
             var endpointsOptions = new MetricEndpointsOptions
                                    {
                                        MetricsTextEndpointEnabled = true,
-                                       MetricsEndpointEnabled = true,
-                                       PingEndpointEnabled = true
+                                       MetricsEndpointEnabled = true
                                    };
 
             var trackingoptions = new MetricsWebTrackingOptions

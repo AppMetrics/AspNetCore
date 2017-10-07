@@ -21,7 +21,6 @@ namespace Microsoft.AspNetCore.Builder
             app.UseMetricsEndpoint();
             app.UseMetricsTextEndpoint();
             app.UseEnvInfoEndpoint();
-            app.UsePingEndpoint();
 
             return app;
         }

@@ -60,7 +60,6 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                 {
                     options.MetricsTextEndpointEnabled = endpointsOptions.MetricsTextEndpointEnabled;
                     options.MetricsEndpointEnabled = endpointsOptions.MetricsEndpointEnabled;
-                    options.PingEndpointEnabled = endpointsOptions.PingEndpointEnabled;
                 });
 
             services.AddMetricsTrackingMiddleware(

@@ -23,7 +23,6 @@ namespace App.Metrics.AspNetCore.Endpoints
                 builder.UseMetricsEndpoint();
                 builder.UseMetricsTextEndpoint();
                 builder.UseEnvInfoEndpoint();
-                builder.UsePingEndpoint();
 
                 next(builder);
             }

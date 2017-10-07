@@ -51,7 +51,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
                 appMetricsOptions,
                 trackingOptions,
                 endpointOptions,
-                new DefaultMetricsFilter().WhereType(MetricType.Counter));
+                new MetricsFilter().WhereType(MetricType.Counter));
         }
 
         private void RecordSomeMetrics()

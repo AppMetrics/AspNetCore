@@ -33,7 +33,6 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
             trackingOptions.ApdexTSeconds.Should().Be(0.8);
             endpointOptions.MetricsTextEndpointEnabled.Should().Be(false);
             endpointOptions.MetricsEndpointEnabled.Should().Be(false);
-            endpointOptions.PingEndpointEnabled.Should().Be(false);
         }
 
         [Fact]

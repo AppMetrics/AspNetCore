@@ -16,7 +16,6 @@ namespace App.Metrics.AspNetCore.Endpoints
         {
             MetricsEndpointEnabled = true;
             MetricsTextEndpointEnabled = true;
-            PingEndpointEnabled = true;
             EnvironmentInfoEndpointEnabled = true;
         }
 
@@ -76,14 +75,5 @@ namespace App.Metrics.AspNetCore.Endpoints
         ///     The <see cref="IMetricsOutputFormatter" /> used to write metrics.
         /// </value>
         public IMetricsOutputFormatter MetricsTextEndpointOutputFormatter { get; set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether [ping endpoint should be enabled], if disabled endpoint responds with 404.
-        /// </summary>
-        /// <remarks>Only valid if UsePingEndpoint configured on the <see cref="IApplicationBuilder" />.</remarks>
-        /// <value>
-        ///     <c>true</c> if [ping endpoint enabled]; otherwise, <c>false</c>.
-        /// </value>
-        public bool PingEndpointEnabled { get; set; }
     }
 }
