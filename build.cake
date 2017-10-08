@@ -14,11 +14,13 @@
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
+var packageRelease				= HasArgument("packageRelease") ? Argument<bool>("packageRelease") :
+                                  EnvironmentVariable("packageRelease") != null ? bool.Parse(EnvironmentVariable("packageRelease")) : false;
 var target                      = Argument("target", "Default");
 var configuration               = HasArgument("BuildConfiguration") ? Argument<string>("BuildConfiguration") :
                                   EnvironmentVariable("BuildConfiguration") != null ? EnvironmentVariable("BuildConfiguration") : "Release";
 var coverWith					= HasArgument("CoverWith") ? Argument<string>("CoverWith") :
-                                  EnvironmentVariable("CoverWith") != null ? EnvironmentVariable("CoverWith") : "OpenCover"; // None, DotCover, OpenCover
+                                  EnvironmentVariable("CoverWith") != null ? EnvironmentVariable("CoverWith") : "DotCover"; // None, DotCover, OpenCover
 var skipReSharperCodeInspect    = HasArgument("SkipCodeInspect") ? Argument<bool>("SkipCodeInspect", false) || !IsRunningOnWindows(): true;
 var preReleaseSuffix            = HasArgument("PreReleaseSuffix") ? Argument<string>("PreReleaseSuffix") :
 	                              (AppVeyor.IsRunningOnAppVeyor && EnvironmentVariable("PreReleaseSuffix") == null) || (AppVeyor.IsRunningOnAppVeyor && AppVeyor.Environment.Repository.Tag.IsTag) ? null :
@@ -73,9 +75,16 @@ string versionSuffix			= null;
 
 if (!string.IsNullOrEmpty(preReleaseSuffix))
 {
-	versionSuffix = preReleaseSuffix + "-" + buildNumber.ToString("D4");
+	if (packageRelease)
+	{
+		versionSuffix = preReleaseSuffix;
+	}
+	else
+	{
+		versionSuffix = preReleaseSuffix + "-" + buildNumber.ToString("D4");
+	}
 }
-else if (AppVeyor.IsRunningOnAppVeyor && !AppVeyor.Environment.Repository.Tag.IsTag)
+else if (AppVeyor.IsRunningOnAppVeyor && !AppVeyor.Environment.Repository.Tag.IsTag && !packageRelease)
 {
 	versionSuffix = buildNumber.ToString("D4");
 }
@@ -369,7 +378,8 @@ Task("RunTestsWithDotCover")
 		var dotCoverSettings = new DotCoverCoverSettings 
 		{
 			ArgumentCustomization = args => args.Append(@"/HideAutoProperties")
-				.Append(@"/AttributeFilters=" + excludeFromCoverage)
+				.Append(@"/AttributeFilters=System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute")
+				.Append(@"/Filters=+:module=App.Metrics*;-:module=*.Facts*;")
 				.Append(@"/ReturnTargetExitCode")								
 		};
 					
