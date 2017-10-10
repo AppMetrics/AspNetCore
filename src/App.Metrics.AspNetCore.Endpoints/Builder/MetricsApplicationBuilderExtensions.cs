@@ -187,9 +187,9 @@ namespace Microsoft.AspNetCore.Builder
             {
                 port = endpointsHostingOptionsAccessor.Value.AllEndpointsPort.Value;
             }
-            else if (endpointsHostingOptionsAccessor.Value.MetricsEndpointPort.HasValue)
+            else if (endpointsHostingOptionsAccessor.Value.MetricsTextEndpointPort.HasValue)
             {
-                port = endpointsHostingOptionsAccessor.Value.MetricsEndpointPort.Value;
+                port = endpointsHostingOptionsAccessor.Value.MetricsTextEndpointPort.Value;
             }
 
             return context.Request.Path == endpointsHostingOptionsAccessor.Value.MetricsTextEndpoint &&
