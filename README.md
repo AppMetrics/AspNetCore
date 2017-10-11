@@ -1,9 +1,9 @@
-# App Metrics AspNetCore <img src="http://app-metrics.io/logo.png" alt="App Metrics" width="50px"/> 
-[![Official Site](https://img.shields.io/badge/site-appmetrics-blue.svg?style=flat-square)](http://app-metrics.io/getting-started/intro.html) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square)](https://opensource.org/licenses/Apache-2.0) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/app-metrics/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# App Metrics AspNetCore <img src="https://avatars0.githubusercontent.com/u/29864085?v=4&s=200" alt="App Metrics" width="50px"/> 
+[![Official Site](https://img.shields.io/badge/site-appmetrics-blue.svg?style=flat-square)](http://app-metrics.io/getting-started/intro.html) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
 
 ## What is App Metrics AspNetCore?
 
-App Metrics is an open-source and cross-platform .NET library used to record metrics within an application. This repository includes AspNetCore middleware and extensions to [App Metrics](https://github.com/alhardy/AppMetrics) which track typical metrics recorded in a web application and provide the ability to expose recorded metrics over HTTP. See the [Getting Started Guide](http://app-metrics.io/getting-started/intro.html) for more details and documentation on [App Metrics Web Monitoring](http://app-metrics.io/web-application-monitoring/index.html).
+App Metrics is an open-source and cross-platform .NET library used to record metrics within an application. This repository includes AspNetCore middleware and extensions to [App Metrics](https://github.com/AppMetrics/AppMetrics) which track typical metrics recorded in a web application and provide the ability to expose recorded metrics over HTTP. See the [Getting Started Guide](https://www.app-metrics.io/getting-started/) for more details and documentation on [App Metrics Web Monitoring](https://www.app-metrics.io/web-monitoring/aspnet-core/quick-start/).
 
 ## Latest Builds & Packages
 
