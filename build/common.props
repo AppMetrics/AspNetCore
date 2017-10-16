@@ -23,8 +23,7 @@
 	  <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Key.snk</AssemblyOriginatorKeyFile>
 	  <SignAssembly>true</SignAssembly>
 	  <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
-	  <!--Required for OpenCover-->
-	  <DebugType>full</DebugType>
+	  <DebugType>embedded</DebugType>
 	</PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETFramework'">
