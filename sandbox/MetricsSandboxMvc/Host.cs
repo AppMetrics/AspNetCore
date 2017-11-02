@@ -3,7 +3,9 @@
 // </copyright>
 
 using System;
+using App.Metrics;
 using App.Metrics.AspNetCore;
+using App.Metrics.Formatters;
 using App.Metrics.Formatters.Ascii;
 using App.Metrics.Formatters.Json;
 using Microsoft.AspNetCore;
@@ -15,9 +17,16 @@ namespace MetricsSandboxMvc
 {
     public static class Host
     {
+        public static IMetricsRoot Metrics { get; set; }
+
         public static IWebHost BuildWebHost(string[] args)
         {
             ConfigureLogging();
+
+            // Metrics = AppMetrics.CreateDefaultBuilder()
+            //     .OutputMetrics.AsJson()
+            //     .OutputMetrics.AsPlainText()
+            //     .Build();
 
             return WebHost.CreateDefaultBuilder(args)
 
@@ -29,6 +38,9 @@ namespace MetricsSandboxMvc
                           //    {
                           //        options.AllEndpointsPort = 2222;
                           //    })
+
+                          // To configure App Metrics core with a pre-built IMetrics
+                          // .ConfigureMetrics(Metrics)
 
                           // To configure App Metrics core where an IMetricsBuilder is provided with defaults that can be overriden
                           // .ConfigureMetricsWithDefaults(
@@ -66,7 +78,7 @@ namespace MetricsSandboxMvc
 
                           #endregion
 
-                          .UseMetrics()
+                          .UseMetrics(/*Configure()*/)
                           .UseSerilog()
                           .UseStartup<Startup>()
                           .Build();
@@ -82,9 +94,10 @@ namespace MetricsSandboxMvc
             {
                 options.EndpointOptions = endpointsOptions =>
                 {
-                    endpointsOptions.MetricsEndpointOutputFormatter = new MetricsTextOutputFormatter();
-                    endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsJsonOutputFormatter();
+                    endpointsOptions.MetricsEndpointOutputFormatter = Metrics.OutputMetricsFormatters.GetType<MetricsTextOutputFormatter>();
+                    endpointsOptions.MetricsTextEndpointOutputFormatter = Metrics.OutputMetricsFormatters.GetType<MetricsJsonOutputFormatter>();
                 };
+
                 options.TrackingMiddlewareOptions = middlewareOptions => { middlewareOptions.IgnoredHttpStatusCodes = new[] { 500 }; };
             };
         }
@@ -95,8 +108,7 @@ namespace MetricsSandboxMvc
                 .MinimumLevel.Verbose()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Verbose)
                 .WriteTo.LiterateConsole()
-                .WriteTo.Seq("http://localhost:5341")
-                .CreateLogger();
+                .WriteTo.Seq("http://localhost:5341").CreateLogger();
         }
     }
 }

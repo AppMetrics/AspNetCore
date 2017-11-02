@@ -28,6 +28,8 @@ namespace App.Metrics.AspNetCore.Endpoints.Internal
         /// <inheritdoc />
         public void Configure(MetricEndpointsOptions options)
         {
+            options.MetricsOutputFormatters = _metricsFormatters;
+
             if (options.MetricsTextEndpointOutputFormatter == null)
             {
                 options.MetricsTextEndpointOutputFormatter =

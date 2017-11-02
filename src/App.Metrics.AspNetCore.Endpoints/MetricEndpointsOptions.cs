@@ -2,6 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
 using App.Metrics.Formatters;
 using Microsoft.AspNetCore.Builder;
 
@@ -75,5 +76,7 @@ namespace App.Metrics.AspNetCore.Endpoints
         ///     The <see cref="IMetricsOutputFormatter" /> used to write metrics.
         /// </value>
         public IMetricsOutputFormatter MetricsTextEndpointOutputFormatter { get; set; }
+
+        public IReadOnlyCollection<IMetricsOutputFormatter> MetricsOutputFormatters { get; set; }
     }
 }

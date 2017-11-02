@@ -54,6 +54,21 @@ namespace Microsoft.AspNetCore.Hosting
             return hostBuilder;
         }
 
+        public static IWebHostBuilder ConfigureMetrics(this IWebHostBuilder hostBuilder, IMetricsRoot metrics)
+        {
+            if (_metricsBuilt)
+            {
+                throw new InvalidOperationException("MetricsBuilder allows creation only of a single instance of IMetrics");
+            }
+
+            return hostBuilder.ConfigureServices(
+                (context, services) =>
+                {
+                    services.AddMetrics(metrics);
+                    _metricsBuilt = true;
+                });
+        }
+
         public static IWebHostBuilder ConfigureMetrics(
             this IWebHostBuilder hostBuilder,
             Action<WebHostBuilderContext, IMetricsBuilder> configureMetrics)
