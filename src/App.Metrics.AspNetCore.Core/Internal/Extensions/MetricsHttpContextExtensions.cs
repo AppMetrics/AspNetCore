@@ -14,7 +14,10 @@ namespace Microsoft.AspNetCore.Http
 
         public static void AddMetricsCurrentRouteName(this HttpContext context, string metricName)
         {
-            context.Items.Add(MetricsCurrentRouteName, metricName);
+            if (!context.Items.ContainsKey(MetricsCurrentRouteName))
+            {
+                context.Items.Add(MetricsCurrentRouteName, metricName);
+            }
         }
 
         public static string GetMetricsCurrentRouteName(this HttpContext context)
