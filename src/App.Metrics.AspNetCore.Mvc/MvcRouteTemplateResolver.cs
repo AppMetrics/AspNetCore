@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using App.Metrics.AspNetCore;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Routing;
 
 // ReSharper disable CheckNamespace
@@ -14,6 +15,9 @@ namespace Microsoft.AspNetCore.Mvc.Internal
 {
     public class MvcRouteTemplateResolver : IRouteNameResolver
     {
+        private const string ApiVersionToken = "{version:apiversion}";
+        private const string MsVersionpolicyIsAppliedToken = "MS_VersionPolicyIsApplied";
+        private const string VersionRouteDataToken = "version";
         private readonly IRouteNameResolver _routeNameResolver;
 
         public MvcRouteTemplateResolver()
@@ -33,19 +37,44 @@ namespace Microsoft.AspNetCore.Mvc.Internal
                 return templateRoute;
             }
 
-            var attributeRouteHandler = routeData.Routers
-                                                 .FirstOrDefault(r => r.GetType().Name == "MvcAttributeRouteHandler")
+            var attributeRouteHandler = routeData.Routers.FirstOrDefault(r => r.GetType().Name == nameof(MvcAttributeRouteHandler))
                 as MvcAttributeRouteHandler;
 
-            if (attributeRouteHandler == null)
+            if (attributeRouteHandler == null || !attributeRouteHandler.Actions.Any())
             {
                 return string.Empty;
             }
 
-            var actionDescriptor = attributeRouteHandler.Actions.FirstOrDefault();
-            var result = actionDescriptor?.AttributeRouteInfo?.Template.ToLower() ?? string.Empty;
+            if (attributeRouteHandler.Actions.Length == 1)
+            {
+                var singleDescriptor = attributeRouteHandler.Actions.Single();
 
-            return result;
+                return ExtractRouteTemplate(routeData, singleDescriptor);
+            }
+
+            foreach (var actionDescriptor in attributeRouteHandler.Actions)
+            {
+                if (actionDescriptor.Properties != null && actionDescriptor.Properties.ContainsKey(MsVersionpolicyIsAppliedToken))
+                {
+                    return ExtractRouteTemplate(routeData, actionDescriptor);
+                }
+            }
+
+            var firstDescriptor = attributeRouteHandler.Actions.First();
+
+            return ExtractRouteTemplate(routeData, firstDescriptor);
+        }
+
+        private static string ExtractRouteTemplate(RouteData routeData, ActionDescriptor actionDescriptor)
+        {
+            var routeTemplate = actionDescriptor.AttributeRouteInfo?.Template.ToLower() ?? string.Empty;
+
+            if (actionDescriptor.Properties != null && actionDescriptor.Properties.ContainsKey(MsVersionpolicyIsAppliedToken))
+            {
+                routeTemplate = routeTemplate.Replace(ApiVersionToken, routeData.Values[VersionRouteDataToken].ToString());
+            }
+
+            return routeTemplate;
         }
     }
 }

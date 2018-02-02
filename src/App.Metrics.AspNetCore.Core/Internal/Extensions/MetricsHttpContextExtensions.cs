@@ -8,7 +8,7 @@ using System;
 namespace Microsoft.AspNetCore.Http
     // ReSharper restore CheckNamespace
 {
-    internal static class MetricsHttpContextExtensions
+    public static class MetricsHttpContextExtensions
     {
         private static readonly string MetricsCurrentRouteName = "__App.Metrics.CurrentRouteName__";
 
