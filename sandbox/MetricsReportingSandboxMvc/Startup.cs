@@ -29,7 +29,7 @@ namespace MetricsReportingSandboxMvc
         {
             services.AddTestStuff();
 
-            services.AddMvc(options => options.AddMetricsResourceFilter());
+            services.AddMvc().AddMetrics();
         }
     }
 }

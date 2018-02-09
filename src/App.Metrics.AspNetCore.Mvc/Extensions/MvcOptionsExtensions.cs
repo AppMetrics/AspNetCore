@@ -2,6 +2,8 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using System;
+using System.Linq;
 using App.Metrics.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Internal;
@@ -12,16 +14,24 @@ namespace Microsoft.AspNetCore.Mvc
 {
     public static class MvcOptionsExtensions
     {
+        [Obsolete("Use IMvcBuilder.AddMvc()")]
         public static MvcOptions AddMetricsResourceFilter(this MvcOptions options)
         {
-            options.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver()));
+            if (!options.Filters.OfType<MetricsResourceFilter>().Any())
+            {
+                options.Filters.Add(new MetricsResourceFilter(new MvcRouteTemplateResolver()));
+            }
 
             return options;
         }
 
+        [Obsolete("Use IMvcBuilder.AddMvc()")]
         public static MvcOptions AddMetricsResourceFilter(this MvcOptions options, IRouteNameResolver routeNameResolver)
         {
-            options.Filters.Add(new MetricsResourceFilter(routeNameResolver));
+            if (!options.Filters.OfType<MetricsResourceFilter>().Any())
+            {
+                options.Filters.Add(new MetricsResourceFilter(routeNameResolver));
+            }
 
             return options;
         }
