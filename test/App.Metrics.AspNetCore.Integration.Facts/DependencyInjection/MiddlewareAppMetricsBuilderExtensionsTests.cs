@@ -26,8 +26,8 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
             Action resolveOptions = () => { trackingOptions = provider.GetRequiredService<IOptions<MetricsWebTrackingOptions>>().Value; };
             Action resolveEndpointsOptions = () => { endpointOptions = provider.GetRequiredService<IOptions<MetricEndpointsOptions>>().Value; };
 
-            resolveOptions.ShouldNotThrow();
-            resolveEndpointsOptions.ShouldNotThrow();
+            resolveOptions.Should().NotThrow();
+            resolveEndpointsOptions.Should().NotThrow();
 
             trackingOptions.ApdexTrackingEnabled.Should().Be(false);
             trackingOptions.ApdexTSeconds.Should().Be(0.8);
@@ -48,7 +48,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.DependencyInjection
 
             Action resolveOptions = () => { options = provider.GetRequiredService<IOptions<MetricsWebTrackingOptions>>().Value; };
 
-            resolveOptions.ShouldNotThrow();
+            resolveOptions.Should().NotThrow();
             options.ApdexTrackingEnabled.Should().Be(true);
             options.ApdexTSeconds.Should().Be(0.7);
         }

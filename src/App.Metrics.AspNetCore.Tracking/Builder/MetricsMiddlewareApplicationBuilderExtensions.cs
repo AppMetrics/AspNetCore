@@ -77,7 +77,13 @@ namespace Microsoft.AspNetCore.Builder
                            context.HasMetricsCurrentRouteName() &&
                            metricsOptions.Enabled &&
                            trackingMiddlwareOptionsAccessor.Value.ApdexTrackingEnabled,
-                appBuilder => { appBuilder.UseMiddleware<ApdexMiddleware>(); });
+                appBuilder =>
+                {
+                    if (trackingMiddlwareOptionsAccessor.Value.ApdexTrackingEnabled)
+                    {
+                        appBuilder.UseMiddleware<ApdexMiddleware>();
+                    }
+                });
 
             return app;
         }
@@ -114,7 +120,13 @@ namespace Microsoft.AspNetCore.Builder
                 context => !IsNotAnIgnoredRoute(trackingMiddlwareOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
                            context.OAuthClientId().IsPresent() &&
                            trackingMiddlwareOptionsAccessor.Value.OAuth2TrackingEnabled,
-                appBuilder => { appBuilder.UseMiddleware<OAuthTrackingMiddleware>(); });
+                appBuilder =>
+                {
+                    if (trackingMiddlwareOptionsAccessor.Value.OAuth2TrackingEnabled)
+                    {
+                        appBuilder.UseMiddleware<OAuthTrackingMiddleware>();
+                    }
+                });
 
             return app;
         }
@@ -180,7 +192,13 @@ namespace Microsoft.AspNetCore.Builder
             app.UseWhen(
                 context => !IsNotAnIgnoredRoute(trackingMiddlwareOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
                            metricsOptions.Enabled,
-                appBuilder => { appBuilder.UseMiddleware<TMiddleware>(); });
+                appBuilder =>
+                {
+                    if (metricsOptions.Enabled)
+                    {
+                        appBuilder.UseMiddleware<TMiddleware>();
+                    }
+                });
         }
     }
 }
