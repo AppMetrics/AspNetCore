@@ -25,7 +25,7 @@ namespace App.Metrics.AspNetCore
             hostBuilder.ConfigureServices(
                 (context, services) =>
                 {
-                    services.AddMetricsReportScheduler();
+                    services.AddMetricsReportingHostedService();
                     services.AddMetricsEndpoints(context.Configuration);
                     services.AddMetricsTrackingMiddleware(context.Configuration);
                 });
@@ -57,7 +57,7 @@ namespace App.Metrics.AspNetCore
                 {
                     optionsDelegate(options);
 
-                    services.AddMetricsReportScheduler(options.UnobservedTaskExceptionHandler);
+                    services.AddMetricsReportingHostedService(options.UnobservedTaskExceptionHandler);
                     services.AddMetricsEndpoints(options.EndpointOptions);
                     services.AddMetricsTrackingMiddleware(options.TrackingMiddlewareOptions);
                 });
@@ -89,7 +89,7 @@ namespace App.Metrics.AspNetCore
                 {
                     optionsDelegate(context, options);
 
-                    services.AddMetricsReportScheduler(options.UnobservedTaskExceptionHandler);
+                    services.AddMetricsReportingHostedService(options.UnobservedTaskExceptionHandler);
                     services.AddMetricsEndpoints(options.EndpointOptions, context.Configuration);
                     services.AddMetricsTrackingMiddleware(options.TrackingMiddlewareOptions, context.Configuration);
                 });
@@ -122,7 +122,7 @@ namespace App.Metrics.AspNetCore
                 {
                     optionsDelegate(options);
 
-                    services.AddMetricsReportScheduler(options.UnobservedTaskExceptionHandler);
+                    services.AddMetricsReportingHostedService(options.UnobservedTaskExceptionHandler);
                     services.AddMetricsEndpoints(options.EndpointOptions, context.Configuration);
                     services.AddMetricsTrackingMiddleware(options.TrackingMiddlewareOptions, context.Configuration);
                     services.AddSingleton<IStartupFilter>(new TStartup());
@@ -147,7 +147,7 @@ namespace App.Metrics.AspNetCore
             hostBuilder.ConfigureServices(
                 (context, services) =>
                 {
-                    services.AddMetricsReportScheduler();
+                    services.AddMetricsReportingHostedService();
                     services.AddMetricsEndpoints(context.Configuration);
                     services.AddMetricsTrackingMiddleware(context.Configuration);
                     services.AddSingleton<IStartupFilter>(new TStartup());

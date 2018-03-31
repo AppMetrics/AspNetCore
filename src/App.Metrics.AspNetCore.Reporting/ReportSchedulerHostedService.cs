@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace App.Metrics.AspNetCore.Reporting
 {
+    [Obsolete("HostedService for metric reporting moved to App.Metrics.Extensions.Hosting now that HostedService is supported outside of a web context")]
     public class ReportSchedulerHostedService : HostedService
     {
         private static readonly ILog Logger = LogProvider.For<ReportSchedulerHostedService>();

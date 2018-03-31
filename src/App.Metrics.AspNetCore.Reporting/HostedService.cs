@@ -2,6 +2,7 @@
 // Copyright (c) Allan Hardy. All rights reserved.
 // </copyright>
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace Microsoft.Extensions.Hosting
     // ReSharper restore CheckNamespace
 {
+    [Obsolete("HostedService for metric reporting moved to App.Metrics.Extensions.Hosting now that HostedService is supported outside of a web context")]
     public abstract class HostedService : IHostedService
     {
         // Base class code kindly provided by David Fowler: https://gist.github.com/davidfowl/a7dd5064d9dcf35b6eae1a7953d615e3

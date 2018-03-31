@@ -17,6 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     ///     Extension methods for setting up App Metrics Reporting services in an <see cref="IServiceCollection" />.
     /// </summary>
+    [Obsolete("HostedService for metric reporting moved to App.Metrics.Extensions.Hosting now that HostedService is supported outside of a web context")]
     public static class MetricsAspNetCoreMetricsReportingServiceCollectionExtensions
     {
         public static void AddMetricsReportScheduler(
