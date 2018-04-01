@@ -43,6 +43,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{3B3721C0-41F
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sandbox", "sandbox", "{C0BC96C5-46E1-4323-9C5D-58D9A96549CD}"
+	ProjectSection(SolutionItems) = preProject
+		sandbox\Directory.Build.props = sandbox\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sanbox", "Sanbox", "{F1ECA197-26EE-4A52-8026-D906C14685A2}"
 	ProjectSection(SolutionItems) = preProject
