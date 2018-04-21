@@ -74,7 +74,6 @@ namespace Microsoft.AspNetCore.Builder
 
             app.UseWhen(
                 context => !IsNotAnIgnoredRoute(trackingMiddlwareOptionsAccessor.Value.IgnoredRoutesRegex, context.Request.Path) &&
-                           context.HasMetricsCurrentRouteName() &&
                            metricsOptions.Enabled &&
                            trackingMiddlwareOptionsAccessor.Value.ApdexTrackingEnabled,
                 appBuilder =>
