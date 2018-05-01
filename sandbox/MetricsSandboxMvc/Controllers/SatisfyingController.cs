@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsSandboxMvc.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class SatisfyingController : Controller
     {
         private readonly RequestDurationForApdexTesting _durationForApdexTesting;

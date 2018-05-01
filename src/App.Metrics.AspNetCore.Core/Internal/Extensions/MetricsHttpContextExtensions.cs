@@ -31,6 +31,10 @@ namespace Microsoft.AspNetCore.Http
                 }
             }
 
+            // TODO: #25 MvcRouteTemplateResolver isn't executed when an unsupported api version is requested
+            // leaving thier metrics tagged with the http method alone.
+            // The raw api version requested can be retrieved from MS_ApiVersionRequestProperties on HttpContext.Items
+
             return context.Request.Method;
         }
 

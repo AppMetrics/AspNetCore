@@ -42,38 +42,38 @@ namespace Microsoft.AspNetCore.Builder
                     TimeSpan.FromSeconds(ApdexSamplesInterval),
                     () =>
                     {
-                        var satisfied = HttpClient.GetAsync("api/satisfying", token);
-                        var tolerating = HttpClient.GetAsync("api/tolerating", token);
-                        var frustrating = HttpClient.GetAsync("api/frustrating", token);
+                        var satisfied = HttpClient.GetAsync("api/v1.0/satisfying", token);
+                        var tolerating = HttpClient.GetAsync("api/v1.0/tolerating", token);
+                        var frustrating = HttpClient.GetAsync("api/v1.0/frustrating", token);
 
                         return Task.WhenAll(satisfied, tolerating, frustrating);
                     });
 
-                apdexSamples.Start();
+                // apdexSamples.Start();
 
                 var randomErrorSamples = new AppMetricsTaskScheduler(
                     TimeSpan.FromSeconds(RandomSamplesInterval),
                     () =>
                     {
-                        var randomStatusCode = HttpClient.GetAsync("api/randomstatuscode", token);
-                        var randomException = HttpClient.GetAsync("api/randomexception", token);
+                        var randomStatusCode = HttpClient.GetAsync("api/v1.0/randomstatuscode", token);
+                        var randomException = HttpClient.GetAsync("api/v1.0/randomexception", token);
 
                         return Task.WhenAll(randomStatusCode, randomException);
                     });
 
-                randomErrorSamples.Start();
+                // randomErrorSamples.Start();
 
                 var testSamples = new AppMetricsTaskScheduler(
                     TimeSpan.FromSeconds(GetEndpointSuccessInterval),
-                    () => HttpClient.GetAsync("api/test", token));
+                    () => HttpClient.GetAsync("api/v1.0/test", token));
 
-                testSamples.Start();
+                // testSamples.Start();
 
                 var slaSamples = new AppMetricsTaskScheduler(
                     TimeSpan.FromSeconds(SlaEndpointsInterval),
-                    () => HttpClient.GetAsync("api/slatest/timer", token));
+                    () => HttpClient.GetAsync("api/v1.0/slatest/timer", token));
 
-                slaSamples.Start();
+                // slaSamples.Start();
 
                 var randomBufferGenerator = new RandomBufferGenerator(50000);
                 var postPutSamples = new AppMetricsTaskScheduler(
@@ -82,16 +82,16 @@ namespace Microsoft.AspNetCore.Builder
                     {
                         var putBytes = new ByteArrayContent(randomBufferGenerator.GenerateBufferFromSeed());
                         var putFormData = new MultipartFormDataContent { { putBytes, "put-file", "rnd-put" } };
-                        var putRequest = HttpClient.PutAsync("api/file", putFormData, token);
+                        var putRequest = HttpClient.PutAsync("api/v1.0/file", putFormData, token);
 
                         var postBytes = new ByteArrayContent(randomBufferGenerator.GenerateBufferFromSeed());
                         var postFormData = new MultipartFormDataContent { { postBytes, "post-file", "rnd-post" } };
-                        var postRequest = HttpClient.PostAsync("api/file", postFormData, token);
+                        var postRequest = HttpClient.PostAsync("api/v1.0/file", postFormData, token);
 
                         return Task.WhenAll(putRequest, postRequest);
                     });
 
-                postPutSamples.Start();
+                // postPutSamples.Start();
             }
 
             return app;

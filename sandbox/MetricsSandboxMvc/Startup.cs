@@ -29,6 +29,19 @@ namespace MetricsSandboxMvc
         {
             services.AddLogging();
             services.AddTestStuff();
+
+            services
+                .AddApiVersioning(options =>
+                {
+                    options.AssumeDefaultVersionWhenUnspecified = true;
+                    options.DefaultApiVersion = ApiVersion.Parse("1.1");
+                    options.ReportApiVersions = true;
+                });
+
+            services
+                .AddMvcCore()
+                .AddVersionedApiExplorer(o => o.GroupNameFormat = "v'VVV");
+
             services.AddMvc().AddMetrics();
         }
     }

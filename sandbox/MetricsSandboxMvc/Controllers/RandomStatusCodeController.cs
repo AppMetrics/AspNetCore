@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsSandboxMvc.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class RandomStatusCodeController : Controller
     {
         private readonly RandomValuesForTesting _randomValuesForTesting;
