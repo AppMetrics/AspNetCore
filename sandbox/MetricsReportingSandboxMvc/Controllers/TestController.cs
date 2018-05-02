@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsReportingSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class TestController : Controller
+    public class TestController : ControllerBase
     {
         [HttpGet]
         public IActionResult Get()

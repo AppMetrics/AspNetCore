@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="$(AspNetCoreMvcVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="Serilog.Sinks.Literate" Version="3.0.1-dev-00044" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.1-dev-00154" />

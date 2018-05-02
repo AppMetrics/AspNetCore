@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class FileController : Controller
+    public class FileController : ControllerBase
     {
         [HttpPost]
         public IActionResult Post(IFormFile file)

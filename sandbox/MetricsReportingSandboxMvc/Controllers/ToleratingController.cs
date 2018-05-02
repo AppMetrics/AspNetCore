@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsReportingSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class ToleratingController : Controller
+    public class ToleratingController : ControllerBase
     {
         private readonly RequestDurationForApdexTesting _durationForApdexTesting;
 

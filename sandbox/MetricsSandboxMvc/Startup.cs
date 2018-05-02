@@ -29,7 +29,7 @@ namespace MetricsSandboxMvc
         {
             services.AddLogging();
             services.AddTestStuff();
-            services.AddMvc().AddMetrics();
+            services.AddMvcCore().AddMetricsCore();
         }
     }
 }

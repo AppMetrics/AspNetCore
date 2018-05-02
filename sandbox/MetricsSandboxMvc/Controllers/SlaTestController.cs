@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class SlaTestController : Controller
+    public class SlaTestController : ControllerBase
     {
         private static readonly Random Rnd = new Random();
         private readonly IMetrics _metrics;

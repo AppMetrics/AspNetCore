@@ -33,7 +33,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         {
             services.AddLogging().AddRouting(options => { options.LowercaseUrls = true; });
 
-            services.AddMvc().AddMetrics();
+            services.AddMvcCore().AddMetricsCore();
 
             var builder = new MetricsBuilder().Configuration.Configure(
                                                    options =>

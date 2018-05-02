@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsReportingSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class RandomStatusCodeController : Controller
+    public class RandomStatusCodeController : ControllerBase
     {
         private readonly RandomValuesForTesting _randomValuesForTesting;
 
