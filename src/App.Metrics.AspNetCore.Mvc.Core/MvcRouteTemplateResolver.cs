@@ -69,7 +69,8 @@ namespace Microsoft.AspNetCore.Mvc.Internal
         {
             var routeTemplate = actionDescriptor.AttributeRouteInfo?.Template.ToLower() ?? string.Empty;
 
-            if (actionDescriptor.Properties != null && actionDescriptor.Properties.ContainsKey(MsVersionpolicyIsAppliedToken))
+            if (actionDescriptor.Properties != null && actionDescriptor.Properties.ContainsKey(MsVersionpolicyIsAppliedToken)
+                && routeData.Values.ContainsKey(VersionRouteDataToken))
             {
                 routeTemplate = routeTemplate.Replace(ApiVersionToken, routeData.Values[VersionRouteDataToken].ToString());
             }
