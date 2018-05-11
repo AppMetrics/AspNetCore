@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>    
-		<Description>App Metrics ASP.NET Core Reporting provides the abliity to report metrics in web application.</Description>	
+		<Description>[Obsolete - App Metrics ASP.NET Core Reporting provides the abliity to report metrics in web application] HostedService for metric reporting moved to App.Metrics.Extensions.Hosting now that HostedService is supported outside of a web context in net core 2.1.0</Description>	
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PackageTags>appmetrics;aspnetcore;metrics;reporting</PackageTags>
