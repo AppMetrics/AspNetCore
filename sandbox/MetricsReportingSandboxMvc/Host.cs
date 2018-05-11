@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using App.Metrics;
 using App.Metrics.AspNetCore;
 using MetricsReportingSandboxMvc.JustForTesting;
 using Microsoft.AspNetCore;
@@ -23,6 +24,7 @@ namespace MetricsReportingSandboxMvc
                           .ConfigureMetricsWithDefaults(
                                builder =>
                                {
+                                   // builder.MetricFields.Configure(fields => { fields.Apdex.Exclude(); });
                                    builder.Report.Using<SimpleConsoleMetricsReporter>(TimeSpan.FromSeconds(2));
                                })
                             .UseMetrics()
