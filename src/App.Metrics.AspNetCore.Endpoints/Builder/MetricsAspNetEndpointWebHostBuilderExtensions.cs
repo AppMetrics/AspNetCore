@@ -162,7 +162,7 @@ namespace Microsoft.AspNetCore.Hosting
             if (ports.Any())
             {
                 var existingUrl = hostBuilder.GetSetting(WebHostDefaults.ServerUrlsKey);
-                var additionalUrls = string.Join(";", ports.Distinct().Select(p => $"http://localhost:{p}/"));
+                var additionalUrls = string.Join(";", ports.Distinct().Select(p => $"http://*:{p}/"));
                 hostBuilder.UseSetting(WebHostDefaults.ServerUrlsKey, $"{existingUrl};{additionalUrls}");
             }
 
