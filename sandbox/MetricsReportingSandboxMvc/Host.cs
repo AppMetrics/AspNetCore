@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using App.Metrics;
 using App.Metrics.AspNetCore;
 using MetricsReportingSandboxMvc.JustForTesting;
 using Microsoft.AspNetCore;
