@@ -48,14 +48,15 @@ namespace App.Metrics.AspNetCore.Tracking
         /// </value>
         public IList<int> IgnoredHttpStatusCodes { get; set; } = new List<int>();
 
+        private IgnoredRoutesConfiguration _ignoredRoutesConfiguration = new IgnoredRoutesConfiguration();
+
         /// <summary>
         ///     Gets the ignored request routes where metrics should not be measured.
         /// </summary>
         /// <value>
         ///     The ignored routes regex patterns.
         /// </value>
-        public IReadOnlyList<Regex> IgnoredRoutesRegex =>
-            IgnoredRoutesRegexPatterns.Select(p => new Regex(p, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToList();
+        public IReadOnlyList<Regex> IgnoredRoutesRegex => _ignoredRoutesConfiguration.RegexPatterns;
 
         /// <summary>
         ///     Gets or sets the ignored request routes where metrics should not be measured.
@@ -63,7 +64,11 @@ namespace App.Metrics.AspNetCore.Tracking
         /// <value>
         ///     The ignored routes regex patterns.
         /// </value>
-        public IList<string> IgnoredRoutesRegexPatterns { get; set; } = new List<string>();
+        public IList<string> IgnoredRoutesRegexPatterns
+        {
+            get => _ignoredRoutesConfiguration;
+            set => _ignoredRoutesConfiguration = new IgnoredRoutesConfiguration(value);
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether [oauth2 client tracking should be enabled], if disabled endpoint responds
