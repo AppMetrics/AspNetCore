@@ -2,7 +2,6 @@
 // Copyright (c) App Metrics Contributors. All rights reserved.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
@@ -18,7 +17,7 @@ namespace App.Metrics.AspNetCore.Tracking.Facts
             var options = new MetricsWebTrackingOptions();
 
             options.IgnoredRoutesRegexPatterns.Should().NotBeNull();
-            options.IgnoredRoutesRegexPatterns.Should().NotBeNull();
+            options.IgnoredRoutesRegex.Should().NotBeNull();
         }
 
         [Fact]
@@ -29,6 +28,8 @@ namespace App.Metrics.AspNetCore.Tracking.Facts
             var options = new MetricsWebTrackingOptions();
             options.IgnoredRoutesRegexPatterns = patterns;
 
+            options.IgnoredRoutesRegexPatterns
+                   .Should().BeEquivalentTo(patterns);
             options.IgnoredRoutesRegex.Select(r => r.ToString())
                    .Should().BeEquivalentTo(patterns);
         }
@@ -48,6 +49,8 @@ namespace App.Metrics.AspNetCore.Tracking.Facts
             options.IgnoredRoutesRegexPatterns[0] = "xyz";
 
             var expected = new List<string> { "xyz", "qwe", "route1" };
+            options.IgnoredRoutesRegexPatterns
+                   .Should().BeEquivalentTo(expected);
             options.IgnoredRoutesRegex.Select(r => r.ToString())
                    .Should().BeEquivalentTo(expected);
         }
@@ -60,6 +63,7 @@ namespace App.Metrics.AspNetCore.Tracking.Facts
 
             options.IgnoredRoutesRegexPatterns.Clear();
 
+            options.IgnoredRoutesRegexPatterns.Should().BeEmpty();
             options.IgnoredRoutesRegex.Should().BeEmpty();
         }
     }
