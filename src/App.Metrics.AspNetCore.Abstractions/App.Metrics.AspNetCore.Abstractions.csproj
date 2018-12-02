@@ -10,8 +10,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="App.Metrics.Abstractions" Version="$(AppMetricsCoreVersion)" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion)" />
-		<PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="$(AspNetCoreVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
 	</ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@
     <PackageReference Include="App.Metrics.Core" Version="$(AppMetricsCoreVersion)" />
     <PackageReference Include="App.Metrics.Extensions.Configuration" Version="$(AppMetricsMicrosoftExtensionsVersion)" />
     <PackageReference Include="App.Metrics.Extensions.DependencyInjection" Version="$(AppMetricsMicrosoftExtensionsVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
   </ItemGroup>
