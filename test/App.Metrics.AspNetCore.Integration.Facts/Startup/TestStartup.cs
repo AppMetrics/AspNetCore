@@ -1,5 +1,5 @@
-// <copyright file="TestStartup.cs" company="Allan Hardy">
-// Copyright (c) Allan Hardy. All rights reserved.
+// <copyright file="TestStartup.cs" company="App Metrics Contributors">
+// Copyright (c) App Metrics Contributors. All rights reserved.
 // </copyright>
 
 using App.Metrics.AspNetCore.Endpoints;
@@ -33,7 +33,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts.Startup
         {
             services.AddLogging().AddRouting(options => { options.LowercaseUrls = true; });
 
-            services.AddMvc().AddMetrics();
+            services.AddMvcCore().AddMetricsCore();
 
             var builder = new MetricsBuilder().Configuration.Configure(
                                                    options =>

@@ -1,5 +1,5 @@
-﻿// <copyright file="TestController.cs" company="Allan Hardy">
-// Copyright (c) Allan Hardy. All rights reserved.
+﻿// <copyright file="TestController.cs" company="App Metrics Contributors">
+// Copyright (c) App Metrics Contributors. All rights reserved.
 // </copyright>
 
 using System;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace App.Metrics.AspNetCore.Integration.Facts
 {
     [Route("api/[controller]")]
-    public class TestController : Controller
+    public class TestController : ControllerBase
     {
         private readonly IMetrics _metrics;
 
@@ -98,10 +98,7 @@ namespace App.Metrics.AspNetCore.Integration.Facts
         }
 
         [HttpGet("ignore")]
-        public IEnumerable<string> Ignore()
-        {
-            return new[] { "value1", "value2" };
-        }
+        public IActionResult Ignore() { return StatusCode(200); }
 
         [HttpGet("oauth/{clientid}")]
         public IActionResult OAuth(string clientId)

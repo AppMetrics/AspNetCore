@@ -44,6 +44,7 @@ var packDirs                    = new [] {
 											Directory("./src/App.Metrics.AspNetCore.Endpoints"),
 											Directory("./src/App.Metrics.AspNetCore.Hosting"),
 											Directory("./src/App.Metrics.AspNetCore.Mvc"),
+											Directory("./src/App.Metrics.AspNetCore.Mvc.Core"),
 											Directory("./src/App.Metrics.AspNetCore.Reporting"),
 											Directory("./src/App.Metrics.AspNetCore.Routing"),	
 											Directory("./src/App.Metrics.AspNetCore.Tracking")
@@ -74,22 +75,35 @@ var coverExcludeFilter			= "-:*.Facts";
 var excludeFromCoverage			= "*.ExcludeFromCodeCoverage*";
 string versionSuffix			= null;
 
-if (!string.IsNullOrEmpty(preReleaseSuffix))
+if (AppVeyor.IsRunningOnAppVeyor)
 {
-	if (packageRelease && AppVeyor.IsRunningOnAppVeyor && AppVeyor.Environment.Repository.Tag.IsTag)
+	if (AppVeyor.Environment.Repository.Tag.IsTag)
 	{
-		versionSuffix = preReleaseSuffix;
+		// Stable release package, pushed to nuget
+	}
+	else if (string.IsNullOrEmpty(preReleaseSuffix))
+	{
+		// Next stable release development package, not pushed to nuget
+		versionSuffix = buildNumber.ToString("D4");
 	}
 	else
 	{
-		versionSuffix = preReleaseSuffix + "-" + buildNumber.ToString("D4");
+		if (packageRelease)
+		{
+			// Pre-release package, set version suffix without build number, not tagged until stable release but pushed to nuget
+			versionSuffix = preReleaseSuffix;
+		}
+		else
+		{
+			// Pre-release development package, set version suffix with build number, not pushed to nuget
+			versionSuffix = preReleaseSuffix + "-" + buildNumber.ToString("D4");
+		}
 	}
 }
-else if (AppVeyor.IsRunningOnAppVeyor && !AppVeyor.Environment.Repository.Tag.IsTag && !packageRelease)
+else
 {
-	versionSuffix = buildNumber.ToString("D4");
+	versionSuffix = preReleaseSuffix + "-" + buildNumber.ToString("D4");
 }
-
 
 //////////////////////////////////////////////////////////////////////
 // TASKS

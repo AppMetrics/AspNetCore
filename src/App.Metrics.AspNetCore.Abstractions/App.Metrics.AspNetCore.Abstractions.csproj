@@ -1,19 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\build\common.props" />
-  
-  <PropertyGroup>
-    <Description>App Metrics ASP.NET Core abstractions and interfaces for routing, HTTP response formatting and more.</Description>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageTags>appmetrics;aspnetcore;metrics</PackageTags>	  
-	  <RootNamespace>App.Metrics.AspNetCore</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Description>App Metrics ASP.NET Core abstractions and interfaces for routing, HTTP response formatting and more.</Description>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageTags>appmetrics;aspnetcore;metrics</PackageTags>	  
+		<RootNamespace>App.Metrics.AspNetCore</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="App.Metrics.Abstractions" Version="$(AppMetricsCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="$(AspNetCoreVersion)" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="App.Metrics.Abstractions" Version="$(AppMetricsCoreVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+	</ItemGroup>
 
 </Project>

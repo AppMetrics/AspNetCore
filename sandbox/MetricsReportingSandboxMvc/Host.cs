@@ -1,5 +1,5 @@
-﻿// <copyright file="Host.cs" company="Allan Hardy">
-// Copyright (c) Allan Hardy. All rights reserved.
+﻿// <copyright file="Host.cs" company="App Metrics Contributors">
+// Copyright (c) App Metrics Contributors. All rights reserved.
 // </copyright>
 
 using System;
@@ -23,6 +23,7 @@ namespace MetricsReportingSandboxMvc
                           .ConfigureMetricsWithDefaults(
                                builder =>
                                {
+                                   // builder.MetricFields.Configure(fields => { fields.Apdex.Exclude(); });
                                    builder.Report.Using<SimpleConsoleMetricsReporter>(TimeSpan.FromSeconds(2));
                                })
                             .UseMetrics()

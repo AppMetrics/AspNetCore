@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\build\common.props" />
-  
   <PropertyGroup>
     <Description>App Metrics ASP.NET Core Endpoints provides the ability to expose metrics and environment information as web endpoints.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>    

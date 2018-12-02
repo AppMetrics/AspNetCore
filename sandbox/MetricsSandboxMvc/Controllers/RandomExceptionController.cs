@@ -1,5 +1,5 @@
-﻿// <copyright file="RandomExceptionController.cs" company="Allan Hardy">
-// Copyright (c) Allan Hardy. All rights reserved.
+﻿// <copyright file="RandomExceptionController.cs" company="App Metrics Contributors">
+// Copyright (c) App Metrics Contributors. All rights reserved.
 // </copyright>
 
 using MetricsSandboxMvc.JustForTesting;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class RandomExceptionController : Controller
+    public class RandomExceptionController : ControllerBase
     {
         private readonly RandomValuesForTesting _randomValuesForTesting;
 

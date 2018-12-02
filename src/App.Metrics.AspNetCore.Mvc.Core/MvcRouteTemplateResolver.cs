@@ -1,5 +1,5 @@
-﻿// <copyright file="MvcRouteTemplateResolver.cs" company="Allan Hardy">
-// Copyright (c) Allan Hardy. All rights reserved.
+﻿// <copyright file="MvcRouteTemplateResolver.cs" company="App Metrics Contributors">
+// Copyright (c) App Metrics Contributors. All rights reserved.
 // </copyright>
 
 using System;
@@ -69,7 +69,8 @@ namespace Microsoft.AspNetCore.Mvc.Internal
         {
             var routeTemplate = actionDescriptor.AttributeRouteInfo?.Template.ToLower() ?? string.Empty;
 
-            if (actionDescriptor.Properties != null && actionDescriptor.Properties.ContainsKey(MsVersionpolicyIsAppliedToken))
+            if (actionDescriptor.Properties != null && actionDescriptor.Properties.ContainsKey(MsVersionpolicyIsAppliedToken)
+                && routeData.Values.ContainsKey(VersionRouteDataToken))
             {
                 routeTemplate = routeTemplate.Replace(ApiVersionToken, routeData.Values[VersionRouteDataToken].ToString());
             }

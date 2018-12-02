@@ -1,5 +1,5 @@
-﻿// <copyright file="SlaTestController.cs" company="Allan Hardy">
-// Copyright (c) Allan Hardy. All rights reserved.
+﻿// <copyright file="SlaTestController.cs" company="App Metrics Contributors">
+// Copyright (c) App Metrics Contributors. All rights reserved.
 // </copyright>
 
 using System;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsReportingSandboxMvc.Controllers
 {
     [Route("api/[controller]")]
-    public class SlaTestController : Controller
+    public class SlaTestController : ControllerBase
     {
         private static readonly Random Rnd = new Random();
         private readonly IMetrics _metrics;
