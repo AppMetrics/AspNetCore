@@ -29,7 +29,9 @@ namespace MetricsSandboxMvc
         {
             services.AddLogging();
             services.AddTestStuff();
-            services.AddMvcCore().AddMetricsCore();
+            services.AddMvcCore()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                    .AddMetricsCore();
         }
     }
 }
