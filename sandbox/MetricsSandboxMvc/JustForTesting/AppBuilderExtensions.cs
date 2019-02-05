@@ -65,7 +65,13 @@ namespace Microsoft.AspNetCore.Builder
 
                 var testSamples = new AppMetricsTaskScheduler(
                     TimeSpan.FromSeconds(GetEndpointSuccessInterval),
-                    () => HttpClient.GetAsync("api/test", token));
+                    () =>
+                    {
+                        var testOne = HttpClient.GetAsync("api/test", token);
+                        var testTwo = HttpClient.GetAsync("api/test/params/abc/123", token);
+
+                        return Task.WhenAll(testOne, testTwo);
+                    });
 
                 testSamples.Start();
 

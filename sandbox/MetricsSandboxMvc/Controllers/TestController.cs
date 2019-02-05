@@ -14,5 +14,11 @@ namespace MetricsSandboxMvc.Controllers
         {
             return Ok();
         }
+
+        [HttpGet("params/{test}/{num}")]
+        public IActionResult GetParams(string test, int num)
+        {
+            return Ok();
+        }
     }
 }
