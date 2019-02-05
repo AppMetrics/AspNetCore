@@ -37,6 +37,15 @@ namespace Microsoft.AspNetCore.Mvc.Filters
             {
                 context.HttpContext.AddMetricsCurrentRouteName(templateRoute);
             }
+            else
+            {
+                templateRoute = context.ActionDescriptor?.AttributeRouteInfo?.Template;
+
+                if (!string.IsNullOrEmpty(templateRoute))
+                {
+                    context.HttpContext.AddMetricsCurrentRouteName(templateRoute.ToLowerInvariant());
+                }
+            }
 
             await next.Invoke();
         }
