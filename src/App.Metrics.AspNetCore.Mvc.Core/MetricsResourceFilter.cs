@@ -3,12 +3,10 @@
 // </copyright>
 
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using App.Metrics.AspNetCore;
 using App.Metrics.Extensions.DependencyInjection.Internal;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -45,6 +43,12 @@ namespace Microsoft.AspNetCore.Mvc.Filters
 
                 if (!string.IsNullOrEmpty(templateRoute))
                 {
+                    context.HttpContext.AddMetricsCurrentRouteName(templateRoute.ToLowerInvariant());
+                }
+                else
+                {
+                    templateRoute = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+
                     context.HttpContext.AddMetricsCurrentRouteName(templateRoute.ToLowerInvariant());
                 }
             }
