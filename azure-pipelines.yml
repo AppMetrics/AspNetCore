@@ -1,0 +1,23 @@
+pool:
+  vmImage: 'VS2017-Win2016'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreInstaller@0
+  inputs:
+    packageType: 'sdk'
+    version: '2.2.101' 
+
+- powershell: .\build.ps1
+  displayName: 'dotnet build $(buildConfiguration)'
+  env:
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  condition: succeeded()
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
