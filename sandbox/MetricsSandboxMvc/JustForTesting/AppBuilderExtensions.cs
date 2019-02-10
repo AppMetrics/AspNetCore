@@ -42,11 +42,13 @@ namespace Microsoft.AspNetCore.Builder
                     TimeSpan.FromSeconds(ApdexSamplesInterval),
                     () =>
                     {
+                        var satisfiedV2WithParam = HttpClient.GetAsync("api/v2/satisfying/1", token);
+                        var satisfiedV2NoParam = HttpClient.GetAsync("api/v2/satisfying", token);
                         var satisfied = HttpClient.GetAsync("api/satisfying", token);
                         var tolerating = HttpClient.GetAsync("api/tolerating", token);
                         var frustrating = HttpClient.GetAsync("api/frustrating", token);
 
-                        return Task.WhenAll(satisfied, tolerating, frustrating);
+                        return Task.WhenAll(satisfied, satisfiedV2WithParam, satisfiedV2NoParam, tolerating, frustrating);
                     });
 
                 apdexSamples.Start();

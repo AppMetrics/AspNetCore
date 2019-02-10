@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using App.Metrics.AspNetCore;
 using App.Metrics.Extensions.DependencyInjection.Internal;
@@ -16,6 +17,10 @@ namespace Microsoft.AspNetCore.Mvc.Filters
 {
     public class MetricsResourceFilter : IAsyncResourceFilter
     {
+        private const string ControllerRouteKey = "controller";
+        private const string ActionRouteKey = "action";
+        private const string VersionRouteKey = "version";
+        private const string DefaultVersionRouteKey = "{version:apiVersion}";
         private readonly IRouteNameResolver _routeNameResolver;
         private ILogger _logger;
 
@@ -43,11 +48,32 @@ namespace Microsoft.AspNetCore.Mvc.Filters
 
                 if (!string.IsNullOrEmpty(templateRoute))
                 {
+                    if (!string.IsNullOrEmpty(templateRoute) && templateRoute.Contains(DefaultVersionRouteKey))
+                    {
+                        if (context.RouteData.Values.ContainsKey(VersionRouteKey))
+                        {
+                            templateRoute = templateRoute.Replace(DefaultVersionRouteKey, context.RouteData.Values.Single(x => x.Key == VersionRouteKey).Value.ToString());
+                        }
+
+                        context.HttpContext.AddMetricsCurrentRouteName(templateRoute.ToLowerInvariant());
+                    }
+
                     context.HttpContext.AddMetricsCurrentRouteName(templateRoute.ToLowerInvariant());
                 }
                 else
                 {
-                    templateRoute = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+                    if (context.RouteData == null || !context.RouteData.Values.Any())
+                    {
+                        templateRoute = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+                    }
+                    else
+                    {
+                        var controller = context.RouteData.Values.FirstOrDefault(v => v.Key == ControllerRouteKey);
+                        var action = context.RouteData.Values.FirstOrDefault(v => v.Key == ActionRouteKey);
+                        var version = context.RouteData.Values.FirstOrDefault(v => v.Key == VersionRouteKey);
+
+                        templateRoute = (version.Value == null ? string.Empty : $"VER-{version.Value} ") + $"{controller.Value}/{action.Value}";
+                    }
 
                     context.HttpContext.AddMetricsCurrentRouteName(templateRoute.ToLowerInvariant());
                 }

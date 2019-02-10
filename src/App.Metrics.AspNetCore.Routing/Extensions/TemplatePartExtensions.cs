@@ -28,12 +28,14 @@ namespace Microsoft.AspNetCore.Routing.Template
         public static string ToTemplateString(
             this Route templateRoute,
             string controller,
-            string action) =>
+            string action,
+            string version) =>
             string.Join(
                       "/",
                       templateRoute.ParsedTemplate.Segments
                                    .Select(s => s.ToTemplateSegmentString()))
-                  .Replace("{controller}", controller)
-                  .Replace("{action}", action).ToLower();
+                  .Replace("{controller}", controller).ToLower()
+                  .Replace("{action}", action).ToLower()
+                  .Replace("{version}", version).ToLower();
     }
 }

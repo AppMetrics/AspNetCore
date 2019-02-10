@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <ItemGroup>
+  <ItemGroup Label="Package References">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\src\App.Metrics.AspNetCore.Mvc.Core\App.Metrics.AspNetCore.Mvc.Core.csproj" />
   </ItemGroup>
   

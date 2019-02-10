@@ -5,6 +5,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,8 +32,21 @@ namespace MetricsSandboxMvc
         {
             services.AddLogging();
             services.AddTestStuff();
-            services.AddMvcCore()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+
+            services.AddApiVersioning(
+                options =>
+                {
+                    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+                    options.ReportApiVersions = true;
+                });
+
+            services.AddMvcCore(options =>
+                    {
+                        options.EnableEndpointRouting = true;
+                    })
+                    .SetCompatibilityVersion(CompatibilityVersion.Latest)
+                    .AddApiExplorer()
+                    .AddVersionedApiExplorer(options => options.GroupNameFormat = "'v'V")
                     .AddMetricsCore();
         }
     }

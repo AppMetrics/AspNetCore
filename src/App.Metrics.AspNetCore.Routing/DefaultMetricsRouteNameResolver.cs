@@ -15,19 +15,22 @@ namespace Microsoft.AspNetCore.Routing
     {
         public Task<string> ResolveMatchingTemplateRouteAsync(RouteData routeData)
         {
-            var templateRoute = routeData.Routers
-                                         .FirstOrDefault(r => r.GetType().Name == "Route")
+            var templateRoute = routeData.Routers.FirstOrDefault(r => r.GetType().Name == "Route")
                 as Route;
-
-            if (templateRoute == null)
-            {
-                return Task.FromResult(string.Empty);
-            }
 
             var controller = routeData.Values.FirstOrDefault(v => v.Key == "controller");
             var action = routeData.Values.FirstOrDefault(v => v.Key == "action");
+            var version = routeData.Values.FirstOrDefault(v => v.Key == "version");
 
-            var result = templateRoute.ToTemplateString(controller.Value as string, action.Value as string);
+            var result = string.Empty;
+
+            if (templateRoute != null)
+            {
+                result = templateRoute.ToTemplateString(
+                    controller.Value as string,
+                    action.Value as string,
+                    version.Value == null ? string.Empty : version.Value as string);
+            }
 
             return Task.FromResult(result);
         }

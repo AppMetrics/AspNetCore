@@ -63,7 +63,7 @@ namespace App.Metrics.AspNetCore.Routing.Facts
 
             var route = CreateRoute("{controller}/{action}");
 
-            var result = route.ToTemplateString("Test", "Action");
+            var result = route.ToTemplateString("Test", "Action", string.Empty);
 
             result.Should().Be(expected);
         }
